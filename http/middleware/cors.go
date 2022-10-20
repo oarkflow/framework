@@ -4,8 +4,8 @@ import (
 	"github.com/sujit-baniya/framework/contracts/http"
 )
 
-func Cors() http.Middleware {
-	return func(ctx http.Context) {
+func Cors() http.HandlerFunc {
+	return func(ctx http.Context) error {
 		method := ctx.Request().Method()
 		origin := ctx.Request().Header("Origin", "")
 		if origin != "" {
@@ -19,9 +19,9 @@ func Cors() http.Middleware {
 
 		if method == "OPTIONS" {
 			ctx.Request().AbortWithStatus(204)
-			return
+			return nil
 		}
 
-		ctx.Request().Next()
+		return ctx.Request().Next()
 	}
 }

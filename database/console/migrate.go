@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/mysql"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
-	"github.com/golang-migrate/migrate/v4/database/sqlite3"
-	"github.com/golang-migrate/migrate/v4/database/sqlserver"
+	"github.com/sujit-baniya/migrate"
+	"github.com/sujit-baniya/migrate/database/mysql"
+	"github.com/sujit-baniya/migrate/database/postgres"
+	"github.com/sujit-baniya/migrate/database/sqlite3"
+	"github.com/sujit-baniya/migrate/database/sqlserver"
 
 	"github.com/sujit-baniya/framework/database/support"
 	"github.com/sujit-baniya/framework/facades"

@@ -24,7 +24,7 @@ type Request interface {
 	File(name string) (File, error)
 
 	AbortWithStatus(code int)
-	Next()
+	Next() error
 	Origin() *http.Request
 	Response() Response
 

@@ -2,9 +2,9 @@ package console
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gookit/color"
+	"github.com/sujit-baniya/migrate"
+	_ "github.com/sujit-baniya/migrate/source/file"
 
 	"github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/contracts/console/command"

@@ -4,8 +4,7 @@ import (
 	"context"
 )
 
-type Middleware func(Context)
-type HandlerFunc func(Context)
+type HandlerFunc func(Context) error
 
 type Context interface {
 	context.Context

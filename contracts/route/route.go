@@ -17,16 +17,16 @@ type Engine interface {
 type Route interface {
 	Group(GroupFunc)
 	Prefix(addr string) Route
-	GlobalMiddleware(...httpcontract.Middleware) Route
-	Middleware(...httpcontract.Middleware) Route
+	GlobalMiddleware(...httpcontract.HandlerFunc) Route
+	Middleware(...httpcontract.HandlerFunc) Route
 
-	Any(string, httpcontract.HandlerFunc)
-	Get(string, httpcontract.HandlerFunc)
-	Post(string, httpcontract.HandlerFunc)
-	Delete(string, httpcontract.HandlerFunc)
-	Patch(string, httpcontract.HandlerFunc)
-	Put(string, httpcontract.HandlerFunc)
-	Options(string, httpcontract.HandlerFunc)
+	Any(string, ...httpcontract.HandlerFunc)
+	Get(string, ...httpcontract.HandlerFunc)
+	Post(string, ...httpcontract.HandlerFunc)
+	Delete(string, ...httpcontract.HandlerFunc)
+	Patch(string, ...httpcontract.HandlerFunc)
+	Put(string, ...httpcontract.HandlerFunc)
+	Options(string, ...httpcontract.HandlerFunc)
 
 	Static(string, string)
 	StaticFile(string, string)

@@ -14,8 +14,8 @@ const (
 	OpentracingCtx    = "opentracing_ctx"
 )
 
-func Opentracing(tracer opentracing.Tracer) http.Middleware {
-	return func(ctx http.Context) {
+func Opentracing(tracer opentracing.Tracer) http.HandlerFunc {
+	return func(ctx http.Context) error {
 		var parentSpan opentracing.Span
 
 		spCtx, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(ctx.Request().Headers()))
@@ -34,6 +34,6 @@ func Opentracing(tracer opentracing.Tracer) http.Middleware {
 
 		ctx.WithValue(OpentracingTracer, tracer)
 		ctx.WithValue(OpentracingCtx, opentracing.ContextWithSpan(context.Background(), parentSpan))
-		ctx.Request().Next()
+		return ctx.Request().Next()
 	}
 }

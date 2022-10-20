@@ -79,8 +79,9 @@ func (r *GinRequest) AbortWithStatus(code int) {
 	r.instance.AbortWithStatus(code)
 }
 
-func (r *GinRequest) Next() {
+func (r *GinRequest) Next() error {
 	r.instance.Next()
+	return nil
 }
 
 func (r *GinRequest) Path() string {
