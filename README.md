@@ -1,6 +1,9 @@
 <p align="center"><img src="https://goravel.s3.us-east-2.amazonaws.com/goravel-word.png" width="300"></p>
 
-English | [中文](./README_zh.md)
+English
+
+Forked https://github.com/goravel/framework
+With support to switch between [Gin](https://gin-gonic.com/) and [GoFiber](https://gofiber.io/)
 
 ## About Goravel
 

@@ -10,7 +10,7 @@ type ServiceProvider struct {
 }
 
 func (route *ServiceProvider) Register() {
-	app := Application{}
+	app := Application{Engine: route.Engine}
 	facades.Route = app.Init()
 }
 

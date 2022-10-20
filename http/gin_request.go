@@ -16,7 +16,7 @@ func NewGinRequest(instance *gin.Context) contracthttp.Request {
 	return &GinRequest{instance}
 }
 
-func (r *GinRequest) Input(key string) string {
+func (r *GinRequest) Params(key string) string {
 	return r.instance.Param(key)
 }
 

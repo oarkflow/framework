@@ -97,38 +97,59 @@ func (r *GinGroup) GlobalMiddleware(handlers ...httpcontract.HandlerFunc) route.
 }
 
 func (r *GinGroup) Any(relativePath string, handlers ...httpcontract.HandlerFunc) {
-	handler := handlers[len(handlers)-1]
-	r.getGinRoutesWithMiddlewares().Any(pathToGinPath(relativePath), []gin.HandlerFunc{handlerToGinHandler(handler)}...)
+	var h []gin.HandlerFunc
+	for _, ha := range handlers {
+		h = append(h, handlerToGinHandler(ha))
+	}
+	r.getGinRoutesWithMiddlewares().Any(pathToGinPath(relativePath), h...)
 }
 
 func (r *GinGroup) Get(relativePath string, handlers ...httpcontract.HandlerFunc) {
-	handler := handlers[len(handlers)-1]
-	r.getGinRoutesWithMiddlewares().GET(pathToGinPath(relativePath), []gin.HandlerFunc{handlerToGinHandler(handler)}...)
+	var h []gin.HandlerFunc
+	for _, ha := range handlers {
+		h = append(h, handlerToGinHandler(ha))
+	}
+	r.getGinRoutesWithMiddlewares().GET(pathToGinPath(relativePath), h...)
 }
 
 func (r *GinGroup) Post(relativePath string, handlers ...httpcontract.HandlerFunc) {
-	handler := handlers[len(handlers)-1]
-	r.getGinRoutesWithMiddlewares().POST(pathToGinPath(relativePath), []gin.HandlerFunc{handlerToGinHandler(handler)}...)
+	var h []gin.HandlerFunc
+	for _, ha := range handlers {
+		h = append(h, handlerToGinHandler(ha))
+	}
+	r.getGinRoutesWithMiddlewares().POST(pathToGinPath(relativePath), h...)
 }
 
 func (r *GinGroup) Delete(relativePath string, handlers ...httpcontract.HandlerFunc) {
-	handler := handlers[len(handlers)-1]
-	r.getGinRoutesWithMiddlewares().DELETE(pathToGinPath(relativePath), []gin.HandlerFunc{handlerToGinHandler(handler)}...)
+	var h []gin.HandlerFunc
+	for _, ha := range handlers {
+		h = append(h, handlerToGinHandler(ha))
+	}
+	r.getGinRoutesWithMiddlewares().DELETE(pathToGinPath(relativePath), h...)
 }
 
 func (r *GinGroup) Patch(relativePath string, handlers ...httpcontract.HandlerFunc) {
-	handler := handlers[len(handlers)-1]
-	r.getGinRoutesWithMiddlewares().PATCH(pathToGinPath(relativePath), []gin.HandlerFunc{handlerToGinHandler(handler)}...)
+	var h []gin.HandlerFunc
+	for _, ha := range handlers {
+		h = append(h, handlerToGinHandler(ha))
+	}
+	r.getGinRoutesWithMiddlewares().PATCH(pathToGinPath(relativePath), h...)
 }
 
 func (r *GinGroup) Put(relativePath string, handlers ...httpcontract.HandlerFunc) {
-	handler := handlers[len(handlers)-1]
-	r.getGinRoutesWithMiddlewares().PUT(pathToGinPath(relativePath), []gin.HandlerFunc{handlerToGinHandler(handler)}...)
+	var h []gin.HandlerFunc
+	for _, ha := range handlers {
+		h = append(h, handlerToGinHandler(ha))
+	}
+	r.getGinRoutesWithMiddlewares().PUT(pathToGinPath(relativePath), h...)
 }
 
 func (r *GinGroup) Options(relativePath string, handlers ...httpcontract.HandlerFunc) {
-	handler := handlers[len(handlers)-1]
-	r.getGinRoutesWithMiddlewares().OPTIONS(pathToGinPath(relativePath), []gin.HandlerFunc{handlerToGinHandler(handler)}...)
+	var h []gin.HandlerFunc
+	for _, ha := range handlers {
+		h = append(h, handlerToGinHandler(ha))
+	}
+	r.getGinRoutesWithMiddlewares().OPTIONS(pathToGinPath(relativePath), h...)
 }
 
 func (r *GinGroup) Static(relativePath, root string) {

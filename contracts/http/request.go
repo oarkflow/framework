@@ -15,7 +15,7 @@ type Request interface {
 	Ip() string
 
 	//Input Retrieve  an input item from the request: /users/{id}
-	Input(key string) string
+	Params(key string) string
 	// Query Retrieve a query string item form the request: /users?id=1
 	Query(key, defaultValue string) string
 	// Form Retrieve a form string item form the post: /users POST:id=1
