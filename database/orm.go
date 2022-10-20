@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	contractsorm "github.com/goravel/framework/contracts/database/orm"
-	"github.com/goravel/framework/facades"
+	contractsorm "github.com/sujit-baniya/framework/contracts/database/orm"
+	"github.com/sujit-baniya/framework/facades"
 
 	"github.com/gookit/color"
 	"github.com/pkg/errors"

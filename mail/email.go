@@ -7,9 +7,9 @@ import (
 
 	"github.com/jordan-wright/email"
 
-	"github.com/goravel/framework/contracts/mail"
-	contractqueue "github.com/goravel/framework/contracts/queue"
-	"github.com/goravel/framework/facades"
+	"github.com/sujit-baniya/framework/contracts/mail"
+	contractqueue "github.com/sujit-baniya/framework/contracts/queue"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type Email struct {

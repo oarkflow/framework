@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/gookit/color"
-	"github.com/goravel/framework/contracts/cache"
-	"github.com/goravel/framework/facades"
+	"github.com/sujit-baniya/framework/contracts/cache"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type Application struct {

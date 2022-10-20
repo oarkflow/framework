@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	contracthttp "github.com/goravel/framework/contracts/http"
+	contracthttp "github.com/sujit-baniya/framework/contracts/http"
 )
 
 type GinRequest struct {

@@ -15,9 +15,9 @@ import (
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
 
-	contractsorm "github.com/goravel/framework/contracts/database/orm"
-	"github.com/goravel/framework/database/support"
-	"github.com/goravel/framework/facades"
+	contractsorm "github.com/sujit-baniya/framework/contracts/database/orm"
+	"github.com/sujit-baniya/framework/database/support"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type GormDB struct {

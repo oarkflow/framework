@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/goravel/framework/config"
-	"github.com/goravel/framework/facades"
-	"github.com/goravel/framework/testing/file"
-	testingfile "github.com/goravel/framework/testing/file"
+	"github.com/sujit-baniya/framework/config"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/testing/file"
+	testingfile "github.com/sujit-baniya/framework/testing/file"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -44,7 +44,7 @@ func TestLog(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-//addDefaultConfig Add default config for test.
+// addDefaultConfig Add default config for test.
 func addDefaultConfig() {
 
 	configApp := config.ServiceProvider{}

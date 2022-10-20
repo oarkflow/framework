@@ -3,9 +3,9 @@ package config
 import (
 	"os"
 
-	"github.com/goravel/framework/contracts/config"
-	"github.com/goravel/framework/support/file"
-	"github.com/goravel/framework/testing"
+	"github.com/sujit-baniya/framework/contracts/config"
+	"github.com/sujit-baniya/framework/support/file"
+	"github.com/sujit-baniya/framework/testing"
 
 	"github.com/gookit/color"
 	"github.com/spf13/cast"
@@ -38,7 +38,7 @@ func (app *Application) Init() config.Config {
 	return app
 }
 
-//Env Get config from env.
+// Env Get config from env.
 func (app *Application) Env(envName string, defaultValue ...interface{}) interface{} {
 	value := app.Get(envName, defaultValue...)
 	if cast.ToString(value) == "" {
@@ -52,12 +52,12 @@ func (app *Application) Env(envName string, defaultValue ...interface{}) interfa
 	return value
 }
 
-//Add config to application.
+// Add config to application.
 func (app *Application) Add(name string, configuration map[string]interface{}) {
 	app.vip.Set(name, configuration)
 }
 
-//Get config from application.
+// Get config from application.
 func (app *Application) Get(path string, defaultValue ...interface{}) interface{} {
 	if !app.vip.IsSet(path) {
 		if len(defaultValue) > 0 {
@@ -69,7 +69,7 @@ func (app *Application) Get(path string, defaultValue ...interface{}) interface{
 	return app.vip.Get(path)
 }
 
-//GetString Get string type config from application.
+// GetString Get string type config from application.
 func (app *Application) GetString(path string, defaultValue ...interface{}) string {
 	value := cast.ToString(app.Get(path, defaultValue...))
 	if value == "" {
@@ -83,7 +83,7 @@ func (app *Application) GetString(path string, defaultValue ...interface{}) stri
 	return value
 }
 
-//GetInt Get int type config from application.
+// GetInt Get int type config from application.
 func (app *Application) GetInt(path string, defaultValue ...interface{}) int {
 	value := app.Get(path, defaultValue...)
 	if cast.ToString(value) == "" {
@@ -97,7 +97,7 @@ func (app *Application) GetInt(path string, defaultValue ...interface{}) int {
 	return cast.ToInt(value)
 }
 
-//GetBool Get bool type config from application.
+// GetBool Get bool type config from application.
 func (app *Application) GetBool(path string, defaultValue ...interface{}) bool {
 	value := app.Get(path, defaultValue...)
 	if cast.ToString(value) == "" {

@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/goravel/framework/contracts/log"
+	"github.com/sujit-baniya/framework/contracts/log"
 )
 
 type Application struct {

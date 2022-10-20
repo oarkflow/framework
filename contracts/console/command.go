@@ -1,7 +1,7 @@
 package console
 
 import (
-	"github.com/goravel/framework/contracts/console/command"
+	"github.com/sujit-baniya/framework/contracts/console/command"
 )
 
 type Command interface {

@@ -3,7 +3,7 @@ package support
 import (
 	"fmt"
 
-	"github.com/goravel/framework/facades"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 const (

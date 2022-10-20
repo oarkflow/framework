@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/goravel/framework/contracts/http"
+	"github.com/sujit-baniya/framework/contracts/http"
 )
 
 func Cors() http.Middleware {

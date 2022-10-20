@@ -1,6 +1,6 @@
-module github.com/goravel/framework
+module github.com/sujit-baniya/framework
 
-go 1.18
+go 1.19
 
 require (
 	github.com/RichardKnop/machinery/v2 v2.0.11

@@ -8,24 +8,24 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/gookit/color"
 
-	"github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/contracts/console/command"
+	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console/command"
 )
 
 type MigrateRollbackCommand struct {
 }
 
-//Signature The name and signature of the console command.
+// Signature The name and signature of the console command.
 func (receiver *MigrateRollbackCommand) Signature() string {
 	return "migrate:rollback"
 }
 
-//Description The console command description.
+// Description The console command description.
 func (receiver *MigrateRollbackCommand) Description() string {
 	return "Rollback the database migrations"
 }
 
-//Extend The console command extend.
+// Extend The console command extend.
 func (receiver *MigrateRollbackCommand) Extend() command.Extend {
 	return command.Extend{
 		Category: "migrate",
@@ -39,7 +39,7 @@ func (receiver *MigrateRollbackCommand) Extend() command.Extend {
 	}
 }
 
-//Handle Execute the console command.
+// Handle Execute the console command.
 func (receiver *MigrateRollbackCommand) Handle(ctx console.Context) error {
 	m, err := getMigrate()
 	if err != nil {

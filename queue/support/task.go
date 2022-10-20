@@ -6,7 +6,7 @@ import (
 	"github.com/RichardKnop/machinery/v2"
 	"github.com/RichardKnop/machinery/v2/tasks"
 
-	"github.com/goravel/framework/contracts/queue"
+	"github.com/sujit-baniya/framework/contracts/queue"
 )
 
 type Task struct {

@@ -1,7 +1,7 @@
 package route
 
 import (
-	"github.com/goravel/framework/contracts/route"
+	"github.com/sujit-baniya/framework/contracts/route"
 )
 
 type Application struct {

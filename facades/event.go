@@ -1,5 +1,5 @@
 package facades
 
-import "github.com/goravel/framework/contracts/event"
+import "github.com/sujit-baniya/framework/contracts/event"
 
 var Event event.Instance

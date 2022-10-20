@@ -3,8 +3,8 @@ package database
 import (
 	"testing"
 
-	"github.com/goravel/framework/config"
 	"github.com/stretchr/testify/assert"
+	"github.com/sujit-baniya/framework/config"
 )
 
 func TestInit(t *testing.T) {

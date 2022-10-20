@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/goravel/framework/facades"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type Model struct {

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/goravel/framework/contracts/http"
+	"github.com/sujit-baniya/framework/contracts/http"
 )
 
 type GinContext struct {

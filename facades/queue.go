@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/goravel/framework/contracts/queue"
+	"github.com/sujit-baniya/framework/contracts/queue"
 )
 
 var Queue queue.Queue

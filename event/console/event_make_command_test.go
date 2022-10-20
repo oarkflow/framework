@@ -6,13 +6,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/goravel/framework/config"
-	"github.com/goravel/framework/console"
-	"github.com/goravel/framework/contracts"
-	console2 "github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/facades"
-	"github.com/goravel/framework/support/file"
-	testingfile "github.com/goravel/framework/testing/file"
+	"github.com/sujit-baniya/framework/config"
+	"github.com/sujit-baniya/framework/console"
+	"github.com/sujit-baniya/framework/contracts"
+	console2 "github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/support/file"
+	testingfile "github.com/sujit-baniya/framework/testing/file"
 )
 
 func TestEventMakeCommand(t *testing.T) {

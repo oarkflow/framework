@@ -7,9 +7,9 @@ import (
 	"github.com/gookit/color"
 	"github.com/urfave/cli/v2"
 
-	"github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/contracts/console/command"
-	"github.com/goravel/framework/support"
+	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console/command"
+	"github.com/sujit-baniya/framework/support"
 )
 
 type Cli struct {
@@ -42,17 +42,17 @@ func (c *Cli) Register(commands []console.Command) {
 	}
 }
 
-//Call Run an Artisan console command by name.
+// Call Run an Artisan console command by name.
 func (c *Cli) Call(command string) {
 	c.Run(append([]string{os.Args[0], "artisan"}, strings.Split(command, " ")...), false)
 }
 
-//CallAndExit Run an Artisan console command by name and exit.
+// CallAndExit Run an Artisan console command by name and exit.
 func (c *Cli) CallAndExit(command string) {
 	c.Run(append([]string{os.Args[0], "artisan"}, strings.Split(command, " ")...), true)
 }
 
-//Run a command. Args come from os.Args.
+// Run a command. Args come from os.Args.
 func (c *Cli) Run(args []string, exitIfArtisan bool) {
 	if len(args) >= 2 {
 		if args[1] == "artisan" {

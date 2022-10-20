@@ -1,7 +1,7 @@
 package mail
 
 import (
-	"github.com/goravel/framework/contracts/mail"
+	"github.com/sujit-baniya/framework/contracts/mail"
 )
 
 type Application struct {

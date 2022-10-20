@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"github.com/goravel/framework/cache/console"
-	console2 "github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/facades"
+	"github.com/sujit-baniya/framework/cache/console"
+	console2 "github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type ServiceProvider struct {

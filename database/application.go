@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/goravel/framework/contracts/database/orm"
+	"github.com/sujit-baniya/framework/contracts/database/orm"
 )
 
 type Application struct {

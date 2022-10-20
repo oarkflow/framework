@@ -5,14 +5,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/goravel/framework/facades"
-	"github.com/goravel/framework/support/file"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/support/file"
 )
 
 type MigrateCreator struct {
 }
 
-//Create a new migration
+// Create a new migration
 func (receiver MigrateCreator) Create(name string, table string, create bool) {
 	// First we will get the stub file for the migration, which serves as a type
 	// of template for the migration. Once we have those we will populate the
@@ -26,7 +26,7 @@ func (receiver MigrateCreator) Create(name string, table string, create bool) {
 	file.Create(receiver.getPath(name, "down"), receiver.populateStub(downStub, table))
 }
 
-//getStub Get the migration stub file.
+// getStub Get the migration stub file.
 func (receiver MigrateCreator) getStub(table string, create bool) (string, string) {
 	if table == "" {
 		return "", ""
@@ -39,7 +39,7 @@ func (receiver MigrateCreator) getStub(table string, create bool) (string, strin
 	return MigrateStubs{}.UpdateUp(), MigrateStubs{}.UpdateDown()
 }
 
-//populateStub Populate the place-holders in the migration stub.
+// populateStub Populate the place-holders in the migration stub.
 func (receiver MigrateCreator) populateStub(stub string, table string) string {
 	stub = strings.ReplaceAll(stub, "DummyDatabaseCharset", facades.Config.GetString("database.connections."+facades.Config.GetString("database.default")+".charset"))
 
@@ -50,7 +50,7 @@ func (receiver MigrateCreator) populateStub(stub string, table string) string {
 	return stub
 }
 
-//getPath Get the full path to the migration.
+// getPath Get the full path to the migration.
 func (receiver MigrateCreator) getPath(name string, category string) string {
 	pwd, _ := os.Getwd()
 

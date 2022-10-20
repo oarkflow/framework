@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/goravel/framework/config"
-	"github.com/goravel/framework/contracts/event"
-	"github.com/goravel/framework/contracts/queue"
-	"github.com/goravel/framework/facades"
-	"github.com/goravel/framework/testing/file"
+	"github.com/sujit-baniya/framework/config"
+	"github.com/sujit-baniya/framework/contracts/event"
+	"github.com/sujit-baniya/framework/contracts/queue"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/testing/file"
 )
 
 func TestGetServer(t *testing.T) {

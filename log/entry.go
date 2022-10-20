@@ -3,7 +3,7 @@ package log
 import (
 	"time"
 
-	"github.com/goravel/framework/contracts/log"
+	"github.com/sujit-baniya/framework/contracts/log"
 )
 
 type Entry struct {

@@ -1,5 +1,5 @@
 package facades
 
-import "github.com/goravel/framework/contracts/mail"
+import "github.com/sujit-baniya/framework/contracts/mail"
 
 var Mail mail.Mail

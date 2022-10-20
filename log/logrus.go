@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/goravel/framework/contracts/log"
-	"github.com/goravel/framework/facades"
-	"github.com/goravel/framework/log/logger"
+	"github.com/sujit-baniya/framework/contracts/log"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/log/logger"
 
 	"github.com/gookit/color"
 	"github.com/sirupsen/logrus"

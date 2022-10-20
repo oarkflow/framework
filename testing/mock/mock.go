@@ -1,15 +1,15 @@
 package mock
 
 import (
-	cachemocks "github.com/goravel/framework/contracts/cache/mocks"
-	configmocks "github.com/goravel/framework/contracts/config/mocks"
-	consolemocks "github.com/goravel/framework/contracts/console/mocks"
-	ormmocks "github.com/goravel/framework/contracts/database/orm/mocks"
-	eventmocks "github.com/goravel/framework/contracts/event/mocks"
-	mailmocks "github.com/goravel/framework/contracts/mail/mocks"
-	queuemocks "github.com/goravel/framework/contracts/queue/mocks"
-	"github.com/goravel/framework/facades"
-	"github.com/goravel/framework/log"
+	cachemocks "github.com/sujit-baniya/framework/contracts/cache/mocks"
+	configmocks "github.com/sujit-baniya/framework/contracts/config/mocks"
+	consolemocks "github.com/sujit-baniya/framework/contracts/console/mocks"
+	ormmocks "github.com/sujit-baniya/framework/contracts/database/orm/mocks"
+	eventmocks "github.com/sujit-baniya/framework/contracts/event/mocks"
+	mailmocks "github.com/sujit-baniya/framework/contracts/mail/mocks"
+	queuemocks "github.com/sujit-baniya/framework/contracts/queue/mocks"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/log"
 )
 
 func Cache() *cachemocks.Store {

@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/goravel/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console"
 )
 
 var Artisan console.Artisan

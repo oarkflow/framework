@@ -7,33 +7,33 @@ import (
 
 	"github.com/gookit/color"
 
-	"github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/contracts/console/command"
-	"github.com/goravel/framework/support/file"
-	"github.com/goravel/framework/support/str"
+	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console/command"
+	"github.com/sujit-baniya/framework/support/file"
+	"github.com/sujit-baniya/framework/support/str"
 )
 
 type EventMakeCommand struct {
 }
 
-//Signature The name and signature of the console command.
+// Signature The name and signature of the console command.
 func (receiver *EventMakeCommand) Signature() string {
 	return "make:event"
 }
 
-//Description The console command description.
+// Description The console command description.
 func (receiver *EventMakeCommand) Description() string {
 	return "Create a new event class"
 }
 
-//Extend The console command extend.
+// Extend The console command extend.
 func (receiver *EventMakeCommand) Extend() command.Extend {
 	return command.Extend{
 		Category: "make",
 	}
 }
 
-//Handle Execute the console command.
+// Handle Execute the console command.
 func (receiver *EventMakeCommand) Handle(ctx console.Context) error {
 	name := ctx.Argument(0)
 	if name == "" {
@@ -50,7 +50,7 @@ func (receiver *EventMakeCommand) getStub() string {
 	return EventStubs{}.Event()
 }
 
-//populateStub Populate the place-holders in the command stub.
+// populateStub Populate the place-holders in the command stub.
 func (receiver *EventMakeCommand) populateStub(stub string, name string) string {
 	stub = strings.ReplaceAll(stub, "DummyEvent", str.Case2Camel(name))
 	stub = strings.ReplaceAll(stub, "DummyName", str.Camel2Case(name))
@@ -58,7 +58,7 @@ func (receiver *EventMakeCommand) populateStub(stub string, name string) string 
 	return stub
 }
 
-//getPath Get the full path to the command.
+// getPath Get the full path to the command.
 func (receiver *EventMakeCommand) getPath(name string) string {
 	pwd, _ := os.Getwd()
 

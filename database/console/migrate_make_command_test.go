@@ -7,10 +7,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/goravel/framework/config"
-	"github.com/goravel/framework/console"
-	contractconsole "github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/testing/file"
+	"github.com/sujit-baniya/framework/config"
+	"github.com/sujit-baniya/framework/console"
+	contractconsole "github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/testing/file"
 )
 
 func TestMigrateMakeCommand(t *testing.T) {

@@ -1,6 +1,6 @@
 package log
 
-import "github.com/goravel/framework/facades"
+import "github.com/sujit-baniya/framework/facades"
 
 type ServiceProvider struct {
 }

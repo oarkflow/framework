@@ -1,8 +1,8 @@
 package queue
 
 import (
-	"github.com/goravel/framework/contracts/queue"
-	"github.com/goravel/framework/queue/support"
+	"github.com/sujit-baniya/framework/contracts/queue"
+	"github.com/sujit-baniya/framework/queue/support"
 )
 
 type Application struct {

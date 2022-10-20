@@ -6,7 +6,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 
-	"github.com/goravel/framework/contracts/http"
+	"github.com/sujit-baniya/framework/contracts/http"
 )
 
 const (

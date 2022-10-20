@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/goravel/framework/contracts/event"
 	"github.com/stretchr/testify/assert"
+	"github.com/sujit-baniya/framework/contracts/event"
 )
 
 type TestEvent struct {

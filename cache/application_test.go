@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/goravel/framework/config"
-	"github.com/goravel/framework/console"
-	"github.com/goravel/framework/facades"
-	"github.com/goravel/framework/testing/file"
 	"github.com/stretchr/testify/assert"
+	"github.com/sujit-baniya/framework/config"
+	"github.com/sujit-baniya/framework/console"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/testing/file"
 )
 
 func TestInit(t *testing.T) {

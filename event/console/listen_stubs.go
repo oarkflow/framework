@@ -7,7 +7,7 @@ func (receiver ListenerStubs) Listener() string {
 	return `package listeners
 
 import (
-	"github.com/goravel/framework/contracts/events"
+	"github.com/sujit-baniya/framework/contracts/events"
 )
 
 type DummyListener struct {

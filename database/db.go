@@ -6,9 +6,9 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
-	"github.com/goravel/framework/contracts/database"
-	"github.com/goravel/framework/database/support"
-	"github.com/goravel/framework/facades"
+	"github.com/sujit-baniya/framework/contracts/database"
+	"github.com/sujit-baniya/framework/database/support"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type DB struct {

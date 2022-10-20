@@ -3,9 +3,9 @@ package console
 import (
 	"testing"
 
-	"github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/contracts/console/command"
 	"github.com/stretchr/testify/assert"
+	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console/command"
 )
 
 type TestCommand struct {
