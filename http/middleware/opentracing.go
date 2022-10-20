@@ -18,13 +18,13 @@ func Opentracing(tracer opentracing.Tracer) http.HandlerFunc {
 	return func(ctx http.Context) error {
 		var parentSpan opentracing.Span
 
-		spCtx, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(ctx.Request().Headers()))
+		spCtx, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(ctx.Headers()))
 		if err != nil {
-			parentSpan = tracer.StartSpan(ctx.Request().Path())
+			parentSpan = tracer.StartSpan(ctx.Path())
 			defer parentSpan.Finish()
 		} else {
 			parentSpan = opentracing.StartSpan(
-				ctx.Request().Path(),
+				ctx.Path(),
 				opentracing.ChildOf(spCtx),
 				opentracing.Tag{Key: string(ext.Component), Value: "HTTP"},
 				ext.SpanKindRPCServer,
@@ -34,6 +34,6 @@ func Opentracing(tracer opentracing.Tracer) http.HandlerFunc {
 
 		ctx.WithValue(OpentracingTracer, tracer)
 		ctx.WithValue(OpentracingCtx, opentracing.ContextWithSpan(context.Background(), parentSpan))
-		return ctx.Request().Next()
+		return ctx.Next()
 	}
 }

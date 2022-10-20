@@ -6,8 +6,8 @@ import (
 
 func Cors() http.HandlerFunc {
 	return func(ctx http.Context) error {
-		method := ctx.Request().Method()
-		origin := ctx.Request().Header("Origin", "")
+		method := ctx.Method()
+		origin := ctx.Header("Origin", "")
 		if origin != "" {
 			ctx.Response().Header("Access-Control-Allow-Origin", "*")
 			ctx.Response().Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
@@ -18,10 +18,10 @@ func Cors() http.HandlerFunc {
 		}
 
 		if method == "OPTIONS" {
-			ctx.Request().AbortWithStatus(204)
+			ctx.AbortWithStatus(204)
 			return nil
 		}
 
-		return ctx.Request().Next()
+		return ctx.Next()
 	}
 }
