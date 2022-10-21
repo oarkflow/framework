@@ -54,7 +54,7 @@ func (receiver *TestJob) Signature() string {
 	return "TestName"
 }
 
-func (receiver *TestJob) Handle(args ...interface{}) error {
+func (receiver *TestJob) Handle(args ...any) error {
 	return nil
 }
 
@@ -65,7 +65,7 @@ func (receiver *TestJobDuplicate) Signature() string {
 	return "TestName"
 }
 
-func (receiver *TestJobDuplicate) Handle(args ...interface{}) error {
+func (receiver *TestJobDuplicate) Handle(args ...any) error {
 	return nil
 }
 
@@ -76,7 +76,7 @@ func (receiver *TestJobEmpty) Signature() string {
 	return ""
 }
 
-func (receiver *TestJobEmpty) Handle(args ...interface{}) error {
+func (receiver *TestJobEmpty) Handle(args ...any) error {
 	return nil
 }
 
@@ -119,7 +119,7 @@ func (receiver *TestListener) Signature() string {
 	return "TestName"
 }
 
-func (receiver *TestListener) Queue(args ...interface{}) event.Queue {
+func (receiver *TestListener) Queue(args ...any) event.Queue {
 	return event.Queue{
 		Enable:     false,
 		Connection: "",
@@ -127,7 +127,7 @@ func (receiver *TestListener) Queue(args ...interface{}) event.Queue {
 	}
 }
 
-func (receiver *TestListener) Handle(args ...interface{}) error {
+func (receiver *TestListener) Handle(args ...any) error {
 	return nil
 }
 
@@ -138,7 +138,7 @@ func (receiver *TestListenerDuplicate) Signature() string {
 	return "TestName"
 }
 
-func (receiver *TestListenerDuplicate) Queue(args ...interface{}) event.Queue {
+func (receiver *TestListenerDuplicate) Queue(args ...any) event.Queue {
 	return event.Queue{
 		Enable:     false,
 		Connection: "",
@@ -146,7 +146,7 @@ func (receiver *TestListenerDuplicate) Queue(args ...interface{}) event.Queue {
 	}
 }
 
-func (receiver *TestListenerDuplicate) Handle(args ...interface{}) error {
+func (receiver *TestListenerDuplicate) Handle(args ...any) error {
 	return nil
 }
 
@@ -157,7 +157,7 @@ func (receiver *TestListenerEmpty) Signature() string {
 	return ""
 }
 
-func (receiver *TestListenerEmpty) Queue(args ...interface{}) event.Queue {
+func (receiver *TestListenerEmpty) Queue(args ...any) event.Queue {
 	return event.Queue{
 		Enable:     false,
 		Connection: "",
@@ -165,7 +165,7 @@ func (receiver *TestListenerEmpty) Queue(args ...interface{}) event.Queue {
 	}
 }
 
-func (receiver *TestListenerEmpty) Handle(args ...interface{}) error {
+func (receiver *TestListenerEmpty) Handle(args ...any) error {
 	return nil
 }
 
@@ -200,13 +200,13 @@ func initConfig() {
 	configServiceProvider.Register()
 
 	facadesConfig := facades.Config
-	facadesConfig.Add("queue", map[string]interface{}{
+	facadesConfig.Add("queue", map[string]any{
 		"default": facadesConfig.Env("QUEUE_CONNECTION", "redis"),
-		"connections": map[string]interface{}{
-			"sync": map[string]interface{}{
+		"connections": map[string]any{
+			"sync": map[string]any{
 				"driver": "sync",
 			},
-			"redis": map[string]interface{}{
+			"redis": map[string]any{
 				"driver":      "redis",
 				"connection":  "default",
 				"queue":       "default",
@@ -215,9 +215,9 @@ func initConfig() {
 		},
 	})
 
-	facadesConfig.Add("database", map[string]interface{}{
-		"redis": map[string]interface{}{
-			"default": map[string]interface{}{
+	facadesConfig.Add("database", map[string]any{
+		"redis": map[string]any{
+			"default": map[string]any{
 				"host":     facadesConfig.Env("REDIS_HOST", "127.0.0.1"),
 				"password": facadesConfig.Env("REDIS_PASSWORD", ""),
 				"port":     facadesConfig.Env("REDIS_PORT", 6379),

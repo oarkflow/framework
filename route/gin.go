@@ -176,7 +176,7 @@ func (r *GinGroup) getGinRoutesWithMiddlewares() gin.IRoutes {
 	middlewares = append(middlewares, ginOriginMiddlewares...)
 	middlewares = append(middlewares, ginMiddlewares...)
 	middlewares = append(middlewares, ginGlobalMiddlewares...)
-	middlewares = addDebugLog(middlewares)
+	// middlewares = addDebugLog(middlewares)
 	r.middlewares = []httpcontract.HandlerFunc{}
 
 	if len(middlewares) > 0 {

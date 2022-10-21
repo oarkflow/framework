@@ -24,7 +24,7 @@ func (c *GinContext) Response() contracthttp.Response {
 	return NewGinResponse(c.instance)
 }
 
-func (c *GinContext) WithValue(key string, value interface{}) {
+func (c *GinContext) WithValue(key string, value any) {
 	c.instance.Set(key, value)
 }
 
@@ -40,7 +40,7 @@ func (c *GinContext) Err() error {
 	return c.instance.Err()
 }
 
-func (c *GinContext) Value(key interface{}) interface{} {
+func (c *GinContext) Value(key any) any {
 	return c.instance.Value(key)
 }
 
@@ -56,7 +56,7 @@ func (c *GinContext) Form(key, defaultValue string) string {
 	return c.instance.DefaultPostForm(key, defaultValue)
 }
 
-func (c *GinContext) Bind(obj interface{}) error {
+func (c *GinContext) Bind(obj any) error {
 	return c.instance.ShouldBind(obj)
 }
 
@@ -112,8 +112,34 @@ func (c *GinContext) Next() error {
 	return nil
 }
 
+func (c *GinContext) Cookies(key string, defaultValue ...string) string {
+	str, _ := c.instance.Cookie(key)
+	return str
+}
+
+func (c *GinContext) Cookie(co *contracthttp.Cookie) {
+	switch co.SameSite {
+	case "Lax":
+		c.instance.SetSameSite(http.SameSiteLaxMode)
+		break
+	case "None":
+		c.instance.SetSameSite(http.SameSiteNoneMode)
+		break
+	case "Strict":
+		c.instance.SetSameSite(http.SameSiteStrictMode)
+		break
+	default:
+		c.instance.SetSameSite(http.SameSiteDefaultMode)
+	}
+	c.instance.SetCookie(co.Name, co.Value, co.MaxAge, co.Path, co.Domain, co.Secure, co.HTTPOnly)
+}
+
 func (c *GinContext) Path() string {
 	return c.instance.Request.URL.Path
+}
+
+func (c *GinContext) Secure() bool {
+	return false
 }
 
 func (c *GinContext) Ip() string {

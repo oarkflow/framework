@@ -14,11 +14,11 @@ type Store struct {
 }
 
 // Add provides a mock function with given fields: key, value, sec
-func (_m *Store) Add(key string, value interface{}, sec time.Duration) bool {
+func (_m *Store) Add(key string, value any, sec time.Duration) bool {
 	ret := _m.Called(key, value, sec)
 
 	var r0 bool
-	if rf, ok := ret.Get(0).(func(string, interface{}, time.Duration) bool); ok {
+	if rf, ok := ret.Get(0).(func(string, any, time.Duration) bool); ok {
 		r0 = rf(key, value, sec)
 	} else {
 		r0 = ret.Get(0).(bool)
@@ -42,11 +42,11 @@ func (_m *Store) Flush() bool {
 }
 
 // Forever provides a mock function with given fields: key, value
-func (_m *Store) Forever(key string, value interface{}) bool {
+func (_m *Store) Forever(key string, value any) bool {
 	ret := _m.Called(key, value)
 
 	var r0 bool
-	if rf, ok := ret.Get(0).(func(string, interface{}) bool); ok {
+	if rf, ok := ret.Get(0).(func(string, any) bool); ok {
 		r0 = rf(key, value)
 	} else {
 		r0 = ret.Get(0).(bool)
@@ -70,15 +70,15 @@ func (_m *Store) Forget(key string) bool {
 }
 
 // Get provides a mock function with given fields: key, def
-func (_m *Store) Get(key string, def interface{}) interface{} {
+func (_m *Store) Get(key string, def any) any {
 	ret := _m.Called(key, def)
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(string, interface{}) interface{}); ok {
+	var r0 any
+	if rf, ok := ret.Get(0).(func(string, any) any); ok {
 		r0 = rf(key, def)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
+			r0 = ret.Get(0).(any)
 		}
 	}
 
@@ -100,15 +100,15 @@ func (_m *Store) Has(key string) bool {
 }
 
 // Pull provides a mock function with given fields: key, def
-func (_m *Store) Pull(key string, def interface{}) interface{} {
+func (_m *Store) Pull(key string, def any) any {
 	ret := _m.Called(key, def)
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(string, interface{}) interface{}); ok {
+	var r0 any
+	if rf, ok := ret.Get(0).(func(string, any) any); ok {
 		r0 = rf(key, def)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
+			r0 = ret.Get(0).(any)
 		}
 	}
 
@@ -116,11 +116,11 @@ func (_m *Store) Pull(key string, def interface{}) interface{} {
 }
 
 // Put provides a mock function with given fields: key, value, sec
-func (_m *Store) Put(key string, value interface{}, sec time.Duration) error {
+func (_m *Store) Put(key string, value any, sec time.Duration) error {
 	ret := _m.Called(key, value, sec)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, interface{}, time.Duration) error); ok {
+	if rf, ok := ret.Get(0).(func(string, any, time.Duration) error); ok {
 		r0 = rf(key, value, sec)
 	} else {
 		r0 = ret.Error(0)
@@ -130,20 +130,20 @@ func (_m *Store) Put(key string, value interface{}, sec time.Duration) error {
 }
 
 // Remember provides a mock function with given fields: key, ttl, callback
-func (_m *Store) Remember(key string, ttl time.Duration, callback func() interface{}) (interface{}, error) {
+func (_m *Store) Remember(key string, ttl time.Duration, callback func() any) (any, error) {
 	ret := _m.Called(key, ttl, callback)
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(string, time.Duration, func() interface{}) interface{}); ok {
+	var r0 any
+	if rf, ok := ret.Get(0).(func(string, time.Duration, func() any) any); ok {
 		r0 = rf(key, ttl, callback)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
+			r0 = ret.Get(0).(any)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, time.Duration, func() interface{}) error); ok {
+	if rf, ok := ret.Get(1).(func(string, time.Duration, func() any) error); ok {
 		r1 = rf(key, ttl, callback)
 	} else {
 		r1 = ret.Error(1)
@@ -153,20 +153,20 @@ func (_m *Store) Remember(key string, ttl time.Duration, callback func() interfa
 }
 
 // RememberForever provides a mock function with given fields: key, callback
-func (_m *Store) RememberForever(key string, callback func() interface{}) (interface{}, error) {
+func (_m *Store) RememberForever(key string, callback func() any) (any, error) {
 	ret := _m.Called(key, callback)
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(string, func() interface{}) interface{}); ok {
+	var r0 any
+	if rf, ok := ret.Get(0).(func(string, func() any) any); ok {
 		r0 = rf(key, callback)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
+			r0 = ret.Get(0).(any)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, func() interface{}) error); ok {
+	if rf, ok := ret.Get(1).(func(string, func() any) error); ok {
 		r1 = rf(key, callback)
 	} else {
 		r1 = ret.Error(1)

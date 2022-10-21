@@ -28,7 +28,7 @@ func TestEnv(t *testing.T) {
 func TestAdd(t *testing.T) {
 	app := Application{}
 	app.Init()
-	app.Add("app", map[string]interface{}{
+	app.Add("app", map[string]any{
 		"env": "local",
 	})
 
@@ -46,10 +46,10 @@ func TestGetString(t *testing.T) {
 	app := Application{}
 	app.Init()
 
-	app.Add("database", map[string]interface{}{
+	app.Add("database", map[string]any{
 		"default": app.Env("DB_CONNECTION", "mysql"),
-		"connections": map[string]interface{}{
-			"mysql": map[string]interface{}{
+		"connections": map[string]any{
+			"mysql": map[string]any{
 				"host": app.Env("DB_HOST", "127.0.0.1"),
 			},
 		},

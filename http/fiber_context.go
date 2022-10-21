@@ -24,7 +24,7 @@ func (c *FiberContext) Response() contracthttp.Response {
 	return NewFiberResponse(c.instance)
 }
 
-func (c *FiberContext) WithValue(key string, value interface{}) {
+func (c *FiberContext) WithValue(key string, value any) {
 	c.instance.Context().SetUserValue(key, value)
 }
 
@@ -40,7 +40,7 @@ func (c *FiberContext) Err() error {
 	return c.instance.Context().Err()
 }
 
-func (c *FiberContext) Value(key interface{}) interface{} {
+func (c *FiberContext) Value(key any) any {
 	return c.instance.Context().Value(key)
 }
 
@@ -56,7 +56,7 @@ func (c *FiberContext) Form(key, defaultValue string) string {
 	return c.instance.FormValue(key, defaultValue)
 }
 
-func (c *FiberContext) Bind(obj interface{}) error {
+func (c *FiberContext) Bind(obj any) error {
 	return nil
 }
 
@@ -116,8 +116,31 @@ func (c *FiberContext) Next() error {
 	return c.instance.Next()
 }
 
+func (c *FiberContext) Cookies(key string, defaultValue ...string) string {
+	return c.instance.Cookies(key, defaultValue...)
+}
+
+func (c *FiberContext) Cookie(co *contracthttp.Cookie) {
+	c.instance.Cookie(&fiber.Cookie{
+		Name:        co.Name,
+		Value:       co.Value,
+		Path:        co.Path,
+		Domain:      co.Domain,
+		MaxAge:      co.MaxAge,
+		Expires:     co.Expires,
+		Secure:      co.Secure,
+		HTTPOnly:    co.HTTPOnly,
+		SameSite:    co.SameSite,
+		SessionOnly: co.SessionOnly,
+	})
+}
+
 func (c *FiberContext) Path() string {
 	return string(c.instance.Request().URI().Path())
+}
+
+func (c *FiberContext) Secure() bool {
+	return c.instance.Secure()
 }
 
 func (c *FiberContext) Ip() string {

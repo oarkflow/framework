@@ -109,36 +109,36 @@ func (r *GormQuery) Count(count *int64) error {
 	return r.instance.Count(count).Error
 }
 
-func (r *GormQuery) Create(value interface{}) error {
+func (r *GormQuery) Create(value any) error {
 	return r.instance.Create(value).Error
 }
 
-func (r *GormQuery) Delete(value interface{}, conds ...interface{}) error {
+func (r *GormQuery) Delete(value any, conds ...any) error {
 	return r.instance.Delete(value, conds...).Error
 }
 
-func (r *GormQuery) Distinct(args ...interface{}) contractsorm.Query {
+func (r *GormQuery) Distinct(args ...any) contractsorm.Query {
 	tx := r.instance.Distinct(args...)
 
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Exec(sql string, values ...interface{}) error {
+func (r *GormQuery) Exec(sql string, values ...any) error {
 	return r.instance.Exec(sql, values...).Error
 }
 
-func (r *GormQuery) Find(dest interface{}, conds ...interface{}) error {
+func (r *GormQuery) Find(dest any, conds ...any) error {
 	return r.instance.Find(dest, conds...).Error
 }
 
-func (r *GormQuery) First(dest interface{}) error {
+func (r *GormQuery) First(dest any) error {
 	return r.instance.First(dest).Error
 }
 
-func (r *GormQuery) FirstOrCreate(dest interface{}, conds ...interface{}) error {
+func (r *GormQuery) FirstOrCreate(dest any, conds ...any) error {
 	var err error
 	if len(conds) > 1 {
-		err = r.instance.Attrs([]interface{}{conds[1]}...).FirstOrCreate(dest, []interface{}{conds[0]}...).Error
+		err = r.instance.Attrs([]any{conds[1]}...).FirstOrCreate(dest, []any{conds[0]}...).Error
 	} else {
 		err = r.instance.FirstOrCreate(dest, conds...).Error
 	}
@@ -146,11 +146,11 @@ func (r *GormQuery) FirstOrCreate(dest interface{}, conds ...interface{}) error 
 	return err
 }
 
-func (r *GormQuery) ForceDelete(value interface{}, conds ...interface{}) error {
+func (r *GormQuery) ForceDelete(value any, conds ...any) error {
 	return r.instance.Unscoped().Delete(value, conds...).Error
 }
 
-func (r *GormQuery) Get(dest interface{}) error {
+func (r *GormQuery) Get(dest any) error {
 	return r.instance.Find(dest).Error
 }
 
@@ -160,13 +160,13 @@ func (r *GormQuery) Group(name string) contractsorm.Query {
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Having(query interface{}, args ...interface{}) contractsorm.Query {
+func (r *GormQuery) Having(query any, args ...any) contractsorm.Query {
 	tx := r.instance.Having(query, args...)
 
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Join(query string, args ...interface{}) contractsorm.Query {
+func (r *GormQuery) Join(query string, args ...any) contractsorm.Query {
 	tx := r.instance.Joins(query, args...)
 
 	return NewGormQuery(tx)
@@ -178,7 +178,7 @@ func (r *GormQuery) Limit(limit int) contractsorm.Query {
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Model(value interface{}) contractsorm.Query {
+func (r *GormQuery) Model(value any) contractsorm.Query {
 	tx := r.instance.Model(value)
 
 	return NewGormQuery(tx)
@@ -190,57 +190,57 @@ func (r *GormQuery) Offset(offset int) contractsorm.Query {
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Order(value interface{}) contractsorm.Query {
+func (r *GormQuery) Order(value any) contractsorm.Query {
 	tx := r.instance.Order(value)
 
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) OrWhere(query interface{}, args ...interface{}) contractsorm.Query {
+func (r *GormQuery) OrWhere(query any, args ...any) contractsorm.Query {
 	tx := r.instance.Or(query, args...)
 
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Pluck(column string, dest interface{}) error {
+func (r *GormQuery) Pluck(column string, dest any) error {
 	return r.instance.Pluck(column, dest).Error
 }
 
-func (r *GormQuery) Raw(sql string, values ...interface{}) contractsorm.Query {
+func (r *GormQuery) Raw(sql string, values ...any) contractsorm.Query {
 	tx := r.instance.Raw(sql, values...)
 
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Save(value interface{}) error {
+func (r *GormQuery) Save(value any) error {
 	return r.instance.Save(value).Error
 }
 
-func (r *GormQuery) Scan(dest interface{}) error {
+func (r *GormQuery) Scan(dest any) error {
 	return r.instance.Scan(dest).Error
 }
 
-func (r *GormQuery) Select(query interface{}, args ...interface{}) contractsorm.Query {
+func (r *GormQuery) Select(query any, args ...any) contractsorm.Query {
 	tx := r.instance.Select(query, args...)
 
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Table(name string, args ...interface{}) contractsorm.Query {
+func (r *GormQuery) Table(name string, args ...any) contractsorm.Query {
 	tx := r.instance.Table(name, args...)
 
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Update(column string, value interface{}) error {
+func (r *GormQuery) Update(column string, value any) error {
 	return r.instance.Update(column, value).Error
 }
 
-func (r *GormQuery) Updates(values interface{}) error {
+func (r *GormQuery) Updates(values any) error {
 	return r.instance.Updates(values).Error
 }
 
-func (r *GormQuery) Where(query interface{}, args ...interface{}) contractsorm.Query {
+func (r *GormQuery) Where(query any, args ...any) contractsorm.Query {
 	tx := r.instance.Where(query, args...)
 
 	return NewGormQuery(tx)

@@ -3,7 +3,7 @@ package console
 type JobStubs struct {
 }
 
-//Job Create a job.
+// Job Create a job.
 func (receiver JobStubs) Job() string {
 	return `package jobs
 
@@ -16,7 +16,7 @@ func (receiver *DummyJob) Signature() string {
 }
 
 //Handle Execute the job.
-func (receiver *DummyJob) Handle(args ...interface{}) error {
+func (receiver *DummyJob) Handle(args ...any) error {
 	return nil
 }
 `

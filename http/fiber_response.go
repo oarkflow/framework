@@ -16,11 +16,11 @@ func NewFiberResponse(instance *fiber.Ctx) httpcontract.Response {
 	return &FiberResponse{instance: instance}
 }
 
-func (r *FiberResponse) String(code int, format string, values ...interface{}) error {
+func (r *FiberResponse) String(code int, format string, values ...any) error {
 	return r.instance.Status(code).SendString(fmt.Sprintf(format, values...))
 }
 
-func (r *FiberResponse) Json(code int, obj interface{}) error {
+func (r *FiberResponse) Json(code int, obj any) error {
 	return r.instance.Status(code).JSON(obj)
 }
 
@@ -36,9 +36,17 @@ func (r *FiberResponse) Success() httpcontract.ResponseSuccess {
 	return NewFiberSuccess(r.instance)
 }
 
+func (r *FiberResponse) StatusCode() int {
+	return r.instance.Response().StatusCode()
+}
+
 func (r *FiberResponse) Header(key, value string) httpcontract.Response {
 	r.instance.Set(key, value)
 	return r
+}
+
+func (r *FiberResponse) Vary(key string, value ...string) {
+	r.instance.Vary(key)
 }
 
 type FiberSuccess struct {
@@ -49,10 +57,10 @@ func NewFiberSuccess(instance *fiber.Ctx) httpcontract.ResponseSuccess {
 	return &FiberSuccess{instance}
 }
 
-func (r *FiberSuccess) String(format string, values ...interface{}) error {
+func (r *FiberSuccess) String(format string, values ...any) error {
 	return r.instance.Status(http.StatusOK).SendString(fmt.Sprintf(format, values...))
 }
 
-func (r *FiberSuccess) Json(obj interface{}) error {
+func (r *FiberSuccess) Json(obj any) error {
 	return r.instance.Status(http.StatusOK).JSON(obj)
 }

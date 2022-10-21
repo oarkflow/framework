@@ -25,14 +25,14 @@ type Timestamps struct {
 type Relationship struct {
 }
 
-func (r *Relationship) HasOne(dest, id interface{}, foreignKey string) error {
+func (r *Relationship) HasOne(dest, id any, foreignKey string) error {
 	return facades.Orm.Query().Where(foreignKey+" = ?", id).Find(dest)
 }
 
-func (r *Relationship) HasMany(dest, id interface{}, foreignKey string) error {
+func (r *Relationship) HasMany(dest, id any, foreignKey string) error {
 	return facades.Orm.Query().Where(foreignKey+" in ?", id).Find(dest)
 }
 
-func (r *Relationship) belongsTo(dest, id interface{}) error {
+func (r *Relationship) belongsTo(dest, id any) error {
 	return facades.Orm.Query().Find(dest, id)
 }

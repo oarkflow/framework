@@ -41,7 +41,7 @@ func (r *Logrus) Testing(is bool) log.Log {
 	return r
 }
 
-func (r *Logrus) Debug(args ...interface{}) {
+func (r *Logrus) Debug(args ...any) {
 	if r.Test {
 		fmt.Print("Debug: ")
 		fmt.Println(args...)
@@ -51,7 +51,7 @@ func (r *Logrus) Debug(args ...interface{}) {
 	r.Instance.Debug(args...)
 }
 
-func (r *Logrus) Debugf(format string, args ...interface{}) {
+func (r *Logrus) Debugf(format string, args ...any) {
 	if r.Test {
 		fmt.Print("Debugf: ")
 		fmt.Printf(format+"\n", args...)
@@ -61,7 +61,7 @@ func (r *Logrus) Debugf(format string, args ...interface{}) {
 	r.Instance.Debugf(format, args...)
 }
 
-func (r *Logrus) Info(args ...interface{}) {
+func (r *Logrus) Info(args ...any) {
 	if r.Test {
 		fmt.Print("Info: ")
 		fmt.Println(args...)
@@ -71,7 +71,7 @@ func (r *Logrus) Info(args ...interface{}) {
 	r.Instance.Info(args...)
 }
 
-func (r *Logrus) Infof(format string, args ...interface{}) {
+func (r *Logrus) Infof(format string, args ...any) {
 	if r.Test {
 		fmt.Print("Infof: ")
 		fmt.Printf(format+"\n", args...)
@@ -81,7 +81,7 @@ func (r *Logrus) Infof(format string, args ...interface{}) {
 	r.Instance.Infof(format, args...)
 }
 
-func (r *Logrus) Warning(args ...interface{}) {
+func (r *Logrus) Warning(args ...any) {
 	if r.Test {
 		fmt.Print("Warningf: ")
 		fmt.Println(args...)
@@ -91,7 +91,7 @@ func (r *Logrus) Warning(args ...interface{}) {
 	r.Instance.Warning(args...)
 }
 
-func (r *Logrus) Warningf(format string, args ...interface{}) {
+func (r *Logrus) Warningf(format string, args ...any) {
 	if r.Test {
 		fmt.Print("Warningf: ")
 		fmt.Printf(format+"\n", args...)
@@ -101,7 +101,7 @@ func (r *Logrus) Warningf(format string, args ...interface{}) {
 	r.Instance.Warningf(format, args...)
 }
 
-func (r *Logrus) Error(args ...interface{}) {
+func (r *Logrus) Error(args ...any) {
 	if r.Test {
 		fmt.Print("Error: ")
 		fmt.Println(args...)
@@ -111,7 +111,7 @@ func (r *Logrus) Error(args ...interface{}) {
 	r.Instance.Error(args...)
 }
 
-func (r *Logrus) Errorf(format string, args ...interface{}) {
+func (r *Logrus) Errorf(format string, args ...any) {
 	if r.Test {
 		fmt.Print("Errorf: ")
 		fmt.Printf(format+"\n", args...)
@@ -121,7 +121,7 @@ func (r *Logrus) Errorf(format string, args ...interface{}) {
 	r.Instance.Errorf(format, args...)
 }
 
-func (r *Logrus) Fatal(args ...interface{}) {
+func (r *Logrus) Fatal(args ...any) {
 	if r.Test {
 		fmt.Print("Error: ")
 		fmt.Println(args...)
@@ -131,7 +131,7 @@ func (r *Logrus) Fatal(args ...interface{}) {
 	r.Instance.Fatal(args...)
 }
 
-func (r *Logrus) Fatalf(format string, args ...interface{}) {
+func (r *Logrus) Fatalf(format string, args ...any) {
 	if r.Test {
 		fmt.Print("Errorf: ")
 		fmt.Printf(format+"\n", args...)
@@ -141,7 +141,7 @@ func (r *Logrus) Fatalf(format string, args ...interface{}) {
 	r.Instance.Fatalf(format, args...)
 }
 
-func (r *Logrus) Panic(args ...interface{}) {
+func (r *Logrus) Panic(args ...any) {
 	if r.Test {
 		fmt.Print("Panic: ")
 		fmt.Println(args...)
@@ -151,7 +151,7 @@ func (r *Logrus) Panic(args ...interface{}) {
 	r.Instance.Panic(args...)
 }
 
-func (r *Logrus) Panicf(format string, args ...interface{}) {
+func (r *Logrus) Panicf(format string, args ...any) {
 	if r.Test {
 		fmt.Print("Panicf: ")
 		fmt.Printf(format+"\n", args...)

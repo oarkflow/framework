@@ -23,7 +23,7 @@ func TestListenerMakeCommand(t *testing.T) {
 	configApp.Register()
 
 	facadesConfig := facades.Config
-	facadesConfig.Add("app", map[string]interface{}{
+	facadesConfig.Add("app", map[string]any{
 		"providers": []contracts.ServiceProvider{},
 	})
 

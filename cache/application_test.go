@@ -48,10 +48,10 @@ func initConfig() {
 	configServiceProvider.Register()
 
 	facadesConfig := facades.Config
-	facadesConfig.Add("cache", map[string]interface{}{
+	facadesConfig.Add("cache", map[string]any{
 		"default": facadesConfig.Env("CACHE_DRIVER", "redis"),
-		"stores": map[string]interface{}{
-			"redis": map[string]interface{}{
+		"stores": map[string]any{
+			"redis": map[string]any{
 				"driver":     "redis",
 				"connection": "default",
 			},
@@ -59,9 +59,9 @@ func initConfig() {
 		"prefix": "goravel_cache",
 	})
 
-	facadesConfig.Add("database", map[string]interface{}{
-		"redis": map[string]interface{}{
-			"default": map[string]interface{}{
+	facadesConfig.Add("database", map[string]any{
+		"redis": map[string]any{
+			"default": map[string]any{
 				"host":     facadesConfig.Env("REDIS_HOST", "127.0.0.1"),
 				"password": facadesConfig.Env("REDIS_PASSWORD", ""),
 				"port":     facadesConfig.Env("REDIS_PORT", 6379),
