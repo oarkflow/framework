@@ -31,7 +31,7 @@ Golang developers quickly build their own applications.
 - [ ] Optimize experience of microservice
 - [ ] Orm relationships
 - [ ] Request validator
-- [ ] Jwt
+- [ ] Custom .env path
 
 ## Documentation
 
