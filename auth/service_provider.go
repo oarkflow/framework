@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"github.com/goravel/framework/auth/console"
-	contractconsole "github.com/goravel/framework/contracts/console"
-	"github.com/goravel/framework/facades"
+	"github.com/sujit-baniya/framework/auth/console"
+	contractconsole "github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type ServiceProvider struct {

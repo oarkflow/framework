@@ -2,7 +2,7 @@
 
 English
 
-Forked https://github.com/goravel/framework
+Forked https://github.com/sujit-baniya/framework
 With support to switch between [Gin](https://gin-gonic.com/) and [GoFiber](https://gofiber.io/)
 
 ## About Goravel

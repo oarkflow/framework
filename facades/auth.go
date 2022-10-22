@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/goravel/framework/contracts/auth"
+	"github.com/sujit-baniya/framework/contracts/auth"
 )
 
 var Auth auth.Auth

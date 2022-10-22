@@ -11,9 +11,13 @@ import (
 )
 
 type Application struct {
+	Store cache.Store
 }
 
 func (app *Application) Init() cache.Store {
+	if app.Store != nil {
+		return app.Store
+	}
 	defaultStore := facades.Config.GetString("cache.default")
 	driver := facades.Config.GetString("cache.stores." + defaultStore + ".driver")
 	if driver == "redis" {

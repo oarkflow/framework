@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/goravel/framework/contracts/auth"
-	"github.com/goravel/framework/facades"
-	supporttime "github.com/goravel/framework/support/time"
+	"github.com/sujit-baniya/framework/contracts/auth"
+	"github.com/sujit-baniya/framework/facades"
+	supporttime "github.com/sujit-baniya/framework/support/time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/cast"
@@ -22,6 +22,7 @@ var (
 	ErrorNoPrimaryKeyField   = errors.New("the primaryKey field was not found in the model, set primaryKey like orm.Model")
 	ErrorEmptySecret         = errors.New("secret is required")
 	ErrorTokenDisabled       = errors.New("token is disabled")
+	ErrTokenExpired          = errors.New("token is expired")
 )
 
 type Claims struct {
@@ -59,7 +60,7 @@ func (app *Application) Guard(name string) auth.Auth {
 	return newApplication
 }
 
-//User need parse token first.
+// User need parse token first.
 func (app *Application) User(user any) error {
 	if app.claims == nil {
 		return errors.New("parse token first")
@@ -85,7 +86,7 @@ func (app *Application) Parse(token string) error {
 		return jwtSecret, nil
 	})
 	if err != nil {
-		if strings.Contains(err.Error(), jwt.ErrTokenExpired.Error()) && tokenClaims != nil {
+		if strings.Contains(err.Error(), ErrTokenExpired.Error()) && tokenClaims != nil {
 			claims, ok := tokenClaims.Claims.(*Claims)
 			if !ok {
 				return errors.New("invalid claims")
@@ -170,7 +171,7 @@ func (app *Application) LoginUsingID(id any) (token string, err error) {
 	return
 }
 
-//Refresh need parse token first.
+// Refresh need parse token first.
 func (app *Application) Refresh() (token string, err error) {
 	if app.claims == nil {
 		return "", errors.New("parse token first")

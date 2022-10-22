@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/goravel/framework/database/orm"
-	"github.com/goravel/framework/testing/mock"
+	"github.com/sujit-baniya/framework/database/orm"
+	"github.com/sujit-baniya/framework/testing/mock"
 
 	"github.com/stretchr/testify/assert"
 	testifymock "github.com/stretchr/testify/mock"
