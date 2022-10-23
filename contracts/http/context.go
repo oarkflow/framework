@@ -8,6 +8,10 @@ import (
 type HandlerFunc func(Context) error
 type ErrorHandler = func(Context, error) error
 
+func (h *HandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+}
+
 type Context interface {
 	context.Context
 	WithValue(key string, value any)

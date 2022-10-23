@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/gofiber/fiber/v2"
 	"net/http"
+	"path"
 
 	httpcontract "github.com/sujit-baniya/framework/contracts/http"
 	"github.com/sujit-baniya/framework/contracts/route"
@@ -14,8 +15,8 @@ type Fiber struct {
 	instance *fiber.App
 }
 
-func NewFiber() route.Engine {
-	engine := fiber.New()
+func NewFiber(config ...fiber.Config) route.Engine {
+	engine := fiber.New(config...)
 
 	return &Fiber{instance: engine, Route: NewFiberGroup(
 		engine,
@@ -166,7 +167,7 @@ func (r *FiberGroup) getFiberRoutesWithMiddlewares() fiber.Router {
 }
 
 func pathToFiberPath(relativePath string) string {
-	return bracketToColon(mergeSlashForPath(relativePath))
+	return bracketToColon(path.Clean(relativePath))
 }
 
 func middlewaresToFiberHandlers(middlewares []httpcontract.HandlerFunc) []fiber.Handler {

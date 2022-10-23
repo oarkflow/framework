@@ -12,5 +12,5 @@ func (app *Application) Init() route.Engine {
 	if app.Engine != nil {
 		return app.Engine
 	}
-	return NewGin()
+	return NewChi()
 }

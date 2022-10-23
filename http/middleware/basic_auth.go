@@ -3,6 +3,7 @@ package middleware
 import (
 	"crypto/subtle"
 	"encoding/base64"
+	"github.com/gofiber/fiber/v2"
 	http2 "net/http"
 	"strings"
 
@@ -96,7 +97,7 @@ func configBasicAuthDefault(config ...ConfigBasicAuth) ConfigBasicAuth {
 		cfg.Unauthorized = func(c http.Context) error {
 			c.Response().Header("WWW-Authenticate", "basic realm="+cfg.Realm)
 			c.AbortWithStatus(http2.StatusUnauthorized)
-			return c.Response().String(http2.StatusUnauthorized, "Unauthorized")
+			return fiber.ErrUnauthorized
 		}
 	}
 	if cfg.ContextUsername == "" {

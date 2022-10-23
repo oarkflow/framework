@@ -68,7 +68,7 @@ var ConfigDefault = Config{
 	},
 	LimitReached: func(c http.Context) error {
 		c.AbortWithStatus(fiber.StatusTooManyRequests)
-		return c.Response().String(fiber.StatusTooManyRequests, "%d", fiber.StatusTooManyRequests)
+		return fiber.ErrTooManyRequests
 	},
 	SkipFailedRequests:     false,
 	SkipSuccessfulRequests: false,

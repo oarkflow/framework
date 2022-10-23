@@ -3,6 +3,7 @@ package route
 import (
 	"fmt"
 	"net/http"
+	"path"
 	"regexp"
 	"strings"
 	"time"
@@ -187,7 +188,7 @@ func (r *GinGroup) getGinRoutesWithMiddlewares() gin.IRoutes {
 }
 
 func pathToGinPath(relativePath string) string {
-	return bracketToColon(mergeSlashForPath(relativePath))
+	return bracketToColon(path.Clean(relativePath))
 }
 
 func middlewaresToGinHandlers(middlewares []httpcontract.HandlerFunc) []gin.HandlerFunc {
@@ -264,10 +265,4 @@ func bracketToColon(relativePath string) string {
 	}
 
 	return relativePath
-}
-
-func mergeSlashForPath(path string) string {
-	path = strings.ReplaceAll(path, "//", "/")
-
-	return strings.ReplaceAll(path, "//", "/")
 }
