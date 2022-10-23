@@ -138,6 +138,10 @@ func (c *GinContext) Path() string {
 	return c.instance.Request.URL.Path
 }
 
+func (c *GinContext) EngineContext() any {
+	return c.instance
+}
+
 func (c *GinContext) Secure() bool {
 	return false
 }

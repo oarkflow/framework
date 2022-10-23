@@ -12,7 +12,7 @@ type ChiFile struct {
 
 func (f *ChiFile) Store(dst string) error {
 	// @TODO - implement
-	return nil // f.request.MultipartForm.File
+	return nil // f.Req.MultipartForm.File
 }
 
 func (f *ChiFile) File() *multipart.FileHeader {

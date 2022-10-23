@@ -13,9 +13,9 @@ import (
 )
 
 type ChiContext struct {
-	request  *http.Request
-	response http.ResponseWriter
-	next     http.Handler
+	Req  *http.Request
+	Res  http.ResponseWriter
+	next http.Handler
 }
 
 func (c *ChiContext) Secure() bool {
@@ -38,44 +38,44 @@ func NewChiContext(request *http.Request, response http.ResponseWriter, n ...htt
 	if len(n) > 0 {
 		next = n[0]
 	}
-	return &ChiContext{request: request, response: response, next: next}
+	return &ChiContext{Req: request, Res: response, next: next}
 }
 
 func (c *ChiContext) Request() contracthttp.Request {
-	return NewChiRequest(c.request, c.response)
+	return NewChiRequest(c.Req, c.Res)
 }
 
 func (c *ChiContext) Response() contracthttp.Response {
-	return NewChiResponse(c.response)
+	return NewChiResponse(c.Res)
 }
 
 func (c *ChiContext) WithValue(key string, value interface{}) {
-	ctx := context.WithValue(c.request.Context(), key, value)
-	c.request = c.request.WithContext(ctx)
+	ctx := context.WithValue(c.Req.Context(), key, value)
+	c.Req = c.Req.WithContext(ctx)
 }
 
 func (c *ChiContext) Deadline() (deadline time.Time, ok bool) {
-	return c.request.Context().Deadline()
+	return c.Req.Context().Deadline()
 }
 
 func (c *ChiContext) Done() <-chan struct{} {
-	return c.request.Context().Done()
+	return c.Req.Context().Done()
 }
 
 func (c *ChiContext) Err() error {
-	return c.request.Context().Err()
+	return c.Req.Context().Err()
 }
 
 func (c *ChiContext) Value(key interface{}) interface{} {
-	return c.request.Context().Value(key)
+	return c.Req.Context().Value(key)
 }
 
 func (c *ChiContext) Params(key string) string {
-	return chi.URLParam(c.request, key)
+	return chi.URLParam(c.Req, key)
 }
 
 func (c *ChiContext) Query(key, defaultValue string) string {
-	q := c.request.URL.Query().Get(key)
+	q := c.Req.URL.Query().Get(key)
 	if q == "" {
 		q = defaultValue
 	}
@@ -83,7 +83,7 @@ func (c *ChiContext) Query(key, defaultValue string) string {
 }
 
 func (c *ChiContext) Form(key, defaultValue string) string {
-	q := c.request.Form.Get(key)
+	q := c.Req.Form.Get(key)
 	if q == "" {
 		q = defaultValue
 	}
@@ -91,21 +91,21 @@ func (c *ChiContext) Form(key, defaultValue string) string {
 }
 
 func (c *ChiContext) Bind(obj interface{}) error {
-	b := binding.Default(c.request.Method, c.request.Header.Get("Content-Type"))
-	return b.Bind(c.request, obj)
+	b := binding.Default(c.Req.Method, c.Req.Header.Get("Content-Type"))
+	return b.Bind(c.Req, obj)
 }
 
 func (c *ChiContext) File(name string) (contracthttp.File, error) {
-	_, fileHeader, err := c.request.FormFile(name)
+	_, fileHeader, err := c.Req.FormFile(name)
 	if err != nil {
 		return nil, err
 	}
 
-	return &ChiFile{request: c.request, file: fileHeader}, nil
+	return &ChiFile{request: c.Req, file: fileHeader}, nil
 }
 
 func (c *ChiContext) Header(key, defaultValue string) string {
-	header := c.request.Header.Get(key)
+	header := c.Req.Header.Get(key)
 	if header != "" {
 		return header
 	}
@@ -114,53 +114,57 @@ func (c *ChiContext) Header(key, defaultValue string) string {
 }
 
 func (c *ChiContext) Headers() http.Header {
-	return c.request.Header
+	return c.Req.Header
 }
 
 func (c *ChiContext) Method() string {
-	return c.request.Method
+	return c.Req.Method
 }
 
 func (c *ChiContext) Url() string {
-	return c.request.RequestURI
+	return c.Req.RequestURI
 }
 
 func (c *ChiContext) FullUrl() string {
 	prefix := "https://"
-	if c.request.TLS == nil {
+	if c.Req.TLS == nil {
 		prefix = "http://"
 	}
 
-	if c.request.Host == "" {
+	if c.Req.Host == "" {
 		return ""
 	}
 
-	return prefix + c.request.Host + c.request.RequestURI
+	return prefix + c.Req.Host + c.Req.RequestURI
 }
 
 func (c *ChiContext) AbortWithStatus(code int) {
-	c.response.WriteHeader(code)
+	c.Res.WriteHeader(code)
 }
 
 func (c *ChiContext) Next() error {
 	if c.next != nil {
-		c.next.ServeHTTP(c.response, c.request)
+		c.next.ServeHTTP(c.Res, c.Req)
 	}
 	return nil
 }
 
 func (c *ChiContext) Path() string {
-	return c.request.URL.Path
+	return c.Req.URL.Path
+}
+
+func (c *ChiContext) EngineContext() any {
+	return c
 }
 
 func (c *ChiContext) Ip() string {
 	var ip string
 
-	if tcip := c.request.Header.Get(trueClientIP); tcip != "" {
+	if tcip := c.Req.Header.Get(trueClientIP); tcip != "" {
 		ip = tcip
-	} else if xrip := c.request.Header.Get(xRealIP); xrip != "" {
+	} else if xrip := c.Req.Header.Get(xRealIP); xrip != "" {
 		ip = xrip
-	} else if xff := c.request.Header.Get(xForwardedFor); xff != "" {
+	} else if xff := c.Req.Header.Get(xForwardedFor); xff != "" {
 		i := strings.Index(xff, ",")
 		if i == -1 {
 			i = len(xff)

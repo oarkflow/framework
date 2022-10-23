@@ -139,6 +139,10 @@ func (c *FiberContext) Path() string {
 	return string(c.instance.Request().URI().Path())
 }
 
+func (c *FiberContext) EngineContext() any {
+	return c.instance
+}
+
 func (c *FiberContext) Secure() bool {
 	return c.instance.Secure()
 }

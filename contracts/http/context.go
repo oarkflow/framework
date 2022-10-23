@@ -17,6 +17,7 @@ type Context interface {
 	WithValue(key string, value any)
 	Request() Request
 	Response() Response
+	EngineContext() any
 	Header(key, defaultValue string) string
 	Headers() http.Header
 	Method() string
