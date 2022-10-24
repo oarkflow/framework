@@ -3,9 +3,8 @@ package http
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"net/http"
-
 	httpcontract "github.com/sujit-baniya/framework/contracts/http"
+	"net/http"
 )
 
 type FiberResponse struct {
@@ -38,6 +37,10 @@ func (r *FiberResponse) Success() httpcontract.ResponseSuccess {
 
 func (r *FiberResponse) StatusCode() int {
 	return r.instance.Response().StatusCode()
+}
+
+func (r *FiberResponse) Render(name string, bind any, layouts ...string) error {
+	return r.instance.Render(name, bind, layouts...)
 }
 
 func (r *FiberResponse) Header(key, value string) httpcontract.Response {

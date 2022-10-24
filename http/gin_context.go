@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/sujit-baniya/framework/view"
 	"net/http"
 	"time"
 
@@ -10,18 +11,24 @@ import (
 
 type GinContext struct {
 	instance *gin.Context
+	config   GinConfig
+	view     *view.Engine
 }
 
-func NewGinContext(ctx *gin.Context) contracthttp.Context {
-	return &GinContext{ctx}
+func NewGinContext(ctx *gin.Context, config GinConfig, engine ...*view.Engine) contracthttp.Context {
+	ct := &GinContext{instance: ctx, config: config}
+	if len(engine) > 0 {
+		ct.view = engine[0]
+	}
+	return ct
 }
 
 func (c *GinContext) Request() contracthttp.Request {
-	return NewGinRequest(c.instance)
+	return NewGinRequest(c.instance, c.config, c.view)
 }
 
 func (c *GinContext) Response() contracthttp.Response {
-	return NewGinResponse(c.instance)
+	return NewGinResponse(c.instance, c.config, c.view)
 }
 
 func (c *GinContext) WithValue(key string, value any) {

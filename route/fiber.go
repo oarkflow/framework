@@ -17,7 +17,6 @@ type Fiber struct {
 
 func NewFiber(config ...fiber.Config) route.Engine {
 	engine := fiber.New(config...)
-
 	return &Fiber{instance: engine, Route: NewFiberGroup(
 		engine,
 		"/",

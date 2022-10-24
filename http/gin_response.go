@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/sujit-baniya/framework/view"
 	"net/http"
 	"strings"
 
@@ -9,12 +10,22 @@ import (
 	httpcontract "github.com/sujit-baniya/framework/contracts/http"
 )
 
-type GinResponse struct {
-	instance *gin.Context
+type GinConfig struct {
+	Mode        string `json:"mode"`
+	ViewsLayout string `json:"views_layout"`
+	Extension   string `json:"extension"`
+	Path        string `json:"path"`
+	View        *view.Engine
 }
 
-func NewGinResponse(instance *gin.Context) httpcontract.Response {
-	return &GinResponse{instance: instance}
+type GinResponse struct {
+	instance *gin.Context
+	config   GinConfig
+	view     *view.Engine
+}
+
+func NewGinResponse(instance *gin.Context, config GinConfig, engine *view.Engine) httpcontract.Response {
+	return &GinResponse{instance: instance, config: config, view: engine}
 }
 
 func (r *GinResponse) String(code int, format string, values ...any) error {
@@ -25,6 +36,10 @@ func (r *GinResponse) String(code int, format string, values ...any) error {
 func (r *GinResponse) Json(code int, obj any) error {
 	r.instance.JSON(code, obj)
 	return nil
+}
+
+func (r *GinResponse) Render(name string, bind any, layouts ...string) error {
+	return r.view.Render(r.instance.Writer, name, bind, layouts...)
 }
 
 func (r *GinResponse) File(filepath string, compress ...bool) error {

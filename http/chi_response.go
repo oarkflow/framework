@@ -104,3 +104,11 @@ func (r *ChiSuccess) Json(obj interface{}) error {
 	_, err = r.instance.Write(jsonResp)
 	return err
 }
+
+func (r *ChiSuccess) Render(name string, bind any, layouts ...string) error {
+	return nil
+}
+
+func (r *ChiResponse) Render(name string, bind any, layouts ...string) error {
+	return nil
+}

@@ -1,8 +1,11 @@
 package http
 
+import "github.com/sujit-baniya/framework/contracts/view"
+
 type Json map[string]any
 
 type Response interface {
+	view.View
 	String(code int, format string, values ...any) error
 	Json(code int, obj any) error
 	File(filepath string, compress ...bool) error

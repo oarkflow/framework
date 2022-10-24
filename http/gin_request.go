@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/sujit-baniya/framework/view"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,10 +11,12 @@ import (
 
 type GinRequest struct {
 	instance *gin.Context
+	config   GinConfig
+	view     *view.Engine
 }
 
-func NewGinRequest(instance *gin.Context) contracthttp.Request {
-	return &GinRequest{instance}
+func NewGinRequest(instance *gin.Context, config GinConfig, engine *view.Engine) contracthttp.Request {
+	return &GinRequest{instance: instance, config: config, view: engine}
 }
 
 func (r *GinRequest) Origin() *http.Request {
@@ -21,5 +24,5 @@ func (r *GinRequest) Origin() *http.Request {
 }
 
 func (r *GinRequest) Response() contracthttp.Response {
-	return NewGinResponse(r.instance)
+	return NewGinResponse(r.instance, r.config, r.view)
 }
