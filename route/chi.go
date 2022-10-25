@@ -220,15 +220,20 @@ func (r *ChiGroup) Options(relativePath string, handlers ...httpcontract.Handler
 }
 
 func (r *ChiGroup) Static(relativePath, root string) {
-	//@TODO - Implement
+	filesDir := http.Dir(root)
+	r.StaticFS(relativePath, filesDir)
 }
 
 func (r *ChiGroup) StaticFile(relativePath, filepath string) {
-	//@TODO - Implement
+	r.Get(relativePath, func(ctx httpcontract.Context) error {
+		c := ctx.(*frameworkhttp.ChiContext)
+		http.ServeFile(c.Res, c.Req, filepath)
+		return nil
+	})
 }
 
 func (r *ChiGroup) StaticFS(relativePath string, fs http.FileSystem) {
-	//@TODO - Implement
+	FileServer(r.instance, relativePath, fs)
 }
 
 func (r *ChiGroup) getChiRoutesWithMiddlewares() chi.Router {
@@ -284,4 +289,25 @@ func colonToBracket(relativePath string) string {
 	}
 
 	return strings.Join(newArr, "/")
+}
+
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func FileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit any URL parameters.")
+	}
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+		fs.ServeHTTP(w, r)
+	})
 }

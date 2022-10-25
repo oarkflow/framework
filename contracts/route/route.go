@@ -28,7 +28,7 @@ type Route interface {
 	Put(string, ...httpcontract.HandlerFunc)
 	Options(string, ...httpcontract.HandlerFunc)
 
-	Static(string, string)
-	StaticFile(string, string)
-	StaticFS(string, http.FileSystem)
+	Static(prefix string, dir string)
+	StaticFile(prefix string, file string)
+	StaticFS(dir string, fs http.FileSystem)
 }
