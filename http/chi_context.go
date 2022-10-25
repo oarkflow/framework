@@ -28,10 +28,11 @@ type ChiConfig struct {
 }
 
 type ChiContext struct {
-	Req    *http.Request
-	Res    http.ResponseWriter
-	next   http.Handler
-	config ChiConfig
+	Req        *http.Request
+	Res        http.ResponseWriter
+	next       http.Handler
+	config     ChiConfig
+	statusCode int
 }
 
 func NewChiContext(request *http.Request, response http.ResponseWriter, config ChiConfig, n ...http.Handler) contracthttp.Context {
@@ -98,13 +99,10 @@ func (c *ChiContext) Cookie(co *contracthttp.Cookie) {
 }
 
 func (c *ChiContext) StatusCode() int {
-	if c.Req.Response == nil {
+	if c.statusCode == 0 {
 		return 200
 	}
-	if c.Req.Response.StatusCode == 0 {
-		return 200
-	}
-	return c.Req.Response.StatusCode
+	return c.statusCode
 }
 
 func (c *ChiContext) Vary(key string, value ...string) {
@@ -266,13 +264,22 @@ func (c *ChiContext) AbortWithStatus(code int) {
 
 func (c *ChiContext) Next() error {
 	if c.next != nil {
-		c.next.ServeHTTP(c.Res, c.Req)
+		responseData := &ChiResponse{
+			status: 0,
+			size:   0,
+		}
+		lrw := ChiResponseWriter{
+			ResponseWriter: c.Res, // compose original http.ResponseWriter
+			ChiResponse:    responseData,
+		}
+		c.next.ServeHTTP(&lrw, c.Req) // inject our implementation of http.ResponseWriter
+		c.statusCode = responseData.status
 	}
 	return nil
 }
 
 func (c *ChiContext) Path() string {
-	return c.Req.URL.Path
+	return c.Req.RequestURI
 }
 
 func (c *ChiContext) EngineContext() any {
@@ -281,7 +288,6 @@ func (c *ChiContext) EngineContext() any {
 
 func (c *ChiContext) Ip() string {
 	var ip string
-
 	if tcip := c.Req.Header.Get(trueClientIP); tcip != "" {
 		ip = tcip
 	} else if xrip := c.Req.Header.Get(xRealIP); xrip != "" {
@@ -293,8 +299,40 @@ func (c *ChiContext) Ip() string {
 		}
 		ip = xff[:i]
 	}
-	if ip == "" || net.ParseIP(ip) == nil {
+	if ip == "" {
+		ipAddr, _, err := net.SplitHostPort(c.Req.RemoteAddr)
+		if err != nil {
+			return ""
+		}
+		ip = ipAddr
+	}
+	if net.ParseIP(ip) == nil {
 		return ""
 	}
 	return ip
+}
+
+type (
+	// struct for holding response details
+	ChiResponse struct {
+		status int
+		size   int
+	}
+
+	// our http.ResponseWriter implementation
+	ChiResponseWriter struct {
+		http.ResponseWriter // compose original http.ResponseWriter
+		ChiResponse         *ChiResponse
+	}
+)
+
+func (r *ChiResponseWriter) Write(b []byte) (int, error) {
+	size, err := r.ResponseWriter.Write(b) // write response using original http.ResponseWriter
+	r.ChiResponse.size += size             // capture size
+	return size, err
+}
+
+func (r *ChiResponseWriter) WriteHeader(statusCode int) {
+	r.ResponseWriter.WriteHeader(statusCode) // write status code using original http.ResponseWriter
+	r.ChiResponse.status = statusCode        // capture status code
 }
