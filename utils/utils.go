@@ -1,12 +1,15 @@
 package utils
 
 import (
+	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"os"
 	pathpkg "path"
 	"path/filepath"
 	"sort"
+	"sync"
 )
 
 // Walk walks the filesystem rooted at root, calling walkFn for each file or
@@ -107,4 +110,67 @@ func stat(fs http.FileSystem, name string) (os.FileInfo, error) {
 	}
 	defer f.Close()
 	return f.Stat()
+}
+
+var copyBufPool = sync.Pool{
+	New: func() interface{} {
+		return make([]byte, 4096)
+	},
+}
+
+func SaveFile(fh *multipart.FileHeader, path string) (err error) {
+	var (
+		f  multipart.File
+		ff *os.File
+	)
+	f, err = fh.Open()
+	if err != nil {
+		return
+	}
+
+	var ok bool
+	if ff, ok = f.(*os.File); ok {
+		// Windows can't rename files that are opened.
+		if err = f.Close(); err != nil {
+			return
+		}
+
+		// If renaming fails we try the normal copying method.
+		// Renaming could fail if the files are on different devices.
+		if os.Rename(ff.Name(), path) == nil {
+			return nil
+		}
+
+		// Reopen f for the code below.
+		if f, err = fh.Open(); err != nil {
+			return
+		}
+	}
+
+	defer func() {
+		e := f.Close()
+		if err == nil {
+			err = e
+		}
+	}()
+
+	if ff, err = os.Create(path); err != nil {
+		return
+	}
+	defer func() {
+		e := ff.Close()
+		if err == nil {
+			err = e
+		}
+	}()
+	_, err = copyZeroAlloc(ff, f)
+	return
+}
+
+func copyZeroAlloc(w io.Writer, r io.Reader) (int64, error) {
+	vbuf := copyBufPool.Get()
+	buf := vbuf.([]byte)
+	n, err := io.CopyBuffer(w, r, buf)
+	copyBufPool.Put(vbuf)
+	return n, err
 }

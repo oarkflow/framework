@@ -107,7 +107,7 @@ func (e *Engine) AddFuncMap(m map[string]interface{}) *Engine {
 }
 
 // Reload if set to true the templates are reloading on each render,
-// use it when you're in development and you don't want to restart
+// use it when you're in development, and you don't want to restart
 // the application when you edit a template file.
 func (e *Engine) Reload(enabled bool) *Engine {
 	e.reload = enabled

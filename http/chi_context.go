@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin/binding"
 	"github.com/sujit-baniya/chi"
+	"github.com/sujit-baniya/framework/utils"
+	"github.com/sujit-baniya/framework/utils/binding"
 	"github.com/sujit-baniya/framework/view"
 	"mime/multipart"
 	"net"
@@ -41,27 +42,66 @@ func NewChiContext(request *http.Request, response http.ResponseWriter, config C
 	return &ChiContext{Req: request, Res: response, next: next, config: config}
 }
 
-func (c *ChiContext) Origin() any {
+func (c *ChiContext) Origin() *http.Request {
 	return c.Req
 }
 
 func (c *ChiContext) Secure() bool {
-	//TODO implement me
-	panic("implement me")
+	if c.Req.Proto == "https" {
+		return true
+	}
+	return false
 }
 
 func (c *ChiContext) Cookies(key string, defaultValue ...string) string {
-	//TODO implement me
-	panic("implement me")
+	defaultVal := ""
+	if len(defaultValue) > 0 {
+		defaultVal = defaultValue[0]
+	}
+	cookie, err := c.Req.Cookie(key)
+	if err != nil {
+		return defaultVal
+	}
+	if cookie.Value == "" {
+		return defaultVal
+	}
+	return cookie.Value
 }
 
 func (c *ChiContext) Cookie(co *contracthttp.Cookie) {
-	//TODO implement me
-	panic("implement me")
+	cookie := &http.Cookie{
+		Name:       co.Name,
+		Value:      co.Value,
+		Path:       co.Path,
+		Domain:     co.Domain,
+		Expires:    co.Expires,
+		RawExpires: co.Expires.String(),
+		MaxAge:     co.MaxAge,
+		Secure:     co.Secure,
+		HttpOnly:   co.HTTPOnly,
+	}
+
+	switch co.SameSite {
+	case "Lax":
+		cookie.SameSite = http.SameSiteLaxMode
+		break
+	case "None":
+		cookie.SameSite = http.SameSiteNoneMode
+		break
+	case "Strict":
+		cookie.SameSite = http.SameSiteStrictMode
+		break
+	default:
+		cookie.SameSite = http.SameSiteDefaultMode
+	}
+	http.SetCookie(c.Res, cookie)
 }
 
 func (c *ChiContext) StatusCode() int {
-	return 200
+	if c.Req.Response.StatusCode == 0 {
+		return 200
+	}
+	return c.Req.Response.StatusCode
 }
 
 func (c *ChiContext) Vary(key string, value ...string) {
@@ -105,12 +145,13 @@ func (c *ChiContext) Json(code int, obj interface{}) error {
 }
 
 func (c *ChiContext) SendFile(filepath string, compress ...bool) error {
-	//@TODO - Implement
+	http.ServeFile(c.Res, c.Req, filepath)
 	return nil
 }
 
 func (c *ChiContext) Download(filepath, filename string) error {
-	//@TODO - Implement
+	c.Res.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
+	http.ServeFile(c.Res, c.Req, filepath)
 	return nil
 }
 
@@ -170,13 +211,11 @@ func (c *ChiContext) Bind(obj interface{}) error {
 }
 
 func (c *ChiContext) SaveFile(name string, dst string) error {
-	//@TODO - Implement file save
-	_, err := c.File(name)
+	file, err := c.File(name)
 	if err != nil {
 		return err
 	}
-
-	return nil // f.Req.MultipartForm.File
+	return utils.SaveFile(file, dst)
 }
 
 func (c *ChiContext) File(name string) (*multipart.FileHeader, error) {

@@ -2,10 +2,11 @@ package http
 
 import (
 	"mime/multipart"
+	"net/http"
 )
 
 type Request interface {
-	Origin() any
+	Origin() *http.Request
 }
 
 type File interface {

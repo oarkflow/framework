@@ -29,7 +29,7 @@ func NewGinContext(ctx *gin.Context, config GinConfig) contracthttp.Context {
 	return ct
 }
 
-func (c *GinContext) Origin() any {
+func (c *GinContext) Origin() *http.Request {
 	return c.instance.Request
 }
 
@@ -122,7 +122,7 @@ func (c *GinContext) Form(key, defaultValue string) string {
 }
 
 func (c *GinContext) Bind(obj any) error {
-	return c.instance.ShouldBind(obj)
+	return c.instance.Bind(obj)
 }
 
 func (c *GinContext) SaveFile(name string, dst string) error {
@@ -211,6 +211,9 @@ func (c *GinContext) EngineContext() any {
 }
 
 func (c *GinContext) Secure() bool {
+	if c.instance.Request.Proto == "https" {
+		return true
+	}
 	return false
 }
 

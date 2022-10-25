@@ -1,9 +1,12 @@
 package http
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,8 +17,25 @@ type FiberContext struct {
 	instance *fiber.Ctx
 }
 
-func (c *FiberContext) Origin() any {
-	return c.instance.Request()
+func (c *FiberContext) Origin() *http.Request {
+	headers := make(map[string][]string)
+	for header, value := range c.instance.GetReqHeaders() {
+		headers[header] = []string{value}
+	}
+	parsedUrl, _ := url.Parse(c.instance.OriginalURL())
+	return &http.Request{
+		Method: c.instance.Method(),
+		URL:    parsedUrl,
+		Proto:  c.instance.Protocol(),
+		Header: headers,
+		Body:   io.NopCloser(bytes.NewReader(c.instance.Body())),
+		GetBody: func() (io.ReadCloser, error) {
+			return io.NopCloser(bytes.NewReader(c.instance.Body())), nil
+		},
+		Host:       c.instance.Hostname(),
+		RemoteAddr: c.instance.IP(),
+		RequestURI: c.instance.Request().URI().String(),
+	}
 }
 
 func NewFiberContext(ctx *fiber.Ctx) contracthttp.Context {
