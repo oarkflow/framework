@@ -7,83 +7,156 @@ import (
 	"time"
 )
 
-type Storage struct {
-	sync.RWMutex
-	data map[string]item // data
+// Config defines the config for storage.
+type Config struct {
+	// Time before deleting expired keys
+	//
+	// Default is 10 * time.Second
+	GCInterval time.Duration
 }
 
-type item struct {
-	// max value is 4294967295 -> Sun Feb 07 2106 06:28:15 GMT+0000
-	e uint32      // exp
-	v interface{} // val
+// ConfigDefault is the default config
+var ConfigDefault = Config{
+	GCInterval: 10 * time.Second,
 }
 
-func New() *Storage {
-	store := &Storage{
-		data: make(map[string]item),
+// configDefault is a helper function to set default values
+func configDefault(config ...Config) Config {
+	// Return default config if nothing provided
+	if len(config) < 1 {
+		return ConfigDefault
 	}
+
+	// Override default config
+	cfg := config[0]
+
+	// Set default values
+	if int(cfg.GCInterval.Seconds()) <= 0 {
+		cfg.GCInterval = ConfigDefault.GCInterval
+	}
+	return cfg
+}
+
+// Storage interface that is implemented by storage providers
+type Storage struct {
+	mux        sync.RWMutex
+	db         map[string]entry
+	gcInterval time.Duration
+	done       chan struct{}
+}
+
+type entry struct {
+	data []byte
+	// max value is 4294967295 -> Sun Feb 07 2106 06:28:15 GMT+0000
+	expiry uint32
+}
+
+// New creates a new memory storage
+func New(config ...Config) *Storage {
+	// Set default config
+	cfg := configDefault(config...)
+
+	// Create storage
+	store := &Storage{
+		db:         make(map[string]entry),
+		gcInterval: cfg.GCInterval,
+		done:       make(chan struct{}),
+	}
+
+	// Start garbage collector
 	utils.StartTimeStampUpdater()
-	go store.gc(1 * time.Second)
+	go store.gc()
+
 	return store
 }
 
 // Get value by key
-func (s *Storage) Get(key string) interface{} {
-	s.RLock()
-	v, ok := s.data[key]
-	s.RUnlock()
-	if !ok || v.e != 0 && v.e <= atomic.LoadUint32(&utils.Timestamp) {
-		return nil
+func (s *Storage) Get(key string) ([]byte, error) {
+	if len(key) <= 0 {
+		return nil, nil
 	}
-	return v.v
+	s.mux.RLock()
+	v, ok := s.db[key]
+	s.mux.RUnlock()
+	if !ok || v.expiry != 0 && v.expiry <= atomic.LoadUint32(&utils.Timestamp) {
+		return nil, nil
+	}
+
+	return v.data, nil
 }
 
 // Set key with value
-func (s *Storage) Set(key string, val interface{}, ttl time.Duration) {
-	var exp uint32
-	if ttl > 0 {
-		exp = uint32(ttl.Seconds()) + atomic.LoadUint32(&utils.Timestamp)
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error {
+	// Ain't Nobody Got Time For That
+	if len(key) <= 0 || len(val) <= 0 {
+		return nil
 	}
-	s.Lock()
-	s.data[key] = item{exp, val}
-	s.Unlock()
+
+	var expire uint32
+	if exp != 0 {
+		expire = uint32(exp.Seconds()) + atomic.LoadUint32(&utils.Timestamp)
+	}
+
+	s.mux.Lock()
+	s.db[key] = entry{val, expire}
+	s.mux.Unlock()
+	return nil
 }
 
 // Delete key by key
-func (s *Storage) Delete(key string) {
-	s.Lock()
-	delete(s.data, key)
-	s.Unlock()
+func (s *Storage) Delete(key string) error {
+	// Ain't Nobody Got Time For That
+	if len(key) <= 0 {
+		return nil
+	}
+	s.mux.Lock()
+	delete(s.db, key)
+	s.mux.Unlock()
+	return nil
 }
 
 // Reset all keys
-func (s *Storage) Reset() {
-	s.Lock()
-	s.data = make(map[string]item)
-	s.Unlock()
+func (s *Storage) Reset() error {
+	s.mux.Lock()
+	s.db = make(map[string]entry)
+	s.mux.Unlock()
+	return nil
 }
 
-func (s *Storage) gc(sleep time.Duration) {
-	ticker := time.NewTicker(sleep)
+// Close the memory storage
+func (s *Storage) Close() error {
+	s.done <- struct{}{}
+	return nil
+}
+
+func (s *Storage) gc() {
+	ticker := time.NewTicker(s.gcInterval)
 	defer ticker.Stop()
 	var expired []string
 
 	for {
 		select {
+		case <-s.done:
+			return
 		case <-ticker.C:
 			expired = expired[:0]
-			s.RLock()
-			for key, v := range s.data {
-				if v.e != 0 && v.e <= atomic.LoadUint32(&utils.Timestamp) {
-					expired = append(expired, key)
+			s.mux.RLock()
+			for id, v := range s.db {
+				if v.expiry != 0 && v.expiry < atomic.LoadUint32(&utils.Timestamp) {
+					expired = append(expired, id)
 				}
 			}
-			s.RUnlock()
-			s.Lock()
+			s.mux.RUnlock()
+			s.mux.Lock()
 			for i := range expired {
-				delete(s.data, expired[i])
+				delete(s.db, expired[i])
 			}
-			s.Unlock()
+			s.mux.Unlock()
 		}
 	}
+}
+
+// Return database client
+func (s *Storage) Conn() map[string]entry {
+	return s.db
 }

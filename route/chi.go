@@ -272,3 +272,16 @@ func middlewareToChiHandler(handler httpcontract.HandlerFunc, config frameworkht
 		})
 	}
 }
+
+func colonToBracket(relativePath string) string {
+	arr := strings.Split(relativePath, "/")
+	var newArr []string
+	for _, item := range arr {
+		if strings.HasPrefix(item, ":") {
+			item = "{" + strings.ReplaceAll(item, ":", "") + "}"
+		}
+		newArr = append(newArr, item)
+	}
+
+	return strings.Join(newArr, "/")
+}
