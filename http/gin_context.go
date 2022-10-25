@@ -2,33 +2,91 @@ package http
 
 import (
 	"github.com/sujit-baniya/framework/view"
+	"mime/multipart"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	contracthttp "github.com/sujit-baniya/framework/contracts/http"
 )
 
+type GinConfig struct {
+	Mode        string `json:"mode"`
+	ViewsLayout string `json:"views_layout"`
+	Extension   string `json:"extension"`
+	Path        string `json:"path"`
+	View        *view.Engine
+}
+
 type GinContext struct {
 	instance *gin.Context
 	config   GinConfig
-	view     *view.Engine
 }
 
-func NewGinContext(ctx *gin.Context, config GinConfig, engine ...*view.Engine) contracthttp.Context {
+func NewGinContext(ctx *gin.Context, config GinConfig) contracthttp.Context {
 	ct := &GinContext{instance: ctx, config: config}
-	if len(engine) > 0 {
-		ct.view = engine[0]
-	}
 	return ct
 }
 
-func (c *GinContext) Request() contracthttp.Request {
-	return NewGinRequest(c.instance, c.config, c.view)
+func (c *GinContext) Origin() any {
+	return c.instance.Request
 }
 
-func (c *GinContext) Response() contracthttp.Response {
-	return NewGinResponse(c.instance, c.config, c.view)
+func (c *GinContext) String(code int, format string, values ...any) error {
+	c.instance.String(code, format, values...)
+	return nil
+}
+
+func (c *GinContext) Json(code int, obj any) error {
+	c.instance.JSON(code, obj)
+	return nil
+}
+
+func (c *GinContext) Render(name string, bind any, layouts ...string) error {
+	return c.config.View.Render(c.instance.Writer, name, bind, layouts...)
+}
+
+func (c *GinContext) SendFile(filepath string, compress ...bool) error {
+	c.instance.File(filepath)
+	return nil
+}
+
+func (c *GinContext) Download(filepath, filename string) error {
+	c.instance.FileAttachment(filepath, filename)
+	return nil
+}
+
+func (c *GinContext) SetHeader(key, value string) contracthttp.Context {
+	c.instance.Header(key, value)
+	return c
+}
+
+func (c *GinContext) StatusCode() int {
+	return c.instance.Writer.Status()
+}
+
+func (c *GinContext) Vary(field string, values ...string) {
+	c.Append(field)
+}
+
+func (c *GinContext) Append(field string, values ...string) {
+	if len(values) == 0 {
+		return
+	}
+	h := c.instance.GetHeader(field)
+	originalH := h
+	for _, value := range values {
+		if len(h) == 0 {
+			h = value
+		} else if h != value && !strings.HasPrefix(h, value+",") && !strings.HasSuffix(h, " "+value) &&
+			!strings.Contains(h, " "+value+",") {
+			h += ", " + value
+		}
+	}
+	if originalH != h {
+		c.SetHeader(field, h)
+	}
 }
 
 func (c *GinContext) WithValue(key string, value any) {
@@ -67,13 +125,16 @@ func (c *GinContext) Bind(obj any) error {
 	return c.instance.ShouldBind(obj)
 }
 
-func (c *GinContext) File(name string) (contracthttp.File, error) {
-	file, err := c.instance.FormFile(name)
+func (c *GinContext) SaveFile(name string, dst string) error {
+	file, err := c.File(name)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	return c.instance.SaveUploadedFile(file, dst)
+}
 
-	return &GinFile{instance: c.instance, file: file}, nil
+func (c *GinContext) File(name string) (*multipart.FileHeader, error) {
+	return c.instance.FormFile(name)
 }
 
 func (c *GinContext) Header(key, defaultValue string) string {

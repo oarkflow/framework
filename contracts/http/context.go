@@ -15,8 +15,6 @@ func (h *HandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 type Context interface {
 	context.Context
 	WithValue(key string, value any)
-	Request() Request
-	Response() Response
 	EngineContext() any
 	Header(key, defaultValue string) string
 	Headers() http.Header
@@ -34,11 +32,14 @@ type Context interface {
 	// Form Retrieve a form string item form the post: /users POST:id=1
 	Form(key, defaultValue string) string
 	Bind(obj any) error
-	File(name string) (File, error)
 
 	AbortWithStatus(code int)
 	Next() error
 
 	Cookies(key string, defaultValue ...string) string
 	Cookie(co *Cookie)
+
+	File
+	Request
+	Response
 }

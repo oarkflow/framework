@@ -17,16 +17,25 @@ import (
 type Chi struct {
 	route.Route
 	instance chi.Router
+	config   frameworkhttp.ChiConfig
 }
 
-func NewChi(config ...chi.Config) route.Engine {
-	engine := chi.NewRouter(config...)
+func NewChi(config ...frameworkhttp.ChiConfig) route.Engine {
+	var cfg frameworkhttp.ChiConfig
+	if len(config) > 0 {
+		cfg = config[0]
+	}
+	engine := chi.NewRouter(chi.Config{
+		NotFoundHandler:         cfg.NotFoundHandler,
+		MethodNotAllowedHandler: cfg.MethodNotAllowedHandler,
+	})
 
 	return &Chi{instance: engine, Route: NewChiGroup(
 		engine,
 		"/",
 		[]httpcontract.HandlerFunc{},
 		[]httpcontract.HandlerFunc{},
+		cfg,
 	)}
 }
 
@@ -58,14 +67,16 @@ type ChiGroup struct {
 	prefix            string
 	middlewares       []httpcontract.HandlerFunc
 	globalMiddlewares []httpcontract.HandlerFunc
+	config            frameworkhttp.ChiConfig
 }
 
-func NewChiGroup(instance chi.Router, prefix string, originMiddlewares []httpcontract.HandlerFunc, globalMiddlewares []httpcontract.HandlerFunc) route.Route {
+func NewChiGroup(instance chi.Router, prefix string, originMiddlewares []httpcontract.HandlerFunc, globalMiddlewares []httpcontract.HandlerFunc, config frameworkhttp.ChiConfig) route.Route {
 	return &ChiGroup{
 		instance:          instance,
 		originPrefix:      prefix,
 		originMiddlewares: originMiddlewares,
 		globalMiddlewares: globalMiddlewares,
+		config:            config,
 	}
 }
 
@@ -77,7 +88,7 @@ func (r *ChiGroup) Group(handler route.GroupFunc) {
 	prefix := pathToChiPath(r.originPrefix + "/" + r.prefix)
 	r.prefix = ""
 
-	handler(NewChiGroup(r.instance, prefix, middlewares, r.globalMiddlewares))
+	handler(NewChiGroup(r.instance, prefix, middlewares, r.globalMiddlewares, r.config))
 }
 
 func (r *ChiGroup) Prefix(addr string) route.Route {
@@ -103,12 +114,12 @@ func (r *ChiGroup) Any(relativePath string, handlers ...httpcontract.HandlerFunc
 	relativePath = r.originPrefix + "/" + r.prefix + "/" + relativePath
 	r.prefix = ""
 	middlewares := handlers[0 : len(handlers)-1]
-	handler := handlerToChiHandler(handlers[len(handlers)-1])
+	handler := handlerToChiHandler(handlers[len(handlers)-1], r.config)
 	var h []http.HandlerFunc
 	for _, ha := range middlewares {
-		h = append(h, handlerToChiHandler(ha))
+		h = append(h, handlerToChiHandler(ha, r.config))
 	}
-	m := middlewaresToChiHandlers(middlewares)
+	m := middlewaresToChiHandlers(middlewares, r.config)
 	ro := r.getChiRoutesWithMiddlewares()
 	ro.With(m...).Get(pathToChiPath(relativePath), handler)
 	ro.With(m...).Post(pathToChiPath(relativePath), handler)
@@ -123,12 +134,12 @@ func (r *ChiGroup) Get(relativePath string, handlers ...httpcontract.HandlerFunc
 	relativePath = r.originPrefix + "/" + r.prefix + "/" + relativePath
 	r.prefix = ""
 	middlewares := handlers[0 : len(handlers)-1]
-	handler := handlerToChiHandler(handlers[len(handlers)-1])
+	handler := handlerToChiHandler(handlers[len(handlers)-1], r.config)
 	var h []http.HandlerFunc
 	for _, ha := range middlewares {
-		h = append(h, handlerToChiHandler(ha))
+		h = append(h, handlerToChiHandler(ha, r.config))
 	}
-	m := middlewaresToChiHandlers(middlewares)
+	m := middlewaresToChiHandlers(middlewares, r.config)
 	ro := r.getChiRoutesWithMiddlewares()
 	ro.With(m...).Get(pathToChiPath(relativePath), handler)
 }
@@ -138,12 +149,12 @@ func (r *ChiGroup) Post(relativePath string, handlers ...httpcontract.HandlerFun
 	relativePath = r.originPrefix + "/" + r.prefix + "/" + relativePath
 	r.prefix = ""
 	middlewares := handlers[0 : len(handlers)-1]
-	handler := handlerToChiHandler(handlers[len(handlers)-1])
+	handler := handlerToChiHandler(handlers[len(handlers)-1], r.config)
 	var h []http.HandlerFunc
 	for _, ha := range middlewares {
-		h = append(h, handlerToChiHandler(ha))
+		h = append(h, handlerToChiHandler(ha, r.config))
 	}
-	m := middlewaresToChiHandlers(middlewares)
+	m := middlewaresToChiHandlers(middlewares, r.config)
 	ro := r.getChiRoutesWithMiddlewares()
 	ro.With(m...).Post(pathToChiPath(relativePath), handler)
 }
@@ -153,12 +164,12 @@ func (r *ChiGroup) Delete(relativePath string, handlers ...httpcontract.HandlerF
 	relativePath = r.originPrefix + "/" + r.prefix + "/" + relativePath
 	r.prefix = ""
 	middlewares := handlers[0 : len(handlers)-1]
-	handler := handlerToChiHandler(handlers[len(handlers)-1])
+	handler := handlerToChiHandler(handlers[len(handlers)-1], r.config)
 	var h []http.HandlerFunc
 	for _, ha := range middlewares {
-		h = append(h, handlerToChiHandler(ha))
+		h = append(h, handlerToChiHandler(ha, r.config))
 	}
-	m := middlewaresToChiHandlers(middlewares)
+	m := middlewaresToChiHandlers(middlewares, r.config)
 	ro := r.getChiRoutesWithMiddlewares()
 	ro.With(m...).Delete(pathToChiPath(relativePath), handler)
 }
@@ -168,12 +179,12 @@ func (r *ChiGroup) Patch(relativePath string, handlers ...httpcontract.HandlerFu
 	relativePath = r.originPrefix + "/" + r.prefix + "/" + relativePath
 	r.prefix = ""
 	middlewares := handlers[0 : len(handlers)-1]
-	handler := handlerToChiHandler(handlers[len(handlers)-1])
+	handler := handlerToChiHandler(handlers[len(handlers)-1], r.config)
 	var h []http.HandlerFunc
 	for _, ha := range middlewares {
-		h = append(h, handlerToChiHandler(ha))
+		h = append(h, handlerToChiHandler(ha, r.config))
 	}
-	m := middlewaresToChiHandlers(middlewares)
+	m := middlewaresToChiHandlers(middlewares, r.config)
 	ro := r.getChiRoutesWithMiddlewares()
 	ro.With(m...).Patch(pathToChiPath(relativePath), handler)
 }
@@ -183,12 +194,12 @@ func (r *ChiGroup) Put(relativePath string, handlers ...httpcontract.HandlerFunc
 	relativePath = r.originPrefix + "/" + r.prefix + "/" + relativePath
 	r.prefix = ""
 	middlewares := handlers[0 : len(handlers)-1]
-	handler := handlerToChiHandler(handlers[len(handlers)-1])
+	handler := handlerToChiHandler(handlers[len(handlers)-1], r.config)
 	var h []http.HandlerFunc
 	for _, ha := range middlewares {
-		h = append(h, handlerToChiHandler(ha))
+		h = append(h, handlerToChiHandler(ha, r.config))
 	}
-	m := middlewaresToChiHandlers(middlewares)
+	m := middlewaresToChiHandlers(middlewares, r.config)
 	ro := r.getChiRoutesWithMiddlewares()
 	ro.With(m...).Put(pathToChiPath(relativePath), handler)
 }
@@ -198,12 +209,12 @@ func (r *ChiGroup) Options(relativePath string, handlers ...httpcontract.Handler
 	relativePath = r.originPrefix + "/" + r.prefix + "/" + relativePath
 	r.prefix = ""
 	middlewares := handlers[0 : len(handlers)-1]
-	handler := handlerToChiHandler(handlers[len(handlers)-1])
+	handler := handlerToChiHandler(handlers[len(handlers)-1], r.config)
 	var h []http.HandlerFunc
 	for _, ha := range middlewares {
-		h = append(h, handlerToChiHandler(ha))
+		h = append(h, handlerToChiHandler(ha, r.config))
 	}
-	m := middlewaresToChiHandlers(middlewares)
+	m := middlewaresToChiHandlers(middlewares, r.config)
 	ro := r.getChiRoutesWithMiddlewares()
 	ro.With(m...).Options(pathToChiPath(relativePath), handler)
 }
@@ -222,9 +233,9 @@ func (r *ChiGroup) StaticFS(relativePath string, fs http.FileSystem) {
 
 func (r *ChiGroup) getChiRoutesWithMiddlewares() chi.Router {
 	var middlewares []func(handler http.Handler) http.Handler
-	ginOriginMiddlewares := middlewaresToChiHandlers(r.originMiddlewares)
-	ginMiddlewares := middlewaresToChiHandlers(r.middlewares)
-	ginGlobalMiddlewares := middlewaresToChiHandlers(r.globalMiddlewares)
+	ginOriginMiddlewares := middlewaresToChiHandlers(r.originMiddlewares, r.config)
+	ginMiddlewares := middlewaresToChiHandlers(r.middlewares, r.config)
+	ginGlobalMiddlewares := middlewaresToChiHandlers(r.globalMiddlewares, r.config)
 	middlewares = append(middlewares, ginOriginMiddlewares...)
 	middlewares = append(middlewares, ginMiddlewares...)
 	middlewares = append(middlewares, ginGlobalMiddlewares...)
@@ -239,25 +250,25 @@ func pathToChiPath(relativePath string) string {
 	return path.Clean(relativePath)
 }
 
-func middlewaresToChiHandlers(middlewares []httpcontract.HandlerFunc) []func(handler http.Handler) http.Handler {
+func middlewaresToChiHandlers(middlewares []httpcontract.HandlerFunc, config frameworkhttp.ChiConfig) []func(handler http.Handler) http.Handler {
 	var ginHandlers []func(handler http.Handler) http.Handler
 	for _, item := range middlewares {
-		ginHandlers = append(ginHandlers, middlewareToChiHandler(item))
+		ginHandlers = append(ginHandlers, middlewareToChiHandler(item, config))
 	}
 
 	return ginHandlers
 }
 
-func handlerToChiHandler(handler httpcontract.HandlerFunc) http.HandlerFunc {
+func handlerToChiHandler(handler httpcontract.HandlerFunc, config frameworkhttp.ChiConfig) http.HandlerFunc {
 	return func(response http.ResponseWriter, req *http.Request) {
-		handler(frameworkhttp.NewChiContext(req, response))
+		handler(frameworkhttp.NewChiContext(req, response, config))
 	}
 }
 
-func middlewareToChiHandler(handler httpcontract.HandlerFunc) func(handler http.Handler) http.Handler {
+func middlewareToChiHandler(handler httpcontract.HandlerFunc, config frameworkhttp.ChiConfig) func(handler http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			handler(frameworkhttp.NewChiContext(request, writer, next))
+			handler(frameworkhttp.NewChiContext(request, writer, config, next))
 		})
 	}
 }

@@ -95,7 +95,7 @@ func configBasicAuthDefault(config ...ConfigBasicAuth) ConfigBasicAuth {
 	}
 	if cfg.Unauthorized == nil {
 		cfg.Unauthorized = func(c http.Context) error {
-			c.Response().Header("WWW-Authenticate", "basic realm="+cfg.Realm)
+			c.SetHeader("WWW-Authenticate", "basic realm="+cfg.Realm)
 			c.AbortWithStatus(http2.StatusUnauthorized)
 			return fiber.ErrUnauthorized
 		}

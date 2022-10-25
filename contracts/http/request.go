@@ -2,17 +2,13 @@ package http
 
 import (
 	"mime/multipart"
-	"net/http"
 )
 
 type Request interface {
-	Origin() *http.Request
-	Response() Response
-
-	//Validate(ctx *gin.Context, request FormRequest) []error
+	Origin() any
 }
 
 type File interface {
-	Store(dst string) error
-	File() *multipart.FileHeader
+	SaveFile(name string, dst string) error
+	File(name string) (*multipart.FileHeader, error)
 }

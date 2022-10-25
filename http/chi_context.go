@@ -2,8 +2,12 @@ package http
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/sujit-baniya/chi"
+	"github.com/sujit-baniya/framework/view"
+	"mime/multipart"
 	"net"
 	"strings"
 	"time"
@@ -12,10 +16,33 @@ import (
 	"net/http"
 )
 
+var trueClientIP = http.CanonicalHeaderKey("True-Client-IP")
+var xForwardedFor = http.CanonicalHeaderKey("X-Forwarded-For")
+var xRealIP = http.CanonicalHeaderKey("X-Real-IP")
+
+type ChiConfig struct {
+	NotFoundHandler         http.HandlerFunc
+	MethodNotAllowedHandler http.HandlerFunc
+	View                    *view.Engine
+}
+
 type ChiContext struct {
-	Req  *http.Request
-	Res  http.ResponseWriter
-	next http.Handler
+	Req    *http.Request
+	Res    http.ResponseWriter
+	next   http.Handler
+	config ChiConfig
+}
+
+func NewChiContext(request *http.Request, response http.ResponseWriter, config ChiConfig, n ...http.Handler) contracthttp.Context {
+	var next http.Handler
+	if len(n) > 0 {
+		next = n[0]
+	}
+	return &ChiContext{Req: request, Res: response, next: next, config: config}
+}
+
+func (c *ChiContext) Origin() any {
+	return c.Req
 }
 
 func (c *ChiContext) Secure() bool {
@@ -33,20 +60,67 @@ func (c *ChiContext) Cookie(co *contracthttp.Cookie) {
 	panic("implement me")
 }
 
-func NewChiContext(request *http.Request, response http.ResponseWriter, n ...http.Handler) contracthttp.Context {
-	var next http.Handler
-	if len(n) > 0 {
-		next = n[0]
+func (c *ChiContext) StatusCode() int {
+	return 200
+}
+
+func (c *ChiContext) Vary(key string, value ...string) {
+	c.Append(key)
+}
+
+func (c *ChiContext) Append(field string, values ...string) {
+	if len(values) == 0 {
+		return
 	}
-	return &ChiContext{Req: request, Res: response, next: next}
+	h := c.Res.Header().Get(field)
+	originalH := h
+	for _, value := range values {
+		if len(h) == 0 {
+			h = value
+		} else if h != value && !strings.HasPrefix(h, value+",") && !strings.HasSuffix(h, " "+value) &&
+			!strings.Contains(h, " "+value+",") {
+			h += ", " + value
+		}
+	}
+	if originalH != h {
+		c.SetHeader(field, h)
+	}
 }
 
-func (c *ChiContext) Request() contracthttp.Request {
-	return NewChiRequest(c.Req, c.Res)
+func (c *ChiContext) String(code int, format string, values ...interface{}) error {
+	c.Res.WriteHeader(code)
+	_, err := c.Res.Write([]byte(fmt.Sprintf(format, values...)))
+	return err
 }
 
-func (c *ChiContext) Response() contracthttp.Response {
-	return NewChiResponse(c.Res)
+func (c *ChiContext) Json(code int, obj interface{}) error {
+	c.Res.WriteHeader(code)
+	c.Res.Header().Set("Content-Type", "application/json")
+	jsonResp, err := json.Marshal(obj)
+	if err != nil {
+		return err
+	}
+	_, err = c.Res.Write(jsonResp)
+	return err
+}
+
+func (c *ChiContext) SendFile(filepath string, compress ...bool) error {
+	//@TODO - Implement
+	return nil
+}
+
+func (c *ChiContext) Download(filepath, filename string) error {
+	//@TODO - Implement
+	return nil
+}
+
+func (c *ChiContext) SetHeader(key, value string) contracthttp.Context {
+	c.Res.Header().Set(key, value)
+	return c
+}
+
+func (c *ChiContext) Render(name string, bind any, layouts ...string) error {
+	return c.config.View.Render(c.Res, name, bind, layouts...)
 }
 
 func (c *ChiContext) WithValue(key string, value interface{}) {
@@ -95,13 +169,19 @@ func (c *ChiContext) Bind(obj interface{}) error {
 	return b.Bind(c.Req, obj)
 }
 
-func (c *ChiContext) File(name string) (contracthttp.File, error) {
-	_, fileHeader, err := c.Req.FormFile(name)
+func (c *ChiContext) SaveFile(name string, dst string) error {
+	//@TODO - Implement file save
+	_, err := c.File(name)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &ChiFile{request: c.Req, file: fileHeader}, nil
+	return nil // f.Req.MultipartForm.File
+}
+
+func (c *ChiContext) File(name string) (*multipart.FileHeader, error) {
+	_, fileHeader, err := c.Req.FormFile(name)
+	return fileHeader, err
 }
 
 func (c *ChiContext) Header(key, defaultValue string) string {

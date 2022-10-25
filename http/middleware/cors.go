@@ -130,47 +130,47 @@ func Cors(config ...ConfigCors) http.HandlerFunc {
 
 		// Simple request
 		if c.Method() != stdHttp.MethodOptions {
-			c.Response().Vary(fiber.HeaderOrigin)
-			c.Response().Header(fiber.HeaderAccessControlAllowOrigin, allowOrigin)
+			c.Vary(fiber.HeaderOrigin)
+			c.SetHeader(fiber.HeaderAccessControlAllowOrigin, allowOrigin)
 
 			if cfg.AllowCredentials {
-				c.Response().Header(fiber.HeaderAccessControlAllowCredentials, "true")
+				c.SetHeader(fiber.HeaderAccessControlAllowCredentials, "true")
 			}
 			if exposeHeaders != "" {
-				c.Response().Header(fiber.HeaderAccessControlExposeHeaders, exposeHeaders)
+				c.SetHeader(fiber.HeaderAccessControlExposeHeaders, exposeHeaders)
 			}
 			return c.Next()
 		}
 
 		// Preflight request
-		c.Response().Vary(fiber.HeaderOrigin)
-		c.Response().Vary(fiber.HeaderAccessControlRequestMethod)
-		c.Response().Vary(fiber.HeaderAccessControlRequestHeaders)
-		c.Response().Header(fiber.HeaderAccessControlAllowOrigin, allowOrigin)
-		c.Response().Header(fiber.HeaderAccessControlAllowMethods, allowMethods)
+		c.Vary(fiber.HeaderOrigin)
+		c.Vary(fiber.HeaderAccessControlRequestMethod)
+		c.Vary(fiber.HeaderAccessControlRequestHeaders)
+		c.SetHeader(fiber.HeaderAccessControlAllowOrigin, allowOrigin)
+		c.SetHeader(fiber.HeaderAccessControlAllowMethods, allowMethods)
 
 		// Set Allow-Credentials if set to true
 		if cfg.AllowCredentials {
-			c.Response().Header(fiber.HeaderAccessControlAllowCredentials, "true")
+			c.SetHeader(fiber.HeaderAccessControlAllowCredentials, "true")
 		}
 
 		// Set Allow-Headers if not empty
 		if allowHeaders != "" {
-			c.Response().Header(fiber.HeaderAccessControlAllowHeaders, allowHeaders)
+			c.SetHeader(fiber.HeaderAccessControlAllowHeaders, allowHeaders)
 		} else {
 			h := c.Header(fiber.HeaderAccessControlRequestHeaders, "")
 			if h != "" {
-				c.Response().Header(fiber.HeaderAccessControlAllowHeaders, h)
+				c.SetHeader(fiber.HeaderAccessControlAllowHeaders, h)
 			}
 		}
 
 		// Set MaxAge is set
 		if cfg.MaxAge > 0 {
-			c.Response().Header(fiber.HeaderAccessControlMaxAge, maxAge)
+			c.SetHeader(fiber.HeaderAccessControlMaxAge, maxAge)
 		}
 
 		// Send 204 No Content
-		return c.Response().String(fiber.StatusNoContent, "")
+		return c.String(fiber.StatusNoContent, "")
 	}
 }
 

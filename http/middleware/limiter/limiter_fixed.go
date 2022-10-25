@@ -74,7 +74,7 @@ func (FixedWindow) New(cfg Config) http.HandlerFunc {
 		if remaining < 0 {
 			// Return response with Retry-After header
 			// https://tools.ietf.org/html/rfc6584
-			c.Response().Header(fiber.HeaderRetryAfter, strconv.FormatUint(resetInSec, 10))
+			c.SetHeader(fiber.HeaderRetryAfter, strconv.FormatUint(resetInSec, 10))
 
 			// Call LimitReached handler
 			return cfg.LimitReached(c)
@@ -85,8 +85,8 @@ func (FixedWindow) New(cfg Config) http.HandlerFunc {
 		err := c.Next()
 
 		// Check for SkipFailedRequests and SkipSuccessfulRequests
-		if (cfg.SkipSuccessfulRequests && c.Response().StatusCode() < fiber.StatusBadRequest) ||
-			(cfg.SkipFailedRequests && c.Response().StatusCode() >= fiber.StatusBadRequest) {
+		if (cfg.SkipSuccessfulRequests && c.StatusCode() < fiber.StatusBadRequest) ||
+			(cfg.SkipFailedRequests && c.StatusCode() >= fiber.StatusBadRequest) {
 			// Lock entry
 			mux.Lock()
 			e = manager.get(key)
@@ -98,9 +98,9 @@ func (FixedWindow) New(cfg Config) http.HandlerFunc {
 		}
 
 		// We can continue, update RateLimit headers
-		c.Response().Header(xRateLimitLimit, max)
-		c.Response().Header(xRateLimitRemaining, strconv.Itoa(remaining))
-		c.Response().Header(xRateLimitReset, strconv.FormatUint(resetInSec, 10))
+		c.SetHeader(xRateLimitLimit, max)
+		c.SetHeader(xRateLimitRemaining, strconv.Itoa(remaining))
+		c.SetHeader(xRateLimitReset, strconv.FormatUint(resetInSec, 10))
 
 		return err
 	}

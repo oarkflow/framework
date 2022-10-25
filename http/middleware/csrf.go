@@ -249,7 +249,7 @@ func Csrf(config ...ConfigCsrf) http.HandlerFunc {
 
 		// Protect clients from caching the response by telling the browser
 		// a new header value is generated
-		c.Response().Vary(fiber.HeaderCookie)
+		c.Vary(fiber.HeaderCookie)
 
 		// Store token in context if set
 		if cfg.ContextKey != "" {

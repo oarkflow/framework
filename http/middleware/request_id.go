@@ -76,7 +76,7 @@ func RequestID(config ...ConfigRequestID) http.HandlerFunc {
 		rid := c.Header(cfg.Header, cfg.Generator())
 
 		// Set new id to response header
-		c.Response().Header(cfg.Header, rid)
+		c.SetHeader(cfg.Header, rid)
 
 		// Add the request ID to locals
 		c.WithValue(cfg.ContextKey, rid)

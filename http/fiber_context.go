@@ -1,6 +1,8 @@
 package http
 
 import (
+	"fmt"
+	"mime/multipart"
 	"net/http"
 	"time"
 
@@ -12,16 +14,12 @@ type FiberContext struct {
 	instance *fiber.Ctx
 }
 
+func (c *FiberContext) Origin() any {
+	return c.instance.Request()
+}
+
 func NewFiberContext(ctx *fiber.Ctx) contracthttp.Context {
 	return &FiberContext{ctx}
-}
-
-func (c *FiberContext) Request() contracthttp.Request {
-	return NewFiberRequest(c.instance)
-}
-
-func (c *FiberContext) Response() contracthttp.Response {
-	return NewFiberResponse(c.instance)
 }
 
 func (c *FiberContext) WithValue(key string, value any) {
@@ -60,13 +58,16 @@ func (c *FiberContext) Bind(obj any) error {
 	return nil
 }
 
-func (c *FiberContext) File(name string) (contracthttp.File, error) {
-	file, err := c.instance.FormFile(name)
+func (c *FiberContext) SaveFile(name string, dst string) error {
+	file, err := c.File(name)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	return c.instance.SaveFile(file, dst)
+}
 
-	return &FiberFile{instance: c.instance, file: file}, nil
+func (c *FiberContext) File(name string) (*multipart.FileHeader, error) {
+	return c.instance.FormFile(name)
 }
 
 func (c *FiberContext) Header(key, defaultValue string) string {
@@ -149,4 +150,37 @@ func (c *FiberContext) Secure() bool {
 
 func (c *FiberContext) Ip() string {
 	return c.instance.IP()
+}
+
+func (c *FiberContext) String(code int, format string, values ...any) error {
+	return c.instance.Status(code).SendString(fmt.Sprintf(format, values...))
+}
+
+func (c *FiberContext) Json(code int, obj any) error {
+	return c.instance.Status(code).JSON(obj)
+}
+
+func (c *FiberContext) SendFile(filepath string, compress ...bool) error {
+	return c.instance.SendFile(filepath, compress...)
+}
+
+func (c *FiberContext) Download(filepath, filename string) error {
+	return c.instance.Download(filepath, filename)
+}
+
+func (c *FiberContext) StatusCode() int {
+	return c.instance.Response().StatusCode()
+}
+
+func (c *FiberContext) Render(name string, bind any, layouts ...string) error {
+	return c.instance.Render(name, bind, layouts...)
+}
+
+func (c *FiberContext) SetHeader(key, value string) contracthttp.Context {
+	c.instance.Set(key, value)
+	return c
+}
+
+func (c *FiberContext) Vary(key string, value ...string) {
+	c.instance.Vary(key)
 }

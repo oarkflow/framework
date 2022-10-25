@@ -69,13 +69,13 @@ func Secure(config ...ConfigSecure) http.HandlerFunc {
 			return c.Next()
 		}
 		if cfg.XSSProtection != "" {
-			c.Response().Header(fiber.HeaderXXSSProtection, cfg.XSSProtection)
+			c.SetHeader(fiber.HeaderXXSSProtection, cfg.XSSProtection)
 		}
 		if cfg.ContentTypeNosniff != "" {
-			c.Response().Header(fiber.HeaderXContentTypeOptions, cfg.ContentTypeNosniff)
+			c.SetHeader(fiber.HeaderXContentTypeOptions, cfg.ContentTypeNosniff)
 		}
 		if cfg.XFrameOptions != "" {
-			c.Response().Header(fiber.HeaderXFrameOptions, cfg.XFrameOptions)
+			c.SetHeader(fiber.HeaderXFrameOptions, cfg.XFrameOptions)
 		}
 		//@TODO - Add Secure() only after Gin TLS is identified
 		// if (c.Secure() || (c.Header(fiber.HeaderXForwardedProto, "") == "https")) && cfg.HSTSMaxAge != 0 {
@@ -87,20 +87,20 @@ func Secure(config ...ConfigSecure) http.HandlerFunc {
 			if cfg.HSTSPreloadEnabled {
 				subdomains = fmt.Sprintf("%s; preload", subdomains)
 			}
-			c.Response().Header(fiber.HeaderStrictTransportSecurity, fmt.Sprintf("max-age=%d%s", cfg.HSTSMaxAge, subdomains))
+			c.SetHeader(fiber.HeaderStrictTransportSecurity, fmt.Sprintf("max-age=%d%s", cfg.HSTSMaxAge, subdomains))
 		}
 		if cfg.ContentSecurityPolicy != "" {
 			if cfg.CSPReportOnly {
-				c.Response().Header(fiber.HeaderContentSecurityPolicyReportOnly, cfg.ContentSecurityPolicy)
+				c.SetHeader(fiber.HeaderContentSecurityPolicyReportOnly, cfg.ContentSecurityPolicy)
 			} else {
-				c.Response().Header(fiber.HeaderContentSecurityPolicy, cfg.ContentSecurityPolicy)
+				c.SetHeader(fiber.HeaderContentSecurityPolicy, cfg.ContentSecurityPolicy)
 			}
 		}
 		if cfg.ReferrerPolicy != "" {
-			c.Response().Header(fiber.HeaderReferrerPolicy, cfg.ReferrerPolicy)
+			c.SetHeader(fiber.HeaderReferrerPolicy, cfg.ReferrerPolicy)
 		}
 		if cfg.PermissionPolicy != "" {
-			c.Response().Header(fiber.HeaderPermissionsPolicy, cfg.PermissionPolicy)
+			c.SetHeader(fiber.HeaderPermissionsPolicy, cfg.PermissionPolicy)
 
 		}
 		return c.Next()

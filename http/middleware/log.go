@@ -32,7 +32,7 @@ func Log(config ConfigLog) http.HandlerFunc {
 		}
 		if rid == "" {
 			rid = config.RequestID()
-			c.Response().Header(fiber.HeaderXRequestID, rid)
+			c.SetHeader(fiber.HeaderXRequestID, rid)
 		}
 		nextHandler := c.Next()
 		if c.Path() == "/" && c.Path() != c.Path() {
@@ -57,20 +57,20 @@ func Log(config ConfigLog) http.HandlerFunc {
 			Str("request_id", rid).
 			Str("remote_ip", ip).
 			Str("method", c.Method()).
-			Str("host", c.Request().Origin().Host).
+			Str("host", c.Origin().Host).
 			Str("path", c.Path()).
-			Str("protocol", c.Request().Origin().Proto).
-			Int("status", c.Response().StatusCode()).
+			Str("protocol", c.Origin().Proto).
+			Int("status", c.StatusCode()).
 			Str("latency", fmt.Sprintf("%s", time.Since(start))).
 			Str("ua", c.Header(fiber.HeaderUserAgent, ""))
 
 		log.Info().Str("request_id", rid).
 			Str("remote_ip", ip).
 			Str("method", c.Method()).
-			Str("host", c.Request().Origin().Host).
+			Str("host", c.Origin().Host).
 			Str("path", c.Path()).
-			Str("protocol", c.Request().Origin().Proto).
-			Int("status", c.Response().StatusCode()).
+			Str("protocol", c.Origin().Proto).
+			Int("status", c.StatusCode()).
 			Str("latency", fmt.Sprintf("%s", time.Since(start))).
 			Str("ua", c.Header(fiber.HeaderUserAgent, ""))
 
@@ -81,19 +81,19 @@ func Log(config ConfigLog) http.HandlerFunc {
 
 		ctx := logging.Value()
 		switch {
-		case c.Response().StatusCode() >= 500:
+		case c.StatusCode() >= 500:
 			config.Logger.Error().Context(ctx).Msg("server error")
 			log.Error().Context(ctx).Msg("server error")
-		case c.Response().StatusCode() >= 400:
+		case c.StatusCode() >= 400:
 			config.Logger.Error().Context(ctx).Msg("client error")
 			log.Error().Context(ctx).Msg("client error")
-		case c.Response().StatusCode() >= 300:
+		case c.StatusCode() >= 300:
 			config.Logger.Warn().Context(ctx).Msg("redirect")
 			log.Info().Context(ctx).Msg("redirect")
-		case c.Response().StatusCode() >= 200:
+		case c.StatusCode() >= 200:
 			config.Logger.Info().Context(ctx).Msg("success")
 			log.Info().Context(ctx).Msg("success")
-		case c.Response().StatusCode() >= 100:
+		case c.StatusCode() >= 100:
 			config.Logger.Info().Context(ctx).Msg("informative")
 			log.Info().Context(ctx).Msg("informative")
 		default:
