@@ -98,6 +98,9 @@ func (c *ChiContext) Cookie(co *contracthttp.Cookie) {
 }
 
 func (c *ChiContext) StatusCode() int {
+	if c.Req.Response == nil {
+		return 200
+	}
 	if c.Req.Response.StatusCode == 0 {
 		return 200
 	}

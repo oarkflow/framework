@@ -241,7 +241,7 @@ func (r *ChiGroup) getChiRoutesWithMiddlewares() chi.Router {
 	middlewares = append(middlewares, ginGlobalMiddlewares...)
 	r.middlewares = []httpcontract.HandlerFunc{}
 	if len(middlewares) > 0 {
-		r.instance.With(middlewares...)
+		return r.instance.With(middlewares...)
 	}
 	return r.instance
 }
