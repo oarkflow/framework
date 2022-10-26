@@ -40,7 +40,12 @@ func (r *Memory) Get(key string, def interface{}) interface{} {
 func (r *Memory) GetBool(key string, def bool) bool {
 	res := r.Get(key, def)
 	if val, ok := res.(string); ok {
-		return val == "1"
+		switch val {
+		case "0", "false":
+			return false
+		case "1", "true":
+			return true
+		}
 	}
 
 	return res.(bool)
@@ -61,7 +66,13 @@ func (r *Memory) GetInt(key string, def int) int {
 }
 
 func (r *Memory) GetString(key string, def string) string {
-	return r.Get(key, def).(string)
+	data := r.Get(key, def)
+	switch d := data.(type) {
+	case []byte:
+		return string(d)
+	default:
+		return fmt.Sprintf("%v", d)
+	}
 }
 
 // Has Check an item exists in the cache.

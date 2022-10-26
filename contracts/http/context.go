@@ -32,7 +32,7 @@ type Context interface {
 	// Form Retrieve a form string item form the post: /users POST:id=1
 	Form(key, defaultValue string) string
 	Bind(obj any) error
-
+	Status(code int) Context
 	AbortWithStatus(code int)
 	Next() error
 

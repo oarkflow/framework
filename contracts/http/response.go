@@ -6,8 +6,8 @@ type Json map[string]any
 
 type Response interface {
 	view.View
-	String(code int, format string, values ...any) error
-	Json(code int, obj any) error
+	String(format string, values ...any) error
+	Json(obj any) error
 	SendFile(filepath string, compress ...bool) error
 	Download(filepath, filename string) error
 	StatusCode() int

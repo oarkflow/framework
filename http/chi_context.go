@@ -48,10 +48,10 @@ func (c *ChiContext) Origin() *http.Request {
 }
 
 func (c *ChiContext) Secure() bool {
-	if c.Req.Proto == "https" {
-		return true
+	if c.Req.TLS == nil {
+		return false
 	}
-	return false
+	return true
 }
 
 func (c *ChiContext) Cookies(key string, defaultValue ...string) string {
@@ -128,14 +128,17 @@ func (c *ChiContext) Append(field string, values ...string) {
 	}
 }
 
-func (c *ChiContext) String(code int, format string, values ...interface{}) error {
-	c.Res.WriteHeader(code)
+func (c *ChiContext) String(format string, values ...interface{}) error {
 	_, err := c.Res.Write([]byte(fmt.Sprintf(format, values...)))
 	return err
 }
 
-func (c *ChiContext) Json(code int, obj interface{}) error {
+func (c *ChiContext) Status(code int) contracthttp.Context {
 	c.Res.WriteHeader(code)
+	return c
+}
+
+func (c *ChiContext) Json(obj interface{}) error {
 	c.Res.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(obj)
 	if err != nil {
@@ -313,13 +316,13 @@ func (c *ChiContext) Ip() string {
 }
 
 type (
-	// struct for holding response details
+	// ChiResponse struct for holding response details
 	ChiResponse struct {
 		status int
 		size   int
 	}
 
-	// our http.ResponseWriter implementation
+	// ChiResponseWriter our http.ResponseWriter implementation
 	ChiResponseWriter struct {
 		http.ResponseWriter // compose original http.ResponseWriter
 		ChiResponse         *ChiResponse
