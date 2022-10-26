@@ -275,7 +275,7 @@ func (c *ChiContext) Next() error {
 			ResponseWriter: c.Res, // compose original http.ResponseWriter
 			ChiResponse:    responseData,
 		}
-		c.next.ServeHTTP(&lrw, c.Req) // inject our implementation of http.ResponseWriter
+		c.next.ServeHTTP(&lrw, c.Req)
 		c.statusCode = responseData.status
 	}
 	return nil
