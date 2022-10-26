@@ -165,7 +165,10 @@ func (c *ChiContext) SetHeader(key, value string) contracthttp.Context {
 }
 
 func (c *ChiContext) Render(name string, bind any, layouts ...string) error {
-	return c.config.View.Render(c.Res, name, bind, layouts...)
+	if c.config.View != nil {
+		return c.config.View.Render(c.Res, name, bind, layouts...)
+	}
+	return c.Status(500).String("HTMl engine not defined")
 }
 
 func (c *ChiContext) WithValue(key string, value interface{}) {

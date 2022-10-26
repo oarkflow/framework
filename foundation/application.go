@@ -17,6 +17,7 @@ func init() {
 }
 
 type Application struct {
+	Providers []contracts.ServiceProvider
 }
 
 // Boot Register and bootstrap configured service providers.
@@ -41,7 +42,7 @@ func (app *Application) getBaseServiceProviders() []contracts.ServiceProvider {
 
 // getConfiguredServiceProviders Get configured service providers.
 func (app *Application) getConfiguredServiceProviders() []contracts.ServiceProvider {
-	return facades.Config.Get("app.providers").([]contracts.ServiceProvider)
+	return app.Providers
 }
 
 // registerBaseServiceProviders Register base service providers.

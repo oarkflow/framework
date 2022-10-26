@@ -8,7 +8,8 @@ import (
 )
 
 type ServiceProvider struct {
-	Store cache.Store
+	Store  cache.Store
+	Prefix string
 }
 
 func (database *ServiceProvider) Register() {
