@@ -13,7 +13,7 @@ type ServiceProvider struct {
 }
 
 func (database *ServiceProvider) Register() {
-	app := Application{Store: database.Store}
+	app := Application{Store: database.Store, Prefix: database.Prefix}
 	facades.Cache = app.Init()
 }
 

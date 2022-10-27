@@ -7,21 +7,23 @@ import (
 )
 
 type Application struct {
-	server *grpc.Server
+	Engine *grpc.Server
 }
 
 func (app *Application) Init() *Application {
-	app.server = grpc.NewServer()
-
+	if app.Engine != nil {
+		return app
+	}
+	app.Engine = grpc.NewServer()
 	return app
 }
 
 func (app *Application) Server() *grpc.Server {
-	return app.server
+	return app.Engine
 }
 
 func (app *Application) SetServer(server *grpc.Server) {
-	app.server = server
+	app.Engine = server
 }
 
 func (app *Application) Run(host string) error {
@@ -30,7 +32,7 @@ func (app *Application) Run(host string) error {
 		return err
 	}
 
-	if err := app.server.Serve(listen); err != nil {
+	if err := app.Engine.Serve(listen); err != nil {
 		return err
 	}
 
