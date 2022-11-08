@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/RichardKnop/machinery/v2"
-	redisBackend "github.com/RichardKnop/machinery/v2/backends/redis"
-	redisBroker "github.com/RichardKnop/machinery/v2/brokers/redis"
-	"github.com/RichardKnop/machinery/v2/config"
-	"github.com/RichardKnop/machinery/v2/locks/eager"
 	"github.com/gookit/color"
+	"github.com/sujit-baniya/machinery"
+	redisBackend "github.com/sujit-baniya/machinery/backends/redis"
+	redisBroker "github.com/sujit-baniya/machinery/brokers/redis"
+	"github.com/sujit-baniya/machinery/config"
+	"github.com/sujit-baniya/machinery/locks/eager"
 
 	"github.com/sujit-baniya/framework/contracts/event"
 	"github.com/sujit-baniya/framework/contracts/queue"

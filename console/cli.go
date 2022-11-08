@@ -16,9 +16,13 @@ type Cli struct {
 	instance *cli.App
 }
 
-func NewCli() console.Artisan {
+func NewCli(name ...string) console.Artisan {
+	cliName := "Goravel Framework"
+	if len(name) > 0 {
+		cliName = name[0]
+	}
 	instance := cli.NewApp()
-	instance.Name = "Goravel Framework"
+	instance.Name = cliName
 	instance.Usage = support.Version
 	instance.UsageText = "artisan [global options] command [options] [arguments...]"
 

@@ -7,6 +7,7 @@ import (
 )
 
 type ServiceProvider struct {
+	Name string
 }
 
 func (receiver *ServiceProvider) Boot() {
@@ -14,7 +15,7 @@ func (receiver *ServiceProvider) Boot() {
 }
 
 func (receiver *ServiceProvider) Register() {
-	app := Application{}
+	app := Application{Name: receiver.Name}
 	facades.Artisan = app.Init()
 }
 

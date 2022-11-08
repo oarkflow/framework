@@ -5,8 +5,9 @@ import (
 )
 
 type Application struct {
+	Name string
 }
 
 func (app *Application) Init() console.Artisan {
-	return NewCli()
+	return NewCli(app.Name)
 }

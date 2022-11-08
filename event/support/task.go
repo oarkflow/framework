@@ -3,8 +3,8 @@ package support
 import (
 	"fmt"
 
-	"github.com/RichardKnop/machinery/v2"
-	"github.com/RichardKnop/machinery/v2/tasks"
+	"github.com/sujit-baniya/machinery"
+	"github.com/sujit-baniya/machinery/tasks"
 
 	"github.com/sujit-baniya/framework/contracts/event"
 	"github.com/sujit-baniya/framework/facades"
