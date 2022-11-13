@@ -20,5 +20,6 @@ func (receiver *ServiceProvider) Boot() {
 func (receiver *ServiceProvider) registerCommands() {
 	facades.Artisan.Register([]console.Command{
 		&queueConsole.JobMakeCommand{},
+		&queueConsole.QueueWorkCommand{},
 	})
 }

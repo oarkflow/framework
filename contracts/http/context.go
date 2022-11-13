@@ -14,6 +14,7 @@ func (h *HandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 type Context interface {
 	context.Context
+	Context() context.Context
 	WithValue(key string, value any)
 	EngineContext() any
 	Header(key, defaultValue string) string

@@ -1,6 +1,7 @@
 package log
 
 import (
+	"context"
 	"time"
 )
 
@@ -21,19 +22,23 @@ const (
 )
 
 type Log interface {
-	Testing(is bool) Log
-	Debug(args ...any)
-	Debugf(format string, args ...any)
-	Info(args ...any)
-	Infof(format string, args ...any)
-	Warning(args ...any)
-	Warningf(format string, args ...any)
-	Error(args ...any)
-	Errorf(format string, args ...any)
-	Fatal(args ...any)
-	Fatalf(format string, args ...any)
-	Panic(args ...any)
-	Panicf(format string, args ...any)
+	WithContext(ctx context.Context) Writer
+	Writer
+}
+
+type Writer interface {
+	Debug(args ...interface{})
+	Debugf(format string, args ...interface{})
+	Info(args ...interface{})
+	Infof(format string, args ...interface{})
+	Warning(args ...interface{})
+	Warningf(format string, args ...interface{})
+	Error(args ...interface{})
+	Errorf(format string, args ...interface{})
+	Fatal(args ...interface{})
+	Fatalf(format string, args ...interface{})
+	Panic(args ...interface{})
+	Panicf(format string, args ...interface{})
 }
 
 type Logger interface {
@@ -49,7 +54,14 @@ type Hook interface {
 }
 
 type Entry interface {
+	Context() context.Context
+	Level() Level
+	Time() time.Time
+	Message() string
+	// DEPRECATED: use Level()
 	GetLevel() Level
+	// DEPRECATED: use Time()
 	GetTime() time.Time
+	// DEPRECATED: use Message()
 	GetMessage() string
 }

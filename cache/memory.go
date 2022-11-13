@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"context"
 	"fmt"
 	"github.com/sujit-baniya/framework/contracts/cache"
 	contractStorage "github.com/sujit-baniya/framework/contracts/storage"
@@ -20,6 +21,11 @@ func NewMemoryCache(prefix string) cache.Store {
 		Prefix: prefix,
 		Client: storage.New(),
 	}
+}
+
+// WithContext Retrieve an item from the cache by key.
+func (r *Memory) WithContext(ctx context.Context) cache.Store {
+	return r
 }
 
 // Get Retrieve an item from the cache by key.

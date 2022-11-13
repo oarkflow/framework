@@ -138,6 +138,10 @@ func (c *ChiContext) Status(code int) contracthttp.Context {
 	return c
 }
 
+func (c *ChiContext) Context() context.Context {
+	return context.Background()
+}
+
 func (c *ChiContext) Json(obj interface{}) error {
 	c.Res.Header().Set("Content-Type", "application/json")
 	jsonResp, err := json.Marshal(obj)
