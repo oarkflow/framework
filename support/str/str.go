@@ -77,3 +77,17 @@ func (b *Buffer) append(s string) *Buffer {
 
 	return b
 }
+
+func ToCommandSignature(str string) (commandName string) {
+	var words []string
+	l := 0
+	for s := str; s != ""; s = s[l:] {
+		l = strings.IndexFunc(s[1:], unicode.IsUpper) + 1
+		if l <= 0 {
+			l = len(s)
+		}
+		words = append(words, strings.ToLower(s[:l]))
+	}
+	commandName = words[0] + ":" + strings.Join(words[1:], "-")
+	return
+}
