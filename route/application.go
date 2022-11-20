@@ -17,8 +17,13 @@ func (app *Application) Init() *server.Frame {
 }
 
 func NewFrame() *server.Frame {
-	return server.New(
+	template := facades.Config.GetString("view.template")
+	extension := facades.Config.GetString("view.extension")
+	h := server.Default(
 		server.WithHostPorts(facades.Config.GetString("app.host")),
 		server.WithRemoveExtraSlash(true),
+		server.WithRedirectTrailingSlash(true),
 	)
+	h.SetHTMLTemplate(template, extension)
+	return h
 }

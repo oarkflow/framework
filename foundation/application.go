@@ -8,9 +8,9 @@ import (
 	"os"
 )
 
-func Init() *Application {
+func Init(providers ...contracts.ServiceProvider) *Application {
 	//Create a new application instance.
-	app := &Application{}
+	app := &Application{Providers: providers}
 	app.registerBaseServiceProviders()
 	app.bootBaseServiceProviders()
 	return app
