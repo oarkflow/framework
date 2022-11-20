@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/route"
+	"github.com/sujit-baniya/frame/server"
 )
 
-var Route route.Engine
+var Route *server.Frame

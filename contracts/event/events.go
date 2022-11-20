@@ -1,6 +1,5 @@
 package event
 
-//go:generate mockery --name=Instance
 type Instance interface {
 	Register(map[Event][]Listener)
 	Job(event Event, args []Arg) Task
@@ -17,7 +16,6 @@ type Listener interface {
 	Handle(args ...any) error
 }
 
-//go:generate mockery --name=Task
 type Task interface {
 	Dispatch() error
 }

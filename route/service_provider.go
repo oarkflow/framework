@@ -1,12 +1,12 @@
 package route
 
 import (
-	"github.com/sujit-baniya/framework/contracts/route"
+	"github.com/sujit-baniya/frame/server"
 	"github.com/sujit-baniya/framework/facades"
 )
 
 type ServiceProvider struct {
-	Engine route.Engine
+	Engine *server.Frame
 }
 
 func (route *ServiceProvider) Register() {

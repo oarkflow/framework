@@ -2,13 +2,13 @@ package console
 
 import (
 	"errors"
+	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console/command"
 	"os"
 	"strings"
 
 	"github.com/gookit/color"
 
-	"github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/contracts/console/command"
 	"github.com/sujit-baniya/framework/support/file"
 	"github.com/sujit-baniya/framework/support/str"
 )

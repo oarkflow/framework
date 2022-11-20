@@ -2,11 +2,11 @@ package support
 
 import (
 	"fmt"
+	"github.com/sujit-baniya/framework/contracts/event"
 
 	"github.com/sujit-baniya/machinery"
 	"github.com/sujit-baniya/machinery/tasks"
 
-	"github.com/sujit-baniya/framework/contracts/event"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/queue/support"
 )

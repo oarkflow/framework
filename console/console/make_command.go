@@ -2,12 +2,13 @@ package console
 
 import (
 	"errors"
+	"os"
+	"strings"
+
 	"github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/contracts/console/command"
 	"github.com/sujit-baniya/framework/support/file"
 	"github.com/sujit-baniya/framework/support/str"
-	"os"
-	"strings"
 )
 
 type MakeCommand struct {

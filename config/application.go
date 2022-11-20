@@ -1,19 +1,23 @@
 package config
 
 import (
-	"os"
-
-	"github.com/sujit-baniya/framework/contracts/config"
-	"github.com/sujit-baniya/framework/support/file"
-	"github.com/sujit-baniya/framework/testing"
-
 	"github.com/gookit/color"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/support/file"
+	"os"
+
+	"github.com/sujit-baniya/framework/contracts/config"
 )
 
 type Application struct {
 	vip *viper.Viper
+}
+
+func Init() {
+	app := Application{}
+	facades.Config = app.Init()
 }
 
 func (app *Application) Init() config.Config {
@@ -28,9 +32,7 @@ func (app *Application) Init() config.Config {
 	app.vip.AddConfigPath(".")
 	err := app.vip.ReadInConfig()
 	if err != nil {
-		if !testing.RunInTest() {
-			panic(err.Error())
-		}
+		panic(err.Error())
 	}
 	app.vip.SetEnvPrefix("goravel")
 	app.vip.AutomaticEnv()

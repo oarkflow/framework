@@ -3,7 +3,6 @@ package schedule
 import (
 	"github.com/gookit/color"
 	"github.com/robfig/cron/v3"
-
 	"github.com/sujit-baniya/framework/contracts/schedule"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/schedule/support"

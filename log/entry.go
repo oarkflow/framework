@@ -2,9 +2,8 @@ package log
 
 import (
 	"context"
-	"time"
-
 	"github.com/sujit-baniya/framework/contracts/log"
+	"time"
 )
 
 type Entry struct {

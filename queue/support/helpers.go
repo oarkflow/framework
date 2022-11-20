@@ -3,6 +3,8 @@ package support
 import (
 	"errors"
 	"fmt"
+	"github.com/sujit-baniya/framework/contracts/event"
+	"github.com/sujit-baniya/framework/contracts/queue"
 
 	"github.com/gookit/color"
 	"github.com/sujit-baniya/machinery"
@@ -11,8 +13,6 @@ import (
 	"github.com/sujit-baniya/machinery/config"
 	"github.com/sujit-baniya/machinery/locks/eager"
 
-	"github.com/sujit-baniya/framework/contracts/event"
-	"github.com/sujit-baniya/framework/contracts/queue"
 	"github.com/sujit-baniya/framework/facades"
 )
 

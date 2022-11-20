@@ -1,19 +1,19 @@
 package foundation
 
 import (
-	"os"
-
 	"github.com/sujit-baniya/framework/config"
+	"github.com/sujit-baniya/framework/console"
 	"github.com/sujit-baniya/framework/contracts"
 	"github.com/sujit-baniya/framework/facades"
+	"os"
 )
 
-func init() {
+func Init() *Application {
 	//Create a new application instance.
-	app := Application{}
-
+	app := &Application{}
 	app.registerBaseServiceProviders()
 	app.bootBaseServiceProviders()
+	return app
 }
 
 type Application struct {
@@ -37,6 +37,7 @@ func (app *Application) bootArtisan() {
 func (app *Application) getBaseServiceProviders() []contracts.ServiceProvider {
 	return []contracts.ServiceProvider{
 		&config.ServiceProvider{},
+		&console.ServiceProvider{},
 	}
 }
 

@@ -2,7 +2,6 @@ package orm
 
 import "context"
 
-//go:generate mockery --name=Orm
 type Orm interface {
 	Connection(name string) Orm
 	Query() DB
@@ -10,13 +9,11 @@ type Orm interface {
 	WithContext(ctx context.Context) Orm
 }
 
-//go:generate mockery --name=DB
 type DB interface {
 	Query
 	Begin() (Transaction, error)
 }
 
-//go:generate mockery --name=Transaction
 type Transaction interface {
 	Query
 	Commit() error

@@ -3,15 +3,14 @@ package console
 import (
 	"database/sql"
 	"errors"
+	"github.com/sujit-baniya/framework/database/support"
+	"github.com/sujit-baniya/framework/facades"
 
 	"github.com/sujit-baniya/migrate"
 	"github.com/sujit-baniya/migrate/database/mysql"
 	"github.com/sujit-baniya/migrate/database/postgres"
 	"github.com/sujit-baniya/migrate/database/sqlite3"
 	"github.com/sujit-baniya/migrate/database/sqlserver"
-
-	"github.com/sujit-baniya/framework/database/support"
-	"github.com/sujit-baniya/framework/facades"
 )
 
 func getMigrate() (*migrate.Migrate, error) {

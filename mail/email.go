@@ -3,12 +3,12 @@ package mail
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/sujit-baniya/framework/contracts/mail"
+	contractqueue "github.com/sujit-baniya/framework/contracts/queue"
 	"net/smtp"
 
 	"github.com/jordan-wright/email"
 
-	"github.com/sujit-baniya/framework/contracts/mail"
-	contractqueue "github.com/sujit-baniya/framework/contracts/queue"
 	"github.com/sujit-baniya/framework/facades"
 )
 

@@ -3,12 +3,12 @@ package cache
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/sujit-baniya/framework/contracts/cache"
 	contractStorage "github.com/sujit-baniya/framework/contracts/storage"
 	"github.com/sujit-baniya/framework/storage"
-
-	"strconv"
-	"time"
 )
 
 type Memory struct {

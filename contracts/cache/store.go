@@ -5,7 +5,6 @@ import (
 	"time"
 )
 
-//go:generate mockery --name=Store
 type Store interface {
 	WithContext(ctx context.Context) Store
 	//Get Retrieve an item from the cache by key.

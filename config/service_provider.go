@@ -9,7 +9,9 @@ type ServiceProvider struct {
 
 func (config *ServiceProvider) Register() {
 	app := Application{}
-	facades.Config = app.Init()
+	if facades.Config == nil {
+		facades.Config = app.Init()
+	}
 }
 
 func (config *ServiceProvider) Boot() {

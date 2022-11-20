@@ -1,10 +1,11 @@
 package storage
 
 import (
-	"github.com/sujit-baniya/framework/utils"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/sujit-baniya/framework/utils"
 )
 
 // Config defines the config for storage.

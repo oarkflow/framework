@@ -3,8 +3,8 @@ package log
 import (
 	"context"
 	"errors"
+	log2 "github.com/sujit-baniya/framework/contracts/log"
 
-	"github.com/sujit-baniya/framework/contracts/log"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/log/logger"
 
@@ -14,10 +14,10 @@ import (
 
 type Logrus struct {
 	instance *logrus.Logger
-	log.Writer
+	log2.Writer
 }
 
-func NewLogrus(logger *logrus.Logger, writer log.Writer) log.Log {
+func NewLogrus(logger *logrus.Logger, writer log2.Writer) log2.Log {
 	return &Logrus{
 		instance: logger,
 		Writer:   writer,
@@ -42,7 +42,7 @@ func logrusInstance() *logrus.Logger {
 	return instance
 }
 
-func (r *Logrus) WithContext(ctx context.Context) log.Writer {
+func (r *Logrus) WithContext(ctx context.Context) log2.Writer {
 	switch r.Writer.(type) {
 	case *Writer:
 		return NewWriter(r.instance.WithContext(ctx))
@@ -55,7 +55,7 @@ type Writer struct {
 	instance *logrus.Entry
 }
 
-func NewWriter(instance *logrus.Entry) log.Writer {
+func NewWriter(instance *logrus.Entry) log2.Writer {
 	return &Writer{instance: instance}
 }
 
@@ -114,7 +114,7 @@ func registerHook(instance *logrus.Logger, channel string) error {
 	var hook logrus.Hook
 	var err error
 	switch driver {
-	case log.StackDriver:
+	case log2.StackDriver:
 		for _, stackChannel := range facades.Config.Get(channelPath + ".channels").([]string) {
 			if stackChannel == channel {
 				return errors.New("stack drive can't include self channel")
@@ -126,20 +126,20 @@ func registerHook(instance *logrus.Logger, channel string) error {
 		}
 
 		return nil
-	case log.SingleDriver:
+	case log2.SingleDriver:
 		logLogger := &logger.Single{}
 		hook, err = logLogger.Handle(channelPath)
 		if err != nil {
 			return err
 		}
-	case log.DailyDriver:
+	case log2.DailyDriver:
 		logLogger := &logger.Daily{}
 		hook, err = logLogger.Handle(channelPath)
 		if err != nil {
 			return err
 		}
-	case log.CustomDriver:
-		logLogger := facades.Config.Get(channelPath + ".via").(log.Logger)
+	case log2.CustomDriver:
+		logLogger := facades.Config.Get(channelPath + ".via").(log2.Logger)
 		logHook, err := logLogger.Handle(channelPath)
 		if err != nil {
 			return err
@@ -156,7 +156,7 @@ func registerHook(instance *logrus.Logger, channel string) error {
 }
 
 type Hook struct {
-	instance log.Hook
+	instance log2.Hook
 }
 
 func (h *Hook) Levels() []logrus.Level {
@@ -172,7 +172,7 @@ func (h *Hook) Levels() []logrus.Level {
 func (h *Hook) Fire(entry *logrus.Entry) error {
 	return h.instance.Fire(&Entry{
 		ctx:     entry.Context,
-		level:   log.Level(entry.Level),
+		level:   log2.Level(entry.Level),
 		time:    entry.Time,
 		message: entry.Message,
 	})

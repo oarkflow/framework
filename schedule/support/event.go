@@ -1,9 +1,8 @@
 package support
 
 import (
-	"strings"
-
 	"github.com/sujit-baniya/framework/contracts/schedule"
+	"strings"
 )
 
 type Event struct {

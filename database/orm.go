@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	contractsorm "github.com/sujit-baniya/framework/contracts/database/orm"
-	"github.com/sujit-baniya/framework/facades"
-
 	"github.com/gookit/color"
 	"github.com/pkg/errors"
+
+	contractsorm "github.com/sujit-baniya/framework/contracts/database/orm"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type Orm struct {

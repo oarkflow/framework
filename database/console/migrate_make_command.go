@@ -2,7 +2,6 @@ package console
 
 import (
 	"github.com/gookit/color"
-
 	"github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/contracts/console/command"
 )

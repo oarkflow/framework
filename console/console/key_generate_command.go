@@ -2,13 +2,13 @@ package console
 
 import (
 	"errors"
-	"io/ioutil"
+	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console/command"
+	"os"
 	"strings"
 
 	"github.com/gookit/color"
 
-	"github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/contracts/console/command"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/support/str"
 )
@@ -72,14 +72,14 @@ func (receiver *KeyGenerateCommand) setKeyInEnvironmentFile(key string) error {
 
 // writeNewEnvironmentFileWith Write a new environment file with the given key.
 func (receiver *KeyGenerateCommand) writeNewEnvironmentFileWith(key string) error {
-	content, err := ioutil.ReadFile(".env")
+	content, err := os.ReadFile(".env")
 	if err != nil {
 		return err
 	}
 
 	newContent := strings.Replace(string(content), "APP_KEY="+facades.Config.GetString("app.key"), "APP_KEY="+key, 1)
 
-	err = ioutil.WriteFile(".env", []byte(newContent), 0644)
+	err = os.WriteFile(".env", []byte(newContent), 0644)
 	if err != nil {
 		return err
 	}
