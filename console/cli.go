@@ -7,7 +7,7 @@ import (
 	"github.com/gookit/color"
 	"github.com/urfave/cli/v2"
 
-	console2 "github.com/sujit-baniya/framework/contracts/console"
+	"github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/contracts/console/command"
 	"github.com/sujit-baniya/framework/support"
 )
@@ -16,7 +16,7 @@ type Cli struct {
 	instance *cli.App
 }
 
-func NewCli(name ...string) console2.Artisan {
+func NewCli(name ...string) console.Artisan {
 	cliName := "Goravel Framework"
 	if len(name) > 0 {
 		cliName = name[0]
@@ -29,7 +29,7 @@ func NewCli(name ...string) console2.Artisan {
 	return &Cli{instance}
 }
 
-func (c *Cli) Register(commands []console2.Command) {
+func (c *Cli) Register(commands []console.Command) {
 	for _, item := range commands {
 		item := item
 		cliCommand := cli.Command{
@@ -43,6 +43,15 @@ func (c *Cli) Register(commands []console2.Command) {
 		cliCommand.Category = item.Extend().Category
 		cliCommand.Flags = flagsToCliFlags(item.Extend().Flags)
 		c.instance.Commands = append(c.instance.Commands, &cliCommand)
+	}
+}
+
+func (c *Cli) Unregister(command string) {
+	for idx, v := range c.instance.Commands {
+		if v.Name == command {
+			c.instance.Commands = append(c.instance.Commands[0:idx], c.instance.Commands[idx+1:]...)
+			break
+		}
 	}
 }
 

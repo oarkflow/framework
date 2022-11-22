@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"gorm.io/gorm"
 
 	"github.com/gookit/color"
 	"github.com/pkg/errors"
@@ -16,15 +17,17 @@ type Orm struct {
 	connection      string
 	defaultInstance contractsorm.DB
 	instances       map[string]contractsorm.DB
+	config          *gorm.Config
+	disableLog      bool
 }
 
-func NewOrm(ctx context.Context) contractsorm.Orm {
-	orm := &Orm{ctx: ctx}
+func NewOrm(ctx context.Context, config *gorm.Config, disableLog bool) contractsorm.Orm {
+	orm := &Orm{ctx: ctx, config: config, disableLog: disableLog}
 
-	return orm.Connection("")
+	return orm.Connection("", config, disableLog)
 }
 
-func (r *Orm) Connection(name string) contractsorm.Orm {
+func (r *Orm) Connection(name string, config *gorm.Config, disableLog bool) contractsorm.Orm {
 	defaultConnection := facades.Config.GetString("database.default")
 	if name == "" {
 		name = defaultConnection
@@ -39,7 +42,7 @@ func (r *Orm) Connection(name string) contractsorm.Orm {
 		return r
 	}
 
-	gorm, err := NewGormDB(r.ctx, name)
+	gorm, err := NewGormDB(r.ctx, name, config, disableLog)
 	if err != nil {
 		color.Redln(fmt.Sprintf("[Orm] Init connection error, %v", err))
 
@@ -61,7 +64,7 @@ func (r *Orm) Connection(name string) contractsorm.Orm {
 func (r *Orm) Query() contractsorm.DB {
 	if r.connection == "" {
 		if r.defaultInstance == nil {
-			r.Connection("")
+			r.Connection("", r.config, r.disableLog)
 		}
 
 		return r.defaultInstance
@@ -95,5 +98,5 @@ func (r *Orm) Transaction(txFunc func(tx contractsorm.Transaction) error) error 
 }
 
 func (r *Orm) WithContext(ctx context.Context) contractsorm.Orm {
-	return NewOrm(ctx)
+	return NewOrm(ctx, r.config, r.disableLog)
 }

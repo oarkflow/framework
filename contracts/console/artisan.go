@@ -4,6 +4,9 @@ type Artisan interface {
 	//Register commands.
 	Register(commands []Command)
 
+	//Unregister command
+	Unregister(command string)
+
 	//Call Run an Artisan console command by name.
 	Call(command string)
 

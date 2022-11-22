@@ -4,20 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
-	"os"
-	"time"
-
+	"github.com/sujit-baniya/framework/contracts/database/orm"
+	"github.com/sujit-baniya/framework/database/support"
+	"github.com/sujit-baniya/framework/facades"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	gormLogger "gorm.io/gorm/logger"
-
-	"github.com/sujit-baniya/framework/contracts/database/orm"
-	"github.com/sujit-baniya/framework/database/support"
-	"github.com/sujit-baniya/framework/facades"
+	"log"
+	"os"
+	"time"
 )
 
 type GormDB struct {
@@ -25,8 +23,8 @@ type GormDB struct {
 	instance *gorm.DB
 }
 
-func NewGormDB(ctx context.Context, connection string) (orm.DB, error) {
-	db, err := NewGormInstance(connection)
+func NewGormDB(ctx context.Context, connection string, config *gorm.Config, disableLog bool) (orm.DB, error) {
+	db, err := NewGormInstance(connection, config, disableLog)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +42,9 @@ func NewGormDB(ctx context.Context, connection string) (orm.DB, error) {
 	}, nil
 }
 
-func NewGormInstance(connection string) (*gorm.DB, error) {
+func NewGormInstance(connection string, config *gorm.Config, disableLog bool) (*gorm.DB, error) {
+	var cfg *gorm.Config
+
 	gormConfig, err := getGormConfig(connection)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("init gorm config error: %v", err))
@@ -52,7 +52,27 @@ func NewGormInstance(connection string) (*gorm.DB, error) {
 	if gormConfig == nil {
 		return nil, nil
 	}
+	if config == nil {
+		cfg = &gorm.Config{
+			DisableForeignKeyConstraintWhenMigrating: true,
+			SkipDefaultTransaction:                   true,
+		}
+		if !disableLog {
+			logger, logLevel := getLogger()
+			cfg.Logger = logger.LogMode(logLevel)
+		}
+	} else {
+		cfg = config
+		if cfg.Logger == nil && !disableLog {
+			logger, logLevel := getLogger()
+			cfg.Logger = logger.LogMode(logLevel)
+		}
+	}
 
+	return gorm.Open(gormConfig, cfg)
+}
+
+func getLogger() (gormLogger.Interface, gormLogger.LogLevel) {
 	var logLevel gormLogger.LogLevel
 	if facades.Config.GetBool("app.debug") {
 		logLevel = gormLogger.Info
@@ -66,12 +86,7 @@ func NewGormInstance(connection string) (*gorm.DB, error) {
 		IgnoreRecordNotFoundError: true,
 		Colorful:                  true,
 	})
-
-	return gorm.Open(gormConfig, &gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: true,
-		SkipDefaultTransaction:                   true,
-		Logger:                                   logger.LogMode(logLevel),
-	})
+	return logger, logLevel
 }
 
 func (r *GormDB) Begin() (orm.Transaction, error) {

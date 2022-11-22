@@ -1,9 +1,12 @@
 package orm
 
-import "context"
+import (
+	"context"
+	"gorm.io/gorm"
+)
 
 type Orm interface {
-	Connection(name string) Orm
+	Connection(name string, config *gorm.Config, disableLog bool) Orm
 	Query() DB
 	Transaction(txFunc func(tx Transaction) error) error
 	WithContext(ctx context.Context) Orm

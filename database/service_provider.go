@@ -4,13 +4,16 @@ import (
 	consolecontract "github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/database/console"
 	"github.com/sujit-baniya/framework/facades"
+	"gorm.io/gorm"
 )
 
 type ServiceProvider struct {
+	Config     *gorm.Config
+	DisableLog bool
 }
 
 func (database *ServiceProvider) Register() {
-	app := Application{}
+	app := Application{Config: database.Config, DisableLog: database.DisableLog}
 	facades.Orm = app.Init()
 }
 
