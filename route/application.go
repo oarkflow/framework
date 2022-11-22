@@ -24,6 +24,7 @@ func NewFrame() *server.Frame {
 		server.WithRemoveExtraSlash(true),
 		server.WithRedirectTrailingSlash(true),
 	)
+	h.Name = facades.Config.GetString("app.name")
 	h.SetHTMLTemplate(template, extension)
 	return h
 }
