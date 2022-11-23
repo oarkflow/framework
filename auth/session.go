@@ -15,22 +15,22 @@ import (
 	"github.com/spf13/cast"
 )
 
-type Application struct {
+type Session struct {
 	guard string
 }
 
-func NewApplication(guard string) contractauth.Auth {
-	return &Application{
+func NewSession(guard string) contractauth.Auth {
+	return &Session{
 		guard: guard,
 	}
 }
 
-func (app *Application) Guard(name string) contractauth.Auth {
-	return NewApplication(name)
+func (app *Session) Guard(name string) contractauth.Auth {
+	return NewAuth(name)
 }
 
 // User need parse token first.
-func (app *Application) User(ctx *frame.Context, user any) error {
+func (app *Session) User(ctx *frame.Context, user any) error {
 	auth, ok := ctx.Value(ctxKey).(Auth)
 	if !ok || auth[app.guard] == nil {
 		return ErrorParseTokenFirst
@@ -48,7 +48,7 @@ func (app *Application) User(ctx *frame.Context, user any) error {
 	return nil
 }
 
-func (app *Application) Parse(ctx *frame.Context, token string) error {
+func (app *Session) Parse(ctx *frame.Context, token string) error {
 	token = strings.ReplaceAll(token, "Bearer ", "")
 	if tokenIsDisabled(token) {
 		return ErrorTokenDisabled
@@ -86,7 +86,7 @@ func (app *Application) Parse(ctx *frame.Context, token string) error {
 	return nil
 }
 
-func (app *Application) Login(ctx *frame.Context, user any) (token string, err error) {
+func (app *Session) Login(ctx *frame.Context, user any) (token string, err error) {
 	t := reflect.TypeOf(user).Elem()
 	v := reflect.ValueOf(user).Elem()
 	for i := 0; i < t.NumField(); i++ {
@@ -108,7 +108,7 @@ func (app *Application) Login(ctx *frame.Context, user any) (token string, err e
 	return "", ErrorNoPrimaryKeyField
 }
 
-func (app *Application) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
+func (app *Session) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
 	jwtSecret := facades.Config.GetString("jwt.secret")
 	if jwtSecret == "" {
 		return "", ErrorEmptySecret
@@ -138,7 +138,7 @@ func (app *Application) LoginUsingID(ctx *frame.Context, id any) (token string, 
 }
 
 // Refresh need parse token first.
-func (app *Application) Refresh(ctx *frame.Context) (token string, err error) {
+func (app *Session) Refresh(ctx *frame.Context) (token string, err error) {
 	auth, ok := ctx.Value(ctxKey).(Auth)
 	if !ok || auth[app.guard] == nil {
 		return "", ErrorParseTokenFirst
@@ -157,7 +157,7 @@ func (app *Application) Refresh(ctx *frame.Context) (token string, err error) {
 	return app.LoginUsingID(ctx, auth[app.guard].Claims.Key)
 }
 
-func (app *Application) Logout(ctx *frame.Context) error {
+func (app *Session) Logout(ctx *frame.Context) error {
 	auth, ok := ctx.Value(ctxKey).(Auth)
 	if !ok || auth[app.guard] == nil || auth[app.guard].Token == "" {
 		return nil
@@ -180,7 +180,7 @@ func (app *Application) Logout(ctx *frame.Context) error {
 	return nil
 }
 
-func (app *Application) makeAuthContext(ctx *frame.Context, claims *Claims, token string) {
+func (app *Session) makeAuthContext(ctx *frame.Context, claims *Claims, token string) {
 	ctx.Set(ctxKey, Auth{
 		app.guard: {claims, token},
 	})

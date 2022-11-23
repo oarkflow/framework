@@ -15,22 +15,49 @@ import (
 	"github.com/spf13/cast"
 )
 
-type Application struct {
+const ctxKey = "GoravelAuth"
+
+var (
+	unit = time.Minute
+
+	ErrorRefreshTimeExceeded = errors.New("refresh time exceeded")
+	ErrorTokenExpired        = errors.New("token expired")
+	ErrorNoPrimaryKeyField   = errors.New("the primaryKey field was not found in the model, set primaryKey like orm.Model")
+	ErrorEmptySecret         = errors.New("secret is required")
+	ErrorTokenDisabled       = errors.New("token is disabled")
+	ErrorParseTokenFirst     = errors.New("parse token first")
+	ErrorInvalidClaims       = errors.New("invalid claims")
+	ErrorInvalidToken        = errors.New("invalid token")
+)
+
+type Claims struct {
+	Key string `json:"key"`
+	jwt.RegisteredClaims
+}
+
+type Guard struct {
+	Claims *Claims
+	Token  string
+}
+
+type Auth map[string]*Guard
+
+type Jwt struct {
 	guard string
 }
 
-func NewApplication(guard string) contractauth.Auth {
-	return &Application{
+func NewJwt(guard string) contractauth.Auth {
+	return &Jwt{
 		guard: guard,
 	}
 }
 
-func (app *Application) Guard(name string) contractauth.Auth {
-	return NewApplication(name)
+func (app *Jwt) Guard(name string) contractauth.Auth {
+	return NewAuth(name)
 }
 
 // User need parse token first.
-func (app *Application) User(ctx *frame.Context, user any) error {
+func (app *Jwt) User(ctx *frame.Context, user any) error {
 	auth, ok := ctx.Value(ctxKey).(Auth)
 	if !ok || auth[app.guard] == nil {
 		return ErrorParseTokenFirst
@@ -48,7 +75,7 @@ func (app *Application) User(ctx *frame.Context, user any) error {
 	return nil
 }
 
-func (app *Application) Parse(ctx *frame.Context, token string) error {
+func (app *Jwt) Parse(ctx *frame.Context, token string) error {
 	token = strings.ReplaceAll(token, "Bearer ", "")
 	if tokenIsDisabled(token) {
 		return ErrorTokenDisabled
@@ -86,7 +113,7 @@ func (app *Application) Parse(ctx *frame.Context, token string) error {
 	return nil
 }
 
-func (app *Application) Login(ctx *frame.Context, user any) (token string, err error) {
+func (app *Jwt) Login(ctx *frame.Context, user any) (token string, err error) {
 	t := reflect.TypeOf(user).Elem()
 	v := reflect.ValueOf(user).Elem()
 	for i := 0; i < t.NumField(); i++ {
@@ -108,7 +135,7 @@ func (app *Application) Login(ctx *frame.Context, user any) (token string, err e
 	return "", ErrorNoPrimaryKeyField
 }
 
-func (app *Application) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
+func (app *Jwt) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
 	jwtSecret := facades.Config.GetString("jwt.secret")
 	if jwtSecret == "" {
 		return "", ErrorEmptySecret
@@ -138,7 +165,7 @@ func (app *Application) LoginUsingID(ctx *frame.Context, id any) (token string, 
 }
 
 // Refresh need parse token first.
-func (app *Application) Refresh(ctx *frame.Context) (token string, err error) {
+func (app *Jwt) Refresh(ctx *frame.Context) (token string, err error) {
 	auth, ok := ctx.Value(ctxKey).(Auth)
 	if !ok || auth[app.guard] == nil {
 		return "", ErrorParseTokenFirst
@@ -157,7 +184,7 @@ func (app *Application) Refresh(ctx *frame.Context) (token string, err error) {
 	return app.LoginUsingID(ctx, auth[app.guard].Claims.Key)
 }
 
-func (app *Application) Logout(ctx *frame.Context) error {
+func (app *Jwt) Logout(ctx *frame.Context) error {
 	auth, ok := ctx.Value(ctxKey).(Auth)
 	if !ok || auth[app.guard] == nil || auth[app.guard].Token == "" {
 		return nil
@@ -180,8 +207,16 @@ func (app *Application) Logout(ctx *frame.Context) error {
 	return nil
 }
 
-func (app *Application) makeAuthContext(ctx *frame.Context, claims *Claims, token string) {
+func (app *Jwt) makeAuthContext(ctx *frame.Context, claims *Claims, token string) {
 	ctx.Set(ctxKey, Auth{
 		app.guard: {claims, token},
 	})
+}
+
+func tokenIsDisabled(token string) bool {
+	return facades.Cache.GetBool(getDisabledCacheKey(token), false)
+}
+
+func getDisabledCacheKey(token string) string {
+	return "jwt:disabled:" + token
 }
