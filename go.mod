@@ -3,9 +3,14 @@ module github.com/sujit-baniya/framework
 go 1.19
 
 require (
+	github.com/aliyun/aliyun-oss-go-sdk v2.2.6+incompatible
+	github.com/aws/aws-sdk-go-v2 v1.9.2
+	github.com/aws/aws-sdk-go-v2/credentials v1.4.3
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.16.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gookit/color v1.5.0
 	github.com/goravel/file-rotatelogs/v2 v2.4.1
+	github.com/h2non/filetype v1.1.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/opentracing/opentracing-go v1.2.0
@@ -18,6 +23,7 @@ require (
 	github.com/sujit-baniya/frame v0.0.6
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migrate v0.0.4
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
 	github.com/urfave/cli/v2 v2.3.0
 	google.golang.org/grpc v1.50.1
 	gorm.io/driver/mysql v1.4.3
@@ -41,11 +47,16 @@ require (
 	github.com/RichardKnop/logging v0.0.0-20190827224416-1a693bdd4fae // indirect
 	github.com/andeya/goutil v0.0.0-20221116101011-706757703b3f // indirect
 	github.com/aws/aws-sdk-go v1.44.132 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.3.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.3.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.7.2 // indirect
+	github.com/aws/smithy-go v1.8.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.6 // indirect
 	github.com/bytedance/gopkg v0.0.0-20221028032628-1c5718bfa764 // indirect
 	github.com/bytedance/sonic v1.5.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/cloudwego/netpoll v0.3.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -60,6 +71,7 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
@@ -88,8 +100,9 @@ require (
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/microsoft/go-mssqldb v0.17.0 // indirect
-	github.com/mitchellh/mapstructure v1.4.2 // indirect
+	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/montanaflynn/stats v0.6.6 // indirect
+	github.com/mozillazg/go-httpheader v0.2.1 // indirect
 	github.com/nyaruka/phonenumbers v1.1.2 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
@@ -118,6 +131,7 @@ require (
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
 	google.golang.org/api v0.102.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221107162902-2d387536bcdd // indirect

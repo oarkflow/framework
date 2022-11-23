@@ -21,7 +21,7 @@ func Init() {
 }
 
 func (app *Application) Init() config.Config {
-	if !file.Exist(".env") {
+	if !file.Exists(".env") {
 		color.Redln("Please create .env and initialize it first\nRun command: \ncp .env.example .env && go run . artisan key:generate")
 		os.Exit(0)
 	}
