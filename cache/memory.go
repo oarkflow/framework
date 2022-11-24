@@ -45,15 +45,27 @@ func (r *Memory) Get(key string, def interface{}) interface{} {
 
 func (r *Memory) GetBool(key string, def bool) bool {
 	res := r.Get(key, def)
-	if val, ok := res.(string); ok {
+	fmt.Println(res)
+	switch val := res.(type) {
+	case string:
 		switch val {
 		case "0", "false":
 			return false
 		case "1", "true":
 			return true
 		}
+	case []byte:
+		if len(val) == 0 {
+			return false
+		}
+		v := string(val)
+		switch v {
+		case "0", "false":
+			return false
+		case "1", "true":
+			return true
+		}
 	}
-
 	return res.(bool)
 }
 

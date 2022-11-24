@@ -5,11 +5,14 @@ import (
 )
 
 type Auth interface {
-	Guard(name string) Auth
 	Parse(ctx *frame.Context, token string) error
-	User(ctx *frame.Context, user interface{}) error
-	Login(ctx *frame.Context, user interface{}) (token string, err error)
+	User(ctx *frame.Context, user User) error
+	Login(ctx *frame.Context, user User) (token string, err error)
 	LoginUsingID(ctx *frame.Context, id interface{}) (token string, err error)
 	Refresh(ctx *frame.Context) (token string, err error)
 	Logout(ctx *frame.Context) error
+}
+
+type User interface {
+	Authenticated() bool
 }

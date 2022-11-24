@@ -47,17 +47,16 @@ type Jwt struct {
 }
 
 func NewJwt(guard string) contractauth.Auth {
-	return &Jwt{
-		guard: guard,
+	if facades.JwtAuth == nil {
+		facades.JwtAuth = &Jwt{
+			guard: guard,
+		}
 	}
-}
-
-func (app *Jwt) Guard(name string) contractauth.Auth {
-	return NewAuth(name)
+	return facades.JwtAuth
 }
 
 // User need parse token first.
-func (app *Jwt) User(ctx *frame.Context, user any) error {
+func (app *Jwt) User(ctx *frame.Context, user contractauth.User) error {
 	auth, ok := ctx.Value(ctxKey).(Auth)
 	if !ok || auth[app.guard] == nil {
 		return ErrorParseTokenFirst
@@ -68,10 +67,12 @@ func (app *Jwt) User(ctx *frame.Context, user any) error {
 	if auth[app.guard].Token == "" {
 		return ErrorTokenExpired
 	}
-	if err := facades.Orm.Query().Find(user, auth[app.guard].Claims.Key); err != nil {
+	if err := facades.Orm.Query().Model(user).Find(user, auth[app.guard].Claims.Key); err != nil {
 		return err
 	}
-
+	if _, ok := ctx.Get(ctx.AuthUserKey); !ok {
+		ctx.Set(ctx.AuthUserKey, user)
+	}
 	return nil
 }
 
@@ -113,7 +114,7 @@ func (app *Jwt) Parse(ctx *frame.Context, token string) error {
 	return nil
 }
 
-func (app *Jwt) Login(ctx *frame.Context, user any) (token string, err error) {
+func (app *Jwt) Login(ctx *frame.Context, user contractauth.User) (token string, err error) {
 	t := reflect.TypeOf(user).Elem()
 	v := reflect.ValueOf(user).Elem()
 	for i := 0; i < t.NumField(); i++ {
@@ -122,12 +123,14 @@ func (app *Jwt) Login(ctx *frame.Context, user any) (token string, err error) {
 				structField := v.Field(i).Type()
 				for j := 0; j < structField.NumField(); j++ {
 					if structField.Field(j).Tag.Get("gorm") == "primaryKey" {
+						ctx.Set(ctx.AuthUserKey, user)
 						return app.LoginUsingID(ctx, v.Field(i).Field(j).Interface())
 					}
 				}
 			}
 		}
 		if t.Field(i).Tag.Get("gorm") == "primaryKey" {
+			ctx.Set(ctx.AuthUserKey, user)
 			return app.LoginUsingID(ctx, v.Field(i).Interface())
 		}
 	}

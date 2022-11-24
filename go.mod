@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.4.3
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.16.1
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/gookit/color v1.5.0
 	github.com/goravel/file-rotatelogs/v2 v2.4.1
 	github.com/h2non/filetype v1.1.3
@@ -20,7 +21,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/viper v1.9.0
-	github.com/sujit-baniya/frame v0.0.13
+	github.com/sujit-baniya/frame v0.0.14
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migrate v0.0.4
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
@@ -52,7 +53,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.7.2 // indirect
 	github.com/aws/smithy-go v1.8.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.6 // indirect
-	github.com/bytedance/gopkg v0.0.0-20221028032628-1c5718bfa764 // indirect
+	github.com/bytedance/gopkg v0.0.0-20221122125632-68358b8ecec6 // indirect
 	github.com/bytedance/sonic v1.5.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -63,7 +64,6 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
 	github.com/go-redsync/redsync/v4 v4.0.4 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -76,6 +76,9 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.2.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/goravel/file-rotatelogs v0.0.0-20211215053220-2ab31dd9575c // indirect
+	github.com/gorilla/context v1.1.1 // indirect
+	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
