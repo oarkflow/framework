@@ -5,6 +5,7 @@ import (
 	"github.com/sujit-baniya/framework/contracts/auth"
 	contractconsole "github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/facades"
+	"sync"
 )
 
 type ServiceProvider struct {
@@ -30,11 +31,42 @@ func (database *ServiceProvider) registerCommands() {
 }
 
 func GetAuth(guard string) auth.Auth {
-	driver := facades.Config.GetString("auth.guards." + guard + ".driver")
-	switch driver {
-	case "jwt":
-		return NewJwt(guard)
-	default:
-		return NewSession(guard)
+	a := Drivers.Get(guard)
+	if a != nil {
+		return a
+	}
+	return Drivers.Get("session")
+}
+
+type drivers struct {
+	driver map[string]auth.Auth
+	mu     *sync.RWMutex
+}
+
+func (d *drivers) Get(guard string) auth.Auth {
+	return d.driver[guard]
+}
+
+func (d *drivers) Add(guard string, auth2 auth.Auth) {
+	d.mu.Lock()
+	d.driver[guard] = auth2
+	d.mu.Unlock()
+}
+
+func (d *drivers) Remove(guard string) {
+	d.mu.Lock()
+	delete(d.driver, guard)
+	d.mu.Unlock()
+}
+
+var Drivers *drivers
+
+func init() {
+	Drivers = &drivers{
+		driver: map[string]auth.Auth{
+			"session": NewSession("session"),
+			"jwt":     NewJwt("web"),
+		},
+		mu: &sync.RWMutex{},
 	}
 }

@@ -45,7 +45,6 @@ func (r *Memory) Get(key string, def interface{}) interface{} {
 
 func (r *Memory) GetBool(key string, def bool) bool {
 	res := r.Get(key, def)
-	fmt.Println(res)
 	switch val := res.(type) {
 	case string:
 		switch val {
