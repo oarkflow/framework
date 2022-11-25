@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/sujit-baniya/frame"
 	"github.com/sujit-baniya/framework/auth/console"
 	"github.com/sujit-baniya/framework/contracts/auth"
 	contractconsole "github.com/sujit-baniya/framework/contracts/console"
@@ -68,5 +69,13 @@ func init() {
 			"jwt":     NewJwt("web"),
 		},
 		mu: &sync.RWMutex{},
+	}
+}
+
+func Logout(ctx *frame.Context) {
+	for _, a := range Drivers.driver {
+		if a != nil {
+			a.Logout(ctx)
+		}
 	}
 }
