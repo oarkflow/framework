@@ -4,6 +4,8 @@ import (
 	"github.com/gookit/color"
 	"github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/contracts/console/command"
+	"github.com/sujit-baniya/framework/database/support"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type MigrateMakeCommand struct {
@@ -23,6 +25,14 @@ func (receiver *MigrateMakeCommand) Description() string {
 func (receiver *MigrateMakeCommand) Extend() command.Extend {
 	return command.Extend{
 		Category: "make",
+		Flags: []command.Flag{
+			{
+				Name:    "connection",
+				Value:   "",
+				Aliases: []string{"c"},
+				Usage:   "connection driver for the database",
+			},
+		},
 	}
 }
 
@@ -37,16 +47,28 @@ func (receiver *MigrateMakeCommand) Handle(ctx console.Context) error {
 
 		return nil
 	}
-
-	// We will attempt to guess the table name if this the migration has
-	// "create" in the name. This will allow us to provide a convenient way
-	// of creating migrations that create new tables for the application.
-	table, create := TableGuesser{}.Guess(name)
-
+	connection := ctx.Option("connection")
 	//Write the migration file to disk.
-	MigrateCreator{}.Create(name, table, create)
+	MigrateCreator{driver: getDriver(connection)}.Create(name)
 
 	color.Green.Printf("Created Migration: %s\n", name)
 
 	return nil
+}
+
+func getDriver(connection string) string {
+	if connection == "" {
+		connection = facades.Config.GetString("database.default")
+	}
+	driver := facades.Config.GetString("database.connections." + connection + ".driver")
+	switch driver {
+	case support.Postgresql:
+		return "postgres"
+	case support.Sqlite:
+		return "sqlite3"
+	case support.Sqlserver:
+		return "sqlserver"
+	default:
+		return "mysql"
+	}
 }
