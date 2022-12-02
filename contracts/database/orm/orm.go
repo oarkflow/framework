@@ -15,6 +15,7 @@ type Orm interface {
 type DB interface {
 	Query
 	Begin() (Transaction, error)
+	Instance() *gorm.DB
 }
 
 type Transaction interface {

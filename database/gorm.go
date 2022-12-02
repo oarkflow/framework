@@ -95,6 +95,10 @@ func (r *GormDB) Begin() (orm.Transaction, error) {
 	return NewGormTransaction(tx), tx.Error
 }
 
+func (r *GormDB) Instance() *gorm.DB {
+	return r.instance
+}
+
 type GormTransaction struct {
 	orm.Query
 	instance *gorm.DB
