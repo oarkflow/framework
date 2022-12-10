@@ -1,7 +1,7 @@
 package schedule
 
 import (
-	"github.com/robfig/cron/v3"
+	"github.com/sujit-baniya/cron"
 )
 
 type Schedule interface {
@@ -19,6 +19,12 @@ type Schedule interface {
 
 	//Unregister schedules.
 	Unregister(id int)
+
+	//PauseEntry schedules.
+	PauseEntry(id int)
+
+	//StartEntry schedules.
+	StartEntry(id int)
 
 	//Run schedules.
 	Run()

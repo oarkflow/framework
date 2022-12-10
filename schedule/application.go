@@ -1,8 +1,9 @@
 package schedule
 
 import (
+	"context"
 	"github.com/gookit/color"
-	"github.com/robfig/cron/v3"
+	"github.com/sujit-baniya/cron"
 	"github.com/sujit-baniya/framework/contracts/schedule"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/schedule/support"
@@ -10,6 +11,7 @@ import (
 
 type Application struct {
 	cron *cron.Cron
+	ctx  context.Context
 }
 
 func (app *Application) Call(callback func()) schedule.Event {
@@ -42,8 +44,28 @@ func (app *Application) Unregister(id int) {
 	}
 }
 
+func (app *Application) PauseEntry(id int) {
+	if app.cron != nil {
+		app.cron.PauseEntry(cron.EntryID(id))
+	}
+}
+
+func (app *Application) StartEntry(id int) {
+	if app.cron != nil {
+		app.cron.StartEntry(cron.EntryID(id))
+	}
+}
+
+func (app *Application) Logs(id int) []string {
+	if app.cron != nil {
+		entry := app.cron.Entry(cron.EntryID(id))
+		return entry.Logs
+	}
+	return nil
+}
+
 func (app *Application) Run() {
-	app.cron.Start()
+	app.cron.Start(app.ctx)
 }
 
 func (app *Application) addEvent(event schedule.Event) (cron.EntryID, error) {
@@ -53,7 +75,7 @@ func (app *Application) addEvent(event schedule.Event) (cron.EntryID, error) {
 	} else if event.GetSkipIfStillRunning() {
 		chain = cron.NewChain(cron.SkipIfStillRunning(&Logger{}))
 	}
-	return app.cron.AddJob(event.GetCron(), chain.Then(app.getJob(event)))
+	return app.cron.AddJob(event.GetTitle(), event.GetCron(), chain.Then(app.getJob(event)))
 }
 
 func (app *Application) addEvents(events []schedule.Event) {
@@ -66,12 +88,13 @@ func (app *Application) addEvents(events []schedule.Event) {
 }
 
 func (app *Application) getJob(event schedule.Event) cron.Job {
-	return cron.FuncJob(func() {
+	return cron.FuncJob(func(ctx context.Context) error {
 		if event.GetCommand() != "" {
 			facades.Artisan.Call(event.GetCommand())
 		} else {
 			event.GetCallback()()
 		}
+		return nil
 	})
 }
 

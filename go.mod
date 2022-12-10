@@ -17,10 +17,10 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
-	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/viper v1.9.0
+	github.com/sujit-baniya/cron v0.0.2
 	github.com/sujit-baniya/frame v0.0.16
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migrate v0.0.4
@@ -108,6 +108,7 @@ require (
 	github.com/mozillazg/go-httpheader v0.2.1 // indirect
 	github.com/nyaruka/phonenumbers v1.1.4 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect

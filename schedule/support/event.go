@@ -6,6 +6,7 @@ import (
 )
 
 type Event struct {
+	Title               string
 	Command             string
 	Callback            func()
 	cron                string
@@ -20,6 +21,10 @@ func (receiver *Event) GetCron() string {
 	}
 
 	return receiver.cron
+}
+
+func (receiver *Event) GetTitle() string {
+	return receiver.Title
 }
 
 func (receiver *Event) GetCommand() string {

@@ -2,6 +2,7 @@ package schedule
 
 type Event interface {
 	GetCron() string
+	GetTitle() string
 	GetCommand() string
 	GetCallback() func()
 	GetSkipIfStillRunning() bool
