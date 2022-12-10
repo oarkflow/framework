@@ -26,6 +26,8 @@ type Schedule interface {
 	//StartEntry schedules.
 	StartEntry(id int)
 
+	Logs(id int) []string
+
 	//Run schedules.
 	Run()
 }
