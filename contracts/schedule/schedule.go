@@ -1,5 +1,9 @@
 package schedule
 
+import (
+	"github.com/robfig/cron/v3"
+)
+
 type Schedule interface {
 	//Call Add a new callback event to the schedule.
 	Call(callback func()) Event
@@ -9,6 +13,12 @@ type Schedule interface {
 
 	//Register schedules.
 	Register(events []Event)
+
+	//RegisterOne schedules.
+	RegisterOne(event Event) (cron.EntryID, error)
+
+	//Unregister schedules.
+	Unregister(id int)
 
 	//Run schedules.
 	Run()
