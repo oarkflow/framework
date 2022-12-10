@@ -5,6 +5,7 @@ import (
 	"github.com/sujit-baniya/framework/console"
 	"github.com/sujit-baniya/framework/contracts"
 	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/support"
 	"os"
 )
 
@@ -26,6 +27,11 @@ func (app *Application) Boot() {
 	app.bootConfiguredServiceProviders()
 
 	app.bootArtisan()
+	app.setRootPath()
+}
+
+func (app *Application) setRootPath() {
+	support.RootPath = getCurrentAbPath()
 }
 
 // bootArtisan Boot artisan command.
