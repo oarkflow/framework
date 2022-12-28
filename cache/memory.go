@@ -29,11 +29,11 @@ func (r *Memory) WithContext(ctx context.Context) cache.Store {
 }
 
 // Get Retrieve an item from the cache by key.
-func (r *Memory) Get(key string, def interface{}) interface{} {
+func (r *Memory) Get(key string, def any) any {
 	val, err := r.Client.Get(r.Prefix + key)
 	if err != nil {
 		switch s := def.(type) {
-		case func() interface{}:
+		case func() any:
 			return s()
 		default:
 			return def
@@ -103,7 +103,7 @@ func (r *Memory) Has(key string) bool {
 }
 
 // Put Store an item in the cache for a given number of seconds.
-func (r *Memory) Put(key string, value interface{}, seconds time.Duration) error {
+func (r *Memory) Put(key string, value any, seconds time.Duration) error {
 	err := r.Client.Set(r.Prefix+key, []byte(fmt.Sprint(value)), seconds)
 	if err != nil {
 		return err
@@ -113,7 +113,7 @@ func (r *Memory) Put(key string, value interface{}, seconds time.Duration) error
 }
 
 // Pull Retrieve an item from the cache and delete it.
-func (r *Memory) Pull(key string, def interface{}) interface{} {
+func (r *Memory) Pull(key string, def any) any {
 	val, err := r.Client.Get(r.Prefix + key)
 	if err != nil {
 		return def
@@ -128,7 +128,7 @@ func (r *Memory) Pull(key string, def interface{}) interface{} {
 }
 
 // Add Store an item in the cache if the key does not exist.
-func (r *Memory) Add(key string, value interface{}, seconds time.Duration) bool {
+func (r *Memory) Add(key string, value any, seconds time.Duration) bool {
 	err := r.Client.Set(r.Prefix+key, []byte(fmt.Sprint(value)), seconds)
 	if err != nil {
 		return false
@@ -138,7 +138,7 @@ func (r *Memory) Add(key string, value interface{}, seconds time.Duration) bool 
 }
 
 // Remember Get an item from the cache, or execute the given Closure and store the result.
-func (r *Memory) Remember(key string, ttl time.Duration, callback func() interface{}) (interface{}, error) {
+func (r *Memory) Remember(key string, ttl time.Duration, callback func() any) (any, error) {
 	val := r.Get(key, nil)
 
 	if val != nil {
@@ -155,7 +155,7 @@ func (r *Memory) Remember(key string, ttl time.Duration, callback func() interfa
 }
 
 // RememberForever Get an item from the cache, or execute the given Closure and store the result forever.
-func (r *Memory) RememberForever(key string, callback func() interface{}) (interface{}, error) {
+func (r *Memory) RememberForever(key string, callback func() any) (any, error) {
 	val := r.Get(key, nil)
 
 	if val != nil {
@@ -172,7 +172,7 @@ func (r *Memory) RememberForever(key string, callback func() interface{}) (inter
 }
 
 // Forever Store an item in the cache indefinitely.
-func (r *Memory) Forever(key string, value interface{}) bool {
+func (r *Memory) Forever(key string, value any) bool {
 	if err := r.Put(key, value, 0); err != nil {
 		return false
 	}

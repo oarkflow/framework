@@ -1,12 +1,15 @@
 package auth
 
 import (
+	"context"
 	"github.com/sujit-baniya/frame"
-	"github.com/sujit-baniya/framework/auth/console"
 	"github.com/sujit-baniya/framework/contracts/auth"
+	"sync"
+
+	"github.com/sujit-baniya/framework/auth/access"
+	"github.com/sujit-baniya/framework/auth/console"
 	contractconsole "github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/facades"
-	"sync"
 )
 
 type ServiceProvider struct {
@@ -14,11 +17,8 @@ type ServiceProvider struct {
 }
 
 func (database *ServiceProvider) Register() {
-	if database.Auth != nil {
-		facades.Auth = database.Auth
-		return
-	}
-	facades.Auth = GetAuth(facades.Config.GetString("auth.defaults.guard"))
+	facades.Auth = NewAuth(facades.Config.GetString("auth.defaults.guard"))
+	facades.Gate = access.NewGate(context.Background())
 }
 
 func (database *ServiceProvider) Boot() {
@@ -28,6 +28,7 @@ func (database *ServiceProvider) Boot() {
 func (database *ServiceProvider) registerCommands() {
 	facades.Artisan.Register([]contractconsole.Command{
 		&console.JwtSecretCommand{},
+		&console.PolicyMakeCommand{},
 	})
 }
 
@@ -66,7 +67,7 @@ func init() {
 	Drivers = &drivers{
 		driver: map[string]auth.Auth{
 			"session": NewSession("session"),
-			"jwt":     NewJwt("web"),
+			"jwt":     NewAuth("web"),
 		},
 		mu: &sync.RWMutex{},
 	}

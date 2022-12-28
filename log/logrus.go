@@ -3,8 +3,7 @@ package log
 import (
 	"context"
 	"errors"
-	log2 "github.com/sujit-baniya/framework/contracts/log"
-
+	"github.com/sujit-baniya/framework/contracts/log"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/log/logger"
 
@@ -14,10 +13,10 @@ import (
 
 type Logrus struct {
 	instance *logrus.Logger
-	log2.Writer
+	log.Writer
 }
 
-func NewLogrus(logger *logrus.Logger, writer log2.Writer) log2.Log {
+func NewLogrus(logger *logrus.Logger, writer log.Writer) log.Log {
 	return &Logrus{
 		instance: logger,
 		Writer:   writer,
@@ -42,7 +41,7 @@ func logrusInstance() *logrus.Logger {
 	return instance
 }
 
-func (r *Logrus) WithContext(ctx context.Context) log2.Writer {
+func (r *Logrus) WithContext(ctx context.Context) log.Writer {
 	switch r.Writer.(type) {
 	case *Writer:
 		return NewWriter(r.instance.WithContext(ctx))
@@ -55,55 +54,55 @@ type Writer struct {
 	instance *logrus.Entry
 }
 
-func NewWriter(instance *logrus.Entry) log2.Writer {
+func NewWriter(instance *logrus.Entry) log.Writer {
 	return &Writer{instance: instance}
 }
 
-func (r *Writer) Debug(args ...interface{}) {
+func (r *Writer) Debug(args ...any) {
 	r.instance.Debug(args...)
 }
 
-func (r *Writer) Debugf(format string, args ...interface{}) {
+func (r *Writer) Debugf(format string, args ...any) {
 	r.instance.Debugf(format, args...)
 }
 
-func (r *Writer) Info(args ...interface{}) {
+func (r *Writer) Info(args ...any) {
 	r.instance.Info(args...)
 }
 
-func (r *Writer) Infof(format string, args ...interface{}) {
+func (r *Writer) Infof(format string, args ...any) {
 	r.instance.Infof(format, args...)
 }
 
-func (r *Writer) Warning(args ...interface{}) {
+func (r *Writer) Warning(args ...any) {
 	r.instance.Warning(args...)
 }
 
-func (r *Writer) Warningf(format string, args ...interface{}) {
+func (r *Writer) Warningf(format string, args ...any) {
 	r.instance.Warningf(format, args...)
 }
 
-func (r *Writer) Error(args ...interface{}) {
+func (r *Writer) Error(args ...any) {
 	r.instance.Error(args...)
 }
 
-func (r *Writer) Errorf(format string, args ...interface{}) {
+func (r *Writer) Errorf(format string, args ...any) {
 	r.instance.Errorf(format, args...)
 }
 
-func (r *Writer) Fatal(args ...interface{}) {
+func (r *Writer) Fatal(args ...any) {
 	r.instance.Fatal(args...)
 }
 
-func (r *Writer) Fatalf(format string, args ...interface{}) {
+func (r *Writer) Fatalf(format string, args ...any) {
 	r.instance.Fatalf(format, args...)
 }
 
-func (r *Writer) Panic(args ...interface{}) {
+func (r *Writer) Panic(args ...any) {
 	r.instance.Panic(args...)
 }
 
-func (r *Writer) Panicf(format string, args ...interface{}) {
+func (r *Writer) Panicf(format string, args ...any) {
 	r.instance.Panicf(format, args...)
 }
 
@@ -114,7 +113,7 @@ func registerHook(instance *logrus.Logger, channel string) error {
 	var hook logrus.Hook
 	var err error
 	switch driver {
-	case log2.StackDriver:
+	case log.StackDriver:
 		for _, stackChannel := range facades.Config.Get(channelPath + ".channels").([]string) {
 			if stackChannel == channel {
 				return errors.New("stack drive can't include self channel")
@@ -126,20 +125,20 @@ func registerHook(instance *logrus.Logger, channel string) error {
 		}
 
 		return nil
-	case log2.SingleDriver:
+	case log.SingleDriver:
 		logLogger := &logger.Single{}
 		hook, err = logLogger.Handle(channelPath)
 		if err != nil {
 			return err
 		}
-	case log2.DailyDriver:
+	case log.DailyDriver:
 		logLogger := &logger.Daily{}
 		hook, err = logLogger.Handle(channelPath)
 		if err != nil {
 			return err
 		}
-	case log2.CustomDriver:
-		logLogger := facades.Config.Get(channelPath + ".via").(log2.Logger)
+	case log.CustomDriver:
+		logLogger := facades.Config.Get(channelPath + ".via").(log.Logger)
 		logHook, err := logLogger.Handle(channelPath)
 		if err != nil {
 			return err
@@ -156,7 +155,7 @@ func registerHook(instance *logrus.Logger, channel string) error {
 }
 
 type Hook struct {
-	instance log2.Hook
+	instance log.Hook
 }
 
 func (h *Hook) Levels() []logrus.Level {
@@ -172,7 +171,7 @@ func (h *Hook) Levels() []logrus.Level {
 func (h *Hook) Fire(entry *logrus.Entry) error {
 	return h.instance.Fire(&Entry{
 		ctx:     entry.Context,
-		level:   log2.Level(entry.Level),
+		level:   log.Level(entry.Level),
 		time:    entry.Time,
 		message: entry.Message,
 	})

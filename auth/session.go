@@ -21,6 +21,10 @@ func NewSession(guard string) contractauth.Auth {
 	return facades.SessionAuth
 }
 
+func (app *Session) Guard(name string) contractauth.Auth {
+	return GetAuth(name)
+}
+
 // User need parse token first.
 func (app *Session) User(ctx *frame.Context, user contractauth.User) error {
 	session := sessions.Default(ctx)

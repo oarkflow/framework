@@ -2,17 +2,17 @@ package support
 
 import (
 	"errors"
-	queue2 "github.com/sujit-baniya/framework/contracts/queue"
+	"github.com/sujit-baniya/framework/contracts/queue"
 
 	"github.com/sujit-baniya/machinery"
 	"github.com/sujit-baniya/machinery/tasks"
 )
 
 type Task struct {
-	Job        queue2.Job
-	Jobs       []queue2.Jobs
+	Job        queue.Job
+	Jobs       []queue.Jobs
 	Chain      bool
-	Args       []queue2.Arg
+	Args       []queue.Arg
 	connection string
 	queue      string
 	server     *machinery.Server
@@ -61,7 +61,7 @@ func (receiver *Task) DispatchSync() error {
 	}
 }
 
-func (receiver *Task) handleSync(job queue2.Job, args []queue2.Arg) error {
+func (receiver *Task) handleSync(job queue.Job, args []queue.Arg) error {
 	var realArgs []any
 	for _, arg := range args {
 		realArgs = append(realArgs, arg.Value)
@@ -70,7 +70,7 @@ func (receiver *Task) handleSync(job queue2.Job, args []queue2.Arg) error {
 	return job.Handle(realArgs...)
 }
 
-func (receiver *Task) handleAsync(job queue2.Job, args []queue2.Arg) error {
+func (receiver *Task) handleAsync(job queue.Job, args []queue.Arg) error {
 	var realArgs []tasks.Arg
 	for _, arg := range args {
 		realArgs = append(realArgs, tasks.Arg{
@@ -90,13 +90,13 @@ func (receiver *Task) handleAsync(job queue2.Job, args []queue2.Arg) error {
 	return nil
 }
 
-func (receiver *Task) OnConnection(connection string) queue2.Task {
+func (receiver *Task) OnConnection(connection string) queue.Task {
 	receiver.connection = connection
 
 	return receiver
 }
 
-func (receiver *Task) OnQueue(queue string) queue2.Task {
+func (receiver *Task) OnQueue(queue string) queue.Task {
 	receiver.queue = queue
 
 	return receiver
