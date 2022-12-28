@@ -2,6 +2,9 @@ package validation
 
 import (
 	"errors"
+	"github.com/sujit-baniya/frame"
+	"github.com/sujit-baniya/framework/contracts/http"
+	"github.com/sujit-baniya/framework/facades"
 	"reflect"
 	"time"
 
@@ -304,4 +307,49 @@ func (r *Validation) existRuleNames() []string {
 	}
 
 	return rules
+}
+
+func Validate(ctx *frame.Context, rules map[string]string, options ...validatecontract.Option) (validatecontract.Validator, error) {
+	if rules == nil || len(rules) == 0 {
+		return nil, errors.New("rules can't be empty")
+	}
+
+	options = append(options, Rules(rules), CustomRules(facades.Validation.Rules()))
+	generateOptions := GenerateOptions(options)
+
+	var v *validate.Validation
+	dataFace, err := validate.FromJSONBytes(ctx.Request.Body())
+	if err != nil {
+		return nil, err
+	}
+	if dataFace == nil {
+		v = validate.NewValidation(dataFace)
+	} else {
+		if generateOptions["prepareForValidation"] != nil {
+			generateOptions["prepareForValidation"].(func(data validatecontract.Data))(NewData(dataFace))
+		}
+
+		v = dataFace.Create()
+	}
+
+	AppendOptions(v, generateOptions)
+
+	return NewValidator(v, dataFace), nil
+}
+
+func ValidateRequest(ctx *frame.Context, request http.FormRequest) (validatecontract.Errors, error) {
+	if err := request.Authorize(ctx); err != nil {
+		return nil, err
+	}
+
+	validator, err := Validate(ctx, request.Rules(), Messages(request.Messages()), Attributes(request.Attributes()), PrepareForValidation(request.PrepareForValidation))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := validator.Bind(request); err != nil {
+		return nil, err
+	}
+
+	return validator.Errors(), nil
 }
