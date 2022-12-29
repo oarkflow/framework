@@ -3,6 +3,7 @@ package validation
 import (
 	"errors"
 	"github.com/sujit-baniya/frame"
+	"github.com/sujit-baniya/frame/pkg/common/adaptor"
 	"github.com/sujit-baniya/framework/contracts/http"
 	"github.com/sujit-baniya/framework/facades"
 	"reflect"
@@ -318,7 +319,11 @@ func Validate(ctx *frame.Context, rules map[string]string, options ...validateco
 	generateOptions := GenerateOptions(options)
 
 	var v *validate.Validation
-	dataFace, err := validate.FromJSONBytes(ctx.Request.Body())
+	req, err := adaptor.GetCompatRequest(&ctx.Request)
+	if err != nil {
+		return nil, err
+	}
+	dataFace, err := validate.FromRequest(req)
 	if err != nil {
 		return nil, err
 	}

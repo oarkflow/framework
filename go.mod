@@ -10,7 +10,9 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/gookit/color v1.5.2
+	github.com/gookit/validate v1.4.6
 	github.com/goravel/file-rotatelogs/v2 v2.4.1
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/h2non/filetype v1.1.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
@@ -21,7 +23,7 @@ require (
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/viper v1.9.0
 	github.com/sujit-baniya/cron v0.0.2
-	github.com/sujit-baniya/frame v0.0.18
+	github.com/sujit-baniya/frame v0.0.20
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migrate v0.0.4
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
@@ -77,12 +79,10 @@ require (
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/gookit/filter v1.1.4 // indirect
 	github.com/gookit/goutil v0.5.15 // indirect
-	github.com/gookit/validate v1.4.6 // indirect
 	github.com/goravel/file-rotatelogs v0.0.0-20211215053220-2ab31dd9575c // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
