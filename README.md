@@ -35,10 +35,10 @@ Golang developers quickly build their own applications.
 
 ## Documentation
 
-Online documentation [https://www.goravel.dev](https://www.goravel.dev)
+Online documentation [https://www.github.com/sujit-baniya](https://www.github.com/sujit-baniya)
 
 > To optimize the documentation, please submit a PR to the documentation
-> repository [https://github.com/goravel/docs](https://github.com/goravel/docs)
+> repository [https://github.com/framework/docs](https://github.com/framework/docs)
 
 ## Group
 

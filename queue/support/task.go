@@ -97,7 +97,7 @@ func (receiver *Task) OnConnection(connection string) queue.Task {
 }
 
 func (receiver *Task) OnQueue(queue string) queue.Task {
-	receiver.queue = queue
+	receiver.queue = GetQueueName(receiver.connection, queue)
 
 	return receiver
 }

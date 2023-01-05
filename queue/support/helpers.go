@@ -35,6 +35,21 @@ func GetServer(connection string, queue string) (*machinery.Server, error) {
 	return nil, fmt.Errorf("unknown queue driver: %s", driver)
 }
 
+func GetQueueName(connection, queue string) string {
+	appName := facades.Config.GetString("app.name")
+	if appName == "" {
+		appName = "framework"
+	}
+	if connection == "" {
+		connection = facades.Config.GetString("queue.default")
+	}
+	if queue == "" {
+		queue = facades.Config.GetString(fmt.Sprintf("queue.connections.%s.queue", connection), "default")
+	}
+
+	return fmt.Sprintf("%s_%s:%s", appName, "queues", queue)
+}
+
 func getDriver(connection string) string {
 	if connection == "" {
 		connection = facades.Config.GetString("queue.default")
