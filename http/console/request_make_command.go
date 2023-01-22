@@ -3,6 +3,7 @@ package console
 import (
 	"errors"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/sujit-baniya/framework/contracts/console"
@@ -30,17 +31,29 @@ func (receiver *RequestMakeCommand) Description() string {
 func (receiver *RequestMakeCommand) Extend() command.Extend {
 	return command.Extend{
 		Category: "make",
+		Flags: []command.Flag{
+			{
+				Name:    "path",
+				Value:   "/app/http/requests/",
+				Aliases: []string{"p"},
+				Usage:   "Path for request file",
+			},
+		},
 	}
 }
 
 // Handle Execute the console command.
 func (receiver *RequestMakeCommand) Handle(ctx console.Context) error {
+	path := ctx.Option("path")
 	name := ctx.Argument(0)
 	if name == "" {
 		return errors.New("Not enough arguments (missing: name) ")
 	}
+	if path == "" {
+		path = "/app/http/requests/"
+	}
 
-	file.Create(receiver.getPath(name), receiver.populateStub(receiver.getStub(), name))
+	file.Create(receiver.getPath(path, name), receiver.populateStub(receiver.getStub(), name))
 	color.Greenln("Request created successfully")
 
 	return nil
@@ -59,8 +72,7 @@ func (receiver *RequestMakeCommand) populateStub(stub string, name string) strin
 }
 
 // getPath Get the full path to the command.
-func (receiver *RequestMakeCommand) getPath(name string) string {
+func (receiver *RequestMakeCommand) getPath(path, name string) string {
 	pwd, _ := os.Getwd()
-
-	return pwd + "/app/http/requests/" + str.Camel2Case(name) + ".go"
+	return filepath.Join(pwd, path, str.Camel2Case(name)+".go")
 }
