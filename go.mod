@@ -23,7 +23,7 @@ require (
 	github.com/spf13/cast v1.4.1
 	github.com/spf13/viper v1.9.0
 	github.com/sujit-baniya/cron v0.0.2
-	github.com/sujit-baniya/frame v0.0.21
+	github.com/sujit-baniya/frame v0.0.22
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migrate v0.0.4
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
@@ -110,7 +110,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/montanaflynn/stats v0.6.6 // indirect
 	github.com/mozillazg/go-httpheader v0.2.1 // indirect
-	github.com/nyaruka/phonenumbers v1.1.4 // indirect
+	github.com/nyaruka/phonenumbers v1.1.5 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
