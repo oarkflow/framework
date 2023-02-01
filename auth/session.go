@@ -6,6 +6,7 @@ import (
 	"github.com/sujit-baniya/frame/middlewares/server/sessions"
 	contractauth "github.com/sujit-baniya/framework/contracts/auth"
 	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/pkg/dto"
 )
 
 type Session struct {
@@ -33,7 +34,15 @@ func (app *Session) User(ctx *frame.Context, user contractauth.User) error {
 		user = nil
 		return errors.New("Not logged in")
 	}
-	user = u.(contractauth.User)
+	switch v := u.(type) {
+	case contractauth.User:
+		user = v
+	default:
+		err := dto.Map(user, v)
+		if err != nil {
+			return err
+		}
+	}
 	if _, ok := ctx.Get(ctx.AuthUserKey); !ok {
 		ctx.Set(ctx.AuthUserKey, user)
 	}
