@@ -68,7 +68,7 @@ func (app *Auth) User(ctx *frame.Context, user contractauth.User) error {
 	if auth[app.guard].Token == "" {
 		return ErrorTokenExpired
 	}
-	if err := facades.Orm.Query().Find(user, auth[app.guard].Claims.Key); err != nil {
+	if err := facades.Orm.Query().Find(user, auth[app.guard].Claims.Key).Error; err != nil {
 		return err
 	}
 
