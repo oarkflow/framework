@@ -20,22 +20,22 @@ type DB interface {
 
 type Transaction interface {
 	Query
-	Commit() error
-	Rollback() error
+	Commit() *gorm.DB
+	Rollback() *gorm.DB
 }
 
 type Query interface {
 	Driver() Driver
-	Count(count *int64) error
-	Create(value any) error
-	Delete(value any, conds ...any) error
+	Count(count *int64) *gorm.DB
+	Create(value any) *gorm.DB
+	Delete(value any, conds ...any) *gorm.DB
 	Distinct(args ...any) Query
-	Exec(sql string, values ...any) error
-	Find(dest any, conds ...any) error
-	First(dest any) error
-	FirstOrCreate(dest any, conds ...any) error
-	ForceDelete(value any, conds ...any) error
-	Get(dest any) error
+	Exec(sql string, values ...any) *gorm.DB
+	Find(dest any, conds ...any) *gorm.DB
+	First(dest any) *gorm.DB
+	FirstOrCreate(dest any, conds ...any) *gorm.DB
+	ForceDelete(value any, conds ...any) *gorm.DB
+	Get(dest any) *gorm.DB
 	Group(name string) Query
 	Having(query any, args ...any) Query
 	Join(query string, args ...any) Query
@@ -44,15 +44,15 @@ type Query interface {
 	Offset(offset int) Query
 	Order(value any) Query
 	OrWhere(query any, args ...any) Query
-	Pluck(column string, dest any) error
+	Pluck(column string, dest any) *gorm.DB
 	Raw(sql string, values ...any) Query
-	Save(value any) error
-	Scan(dest any) error
+	Save(value any) *gorm.DB
+	Scan(dest any) *gorm.DB
 	Scopes(funcs ...func(Query) Query) Query
 	Select(query any, args ...any) Query
 	Table(name string, args ...any) Query
-	Update(column string, value any) error
-	Updates(values any) error
+	Update(column string, value any) *gorm.DB
+	Updates(values any) *gorm.DB
 	Where(query any, args ...any) Query
 	WithTrashed() Query
 }

@@ -108,12 +108,12 @@ func NewGormTransaction(instance *gorm.DB) orm.Transaction {
 	return &GormTransaction{Query: NewGormQuery(instance), instance: instance}
 }
 
-func (r *GormTransaction) Commit() error {
-	return r.instance.Commit().Error
+func (r *GormTransaction) Commit() *gorm.DB {
+	return r.instance.Commit()
 }
 
-func (r *GormTransaction) Rollback() error {
-	return r.instance.Rollback().Error
+func (r *GormTransaction) Rollback() *gorm.DB {
+	return r.instance.Rollback()
 }
 
 type GormQuery struct {
@@ -128,16 +128,16 @@ func (r *GormQuery) Driver() orm.Driver {
 	return orm.Driver(r.instance.Dialector.Name())
 }
 
-func (r *GormQuery) Count(count *int64) error {
-	return r.instance.Count(count).Error
+func (r *GormQuery) Count(count *int64) *gorm.DB {
+	return r.instance.Count(count)
 }
 
-func (r *GormQuery) Create(value interface{}) error {
-	return r.instance.Create(value).Error
+func (r *GormQuery) Create(value interface{}) *gorm.DB {
+	return r.instance.Create(value)
 }
 
-func (r *GormQuery) Delete(value interface{}, conds ...interface{}) error {
-	return r.instance.Delete(value, conds...).Error
+func (r *GormQuery) Delete(value interface{}, conds ...interface{}) *gorm.DB {
+	return r.instance.Delete(value, conds...)
 }
 
 func (r *GormQuery) Distinct(args ...interface{}) orm.Query {
@@ -146,40 +146,31 @@ func (r *GormQuery) Distinct(args ...interface{}) orm.Query {
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Exec(sql string, values ...interface{}) error {
-	return r.instance.Exec(sql, values...).Error
+func (r *GormQuery) Exec(sql string, values ...interface{}) *gorm.DB {
+	return r.instance.Exec(sql, values...)
 }
 
-func (r *GormQuery) Find(dest interface{}, conds ...interface{}) error {
-	return r.instance.Find(dest, conds...).Error
+func (r *GormQuery) Find(dest interface{}, conds ...interface{}) *gorm.DB {
+	return r.instance.Find(dest, conds...)
 }
 
-func (r *GormQuery) First(dest interface{}) error {
-	err := r.instance.First(dest).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil
-	}
-
-	return err
+func (r *GormQuery) First(dest interface{}) *gorm.DB {
+	return r.instance.First(dest)
 }
 
-func (r *GormQuery) FirstOrCreate(dest interface{}, conds ...interface{}) error {
-	var err error
+func (r *GormQuery) FirstOrCreate(dest interface{}, conds ...interface{}) *gorm.DB {
 	if len(conds) > 1 {
-		err = r.instance.Attrs([]interface{}{conds[1]}...).FirstOrCreate(dest, []interface{}{conds[0]}...).Error
-	} else {
-		err = r.instance.FirstOrCreate(dest, conds...).Error
+		return r.instance.Attrs([]interface{}{conds[1]}...).FirstOrCreate(dest, []interface{}{conds[0]}...)
 	}
-
-	return err
+	return r.instance.FirstOrCreate(dest, conds...)
 }
 
-func (r *GormQuery) ForceDelete(value interface{}, conds ...interface{}) error {
-	return r.instance.Unscoped().Delete(value, conds...).Error
+func (r *GormQuery) ForceDelete(value interface{}, conds ...interface{}) *gorm.DB {
+	return r.instance.Unscoped().Delete(value, conds...)
 }
 
-func (r *GormQuery) Get(dest interface{}) error {
-	return r.instance.Find(dest).Error
+func (r *GormQuery) Get(dest interface{}) *gorm.DB {
+	return r.instance.Find(dest)
 }
 
 func (r *GormQuery) Group(name string) orm.Query {
@@ -230,8 +221,8 @@ func (r *GormQuery) OrWhere(query interface{}, args ...interface{}) orm.Query {
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Pluck(column string, dest interface{}) error {
-	return r.instance.Pluck(column, dest).Error
+func (r *GormQuery) Pluck(column string, dest interface{}) *gorm.DB {
+	return r.instance.Pluck(column, dest)
 }
 
 func (r *GormQuery) Raw(sql string, values ...interface{}) orm.Query {
@@ -240,12 +231,12 @@ func (r *GormQuery) Raw(sql string, values ...interface{}) orm.Query {
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Save(value interface{}) error {
-	return r.instance.Save(value).Error
+func (r *GormQuery) Save(value interface{}) *gorm.DB {
+	return r.instance.Save(value)
 }
 
-func (r *GormQuery) Scan(dest interface{}) error {
-	return r.instance.Scan(dest).Error
+func (r *GormQuery) Scan(dest interface{}) *gorm.DB {
+	return r.instance.Scan(dest)
 }
 
 func (r *GormQuery) Select(query interface{}, args ...interface{}) orm.Query {
@@ -260,12 +251,12 @@ func (r *GormQuery) Table(name string, args ...interface{}) orm.Query {
 	return NewGormQuery(tx)
 }
 
-func (r *GormQuery) Update(column string, value interface{}) error {
-	return r.instance.Update(column, value).Error
+func (r *GormQuery) Update(column string, value interface{}) *gorm.DB {
+	return r.instance.Update(column, value)
 }
 
-func (r *GormQuery) Updates(values interface{}) error {
-	return r.instance.Updates(values).Error
+func (r *GormQuery) Updates(values interface{}) *gorm.DB {
+	return r.instance.Updates(values)
 }
 
 func (r *GormQuery) Where(query interface{}, args ...interface{}) orm.Query {
