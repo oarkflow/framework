@@ -1,8 +1,10 @@
 package validation
 
+import "github.com/sujit-baniya/frame"
+
 type Option func(map[string]any)
 type Validation interface {
-	Make(data any, rules map[string]string, options ...Option) (Validator, error)
+	Make(ctx *frame.Context, data any, rules map[string]string, options ...Option) (Validator, error)
 	AddRules([]Rule) error
 	Rules() []Rule
 }
@@ -23,6 +25,6 @@ type Data interface {
 }
 type Rule interface {
 	Signature() string
-	Passes(data Data, val any, options ...any) bool
+	Passes(ctx *frame.Context, data Data, val any, options ...any) bool
 	Message() string
 }

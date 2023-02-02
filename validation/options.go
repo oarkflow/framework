@@ -1,6 +1,7 @@
 package validation
 
 import (
+	"github.com/sujit-baniya/frame"
 	httpvalidate "github.com/sujit-baniya/framework/contracts/validation"
 	"strings"
 
@@ -54,7 +55,7 @@ func GenerateOptions(options []httpvalidate.Option) map[string]any {
 	return realOptions
 }
 
-func AppendOptions(validator *validate.Validation, options map[string]any) {
+func AppendOptions(ctx *frame.Context, validator *validate.Validation, options map[string]any) {
 	if options["rules"] != nil {
 		rules := options["rules"].(map[string]string)
 		for key, value := range rules {
@@ -82,7 +83,7 @@ func AppendOptions(validator *validate.Validation, options map[string]any) {
 				customRule.Signature(): strings.ReplaceAll(customRule.Message(), ":attribute", "{field}"),
 			})
 			validator.AddValidator(customRule.Signature(), func(val any, options ...any) bool {
-				return customRule.Passes(validator, val, options...)
+				return customRule.Passes(ctx, validator, val, options...)
 			})
 		}
 	}

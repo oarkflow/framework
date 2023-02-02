@@ -24,7 +24,7 @@ func NewValidation() *Validation {
 	}
 }
 
-func (r *Validation) Make(data any, rules map[string]string, options ...validatecontract.Option) (validatecontract.Validator, error) {
+func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string, options ...validatecontract.Option) (validatecontract.Validator, error) {
 	if data == nil {
 		return nil, errors.New("data can't be empty")
 	}
@@ -69,7 +69,7 @@ func (r *Validation) Make(data any, rules map[string]string, options ...validate
 	}
 
 	v := dataFace.Create()
-	AppendOptions(v, generateOptions)
+	AppendOptions(ctx, v, generateOptions)
 
 	return NewValidator(v, dataFace), nil
 }
@@ -337,7 +337,7 @@ func Validate(ctx *frame.Context, rules map[string]string, options ...validateco
 		v = dataFace.Create()
 	}
 
-	AppendOptions(v, generateOptions)
+	AppendOptions(ctx, v, generateOptions)
 
 	return NewValidator(v, dataFace), nil
 }
