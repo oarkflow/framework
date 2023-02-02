@@ -27,5 +27,6 @@ func (database *ServiceProvider) registerCommands() {
 		&console.MigrateCommand{},
 		&console.MigrateRollbackCommand{},
 		&console.MigrateStatusCommand{},
+		&console.MigrateRedoCommand{},
 	})
 }
