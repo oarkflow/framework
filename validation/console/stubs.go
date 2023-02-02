@@ -8,6 +8,7 @@ func (r Stubs) Request() string {
 
 import (
 	"github.com/sujit-baniya/framework/contracts/validation"
+	"github.com/sujit-baniya/frame"
 )
 
 type DummyRule struct {
@@ -19,7 +20,7 @@ func (receiver *DummyRule) Signature() string {
 }
 
 //Passes Determine if the validation rule passes.
-func (receiver *DummyRule) Passes(data validation.Data, val any, options ...any) bool {
+func (receiver *DummyRule) Passes(ctx *frame.Context, data validation.Data, val any, options ...any) bool {
 	return true
 }
 
