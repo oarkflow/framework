@@ -5,10 +5,7 @@ import (
 	"github.com/sujit-baniya/framework/contracts/console/command"
 	"strconv"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gookit/color"
-	"github.com/sujit-baniya/migrate"
-	_ "github.com/sujit-baniya/migrate/source/file"
 )
 
 type MigrateRollbackCommand struct {
@@ -30,9 +27,16 @@ func (receiver *MigrateRollbackCommand) Extend() command.Extend {
 		Category: "migrate",
 		Flags: []command.Flag{
 			{
-				Name:  "step",
-				Value: "1",
-				Usage: "rollback steps",
+				Name:    "steps",
+				Value:   "0",
+				Aliases: []string{"s"},
+				Usage:   "rollback steps",
+			},
+			{
+				Name:    "dryrun",
+				Value:   "false",
+				Aliases: []string{"d"},
+				Usage:   "Do not actually execute the query and just print the query",
 			},
 		},
 	}
@@ -46,26 +50,22 @@ func (receiver *MigrateRollbackCommand) Handle(ctx console.Context) error {
 	}
 	if m == nil {
 		color.Yellowln("Please fill database config first")
-
 		return nil
 	}
 
-	stepString := "-" + ctx.Option("step")
+	stepString := ctx.Option("steps")
+	dryrunString := ctx.Option("dryrun")
 	step, err := strconv.Atoi(stepString)
 	if err != nil {
-		color.Redln("Migration failed: invalid step", ctx.Option("step"))
-
-		return nil
+		step = 0
 	}
-
-	if err := m.Steps(step); err != nil && err != migrate.ErrNoChange && err != migrate.ErrNilVersion {
-		switch err.(type) {
-		case migrate.ErrShortLimit:
-		default:
-			color.Redln("Migration failed:", err.Error())
-
-			return nil
-		}
+	dryrun, err := strconv.ParseBool(dryrunString)
+	if err != nil {
+		dryrun = false
+	}
+	if err := m.Down(step, dryrun); err != nil {
+		color.Redln("Migration failed:", err.Error())
+		return nil
 	}
 
 	color.Greenln("Migration rollback success")

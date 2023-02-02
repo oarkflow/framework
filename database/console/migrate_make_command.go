@@ -4,7 +4,6 @@ import (
 	"github.com/gookit/color"
 	"github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/contracts/console/command"
-	"github.com/sujit-baniya/framework/database/support"
 	"github.com/sujit-baniya/framework/facades"
 )
 
@@ -38,9 +37,6 @@ func (receiver *MigrateMakeCommand) Extend() command.Extend {
 
 // Handle Execute the console command.
 func (receiver *MigrateMakeCommand) Handle(ctx console.Context) error {
-	// It's possible for the developer to specify the tables to modify in this
-	// schema operation. The developer may also specify if this table needs
-	// to be freshly created, so we can create the appropriate migrations.
 	name := ctx.Argument(0)
 	if name == "" {
 		color.Redln("Not enough arguments (missing: name)")
@@ -48,27 +44,19 @@ func (receiver *MigrateMakeCommand) Handle(ctx console.Context) error {
 		return nil
 	}
 	connection := ctx.Option("connection")
-	//Write the migration file to disk.
-	MigrateCreator{driver: getDriver(connection)}.Create(name)
-
-	color.Green.Printf("Created Migration: %s\n", name)
-
-	return nil
-}
-
-func getDriver(connection string) string {
 	if connection == "" {
 		connection = facades.Config.GetString("database.default")
 	}
-	driver := facades.Config.GetString("database.connections." + connection + ".driver")
-	switch driver {
-	case support.Postgresql:
-		return "postgres"
-	case support.Sqlite:
-		return "sqlite3"
-	case support.Sqlserver:
-		return "sqlserver"
-	default:
-		return "mysql"
+	m, err := getMigrate(connection)
+	if err != nil {
+		return err
 	}
+	if m == nil {
+		color.Yellowln("Please fill database config first")
+
+		return nil
+	}
+	err = m.New(name)
+	color.Green.Printf("Created Migration: %s\n", name)
+	return err
 }

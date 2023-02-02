@@ -5,18 +5,16 @@ import (
 	"errors"
 	"github.com/sujit-baniya/framework/database/support"
 	"github.com/sujit-baniya/framework/facades"
-
-	"github.com/sujit-baniya/migrate"
-	"github.com/sujit-baniya/migrate/database/mysql"
-	"github.com/sujit-baniya/migrate/database/postgres"
-	"github.com/sujit-baniya/migrate/database/sqlite3"
-	"github.com/sujit-baniya/migrate/database/sqlserver"
+	"github.com/sujit-baniya/migration"
 )
 
-func getMigrate() (*migrate.Migrate, error) {
+func getMigrate(con ...string) (*migration.Migrate, error) {
 	connection := facades.Config.GetString("database.default")
+	if len(con) > 0 {
+		connection = con[0]
+	}
 	driver := facades.Config.GetString("database.connections." + connection + ".driver")
-	dir := "file://./database/migrations"
+	dir := "./database/migrations"
 	switch driver {
 	case support.Mysql:
 		dsn := support.GetMysqlDsn(connection)
@@ -28,19 +26,13 @@ func getMigrate() (*migrate.Migrate, error) {
 		if err != nil {
 			return nil, err
 		}
-
-		//if err := db.Ping(); err != nil {
-		//	return nil, errors.New("Could not ping to database: " + err.Error())
-		//}
-
-		instance, err := mysql.WithInstance(db, &mysql.Config{
-			MigrationsTable: facades.Config.GetString("database.migrations"),
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		return migrate.NewWithDatabaseInstance(dir, "mysql", instance)
+		return migration.New(migration.Config{
+			DB:         db,
+			IsEmbedded: false,
+			Dir:        dir,
+			TableName:  facades.Config.GetString("database.migrations"),
+			Dialect:    "mysql",
+		}), nil
 	case support.Postgresql:
 		dsn := support.GetPostgresqlDsn(connection)
 		if dsn == "" {
@@ -52,14 +44,13 @@ func getMigrate() (*migrate.Migrate, error) {
 			return nil, err
 		}
 
-		instance, err := postgres.WithInstance(db, &postgres.Config{
-			MigrationsTable: facades.Config.GetString("database.migrations"),
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		return migrate.NewWithDatabaseInstance(dir, "postgres", instance)
+		return migration.New(migration.Config{
+			DB:         db,
+			IsEmbedded: false,
+			Dir:        dir,
+			TableName:  facades.Config.GetString("database.migrations"),
+			Dialect:    "postgresql",
+		}), nil
 	case support.Sqlite:
 		dsn := support.GetSqliteDsn(connection)
 		if dsn == "" {
@@ -71,35 +62,14 @@ func getMigrate() (*migrate.Migrate, error) {
 			return nil, err
 		}
 
-		instance, err := sqlite3.WithInstance(db, &sqlite3.Config{
-			MigrationsTable: facades.Config.GetString("database.migrations"),
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		return migrate.NewWithDatabaseInstance(dir, "sqlite3", instance)
-	case support.Sqlserver:
-		dsn := support.GetSqlserverDsn(connection)
-		if dsn == "" {
-			return nil, nil
-		}
-
-		db, err := sql.Open("sqlserver", dsn)
-		if err != nil {
-			return nil, err
-		}
-
-		instance, err := sqlserver.WithInstance(db, &sqlserver.Config{
-			MigrationsTable: facades.Config.GetString("database.migrations"),
-		})
-
-		if err != nil {
-			return nil, err
-		}
-
-		return migrate.NewWithDatabaseInstance(dir, "sqlserver", instance)
+		return migration.New(migration.Config{
+			DB:         db,
+			IsEmbedded: false,
+			Dir:        dir,
+			TableName:  facades.Config.GetString("database.migrations"),
+			Dialect:    "sqlite3",
+		}), nil
 	default:
-		return nil, errors.New("database driver only support mysql, postgresql, sqlite and sqlserver")
+		return nil, errors.New("database driver only support mysql, postgresql and sqlite")
 	}
 }

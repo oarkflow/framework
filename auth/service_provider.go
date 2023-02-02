@@ -67,7 +67,7 @@ func init() {
 	Drivers = &drivers{
 		driver: map[string]auth.Auth{
 			"session": NewSession("session"),
-			"jwt":     NewAuth("web"),
+			// "jwt":     NewAuth("web"),
 		},
 		mu: &sync.RWMutex{},
 	}

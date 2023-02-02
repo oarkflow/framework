@@ -1,12 +1,10 @@
 package console
 
 import (
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gookit/color"
 	"github.com/sujit-baniya/framework/contracts/console"
 	"github.com/sujit-baniya/framework/contracts/console/command"
-	"github.com/sujit-baniya/migrate"
-	_ "github.com/sujit-baniya/migrate/source/file"
+	"strconv"
 )
 
 type MigrateCommand struct {
@@ -26,11 +24,35 @@ func (receiver *MigrateCommand) Description() string {
 func (receiver *MigrateCommand) Extend() command.Extend {
 	return command.Extend{
 		Category: "migrate",
+		Flags: []command.Flag{
+			{
+				Name:    "steps",
+				Value:   "0",
+				Aliases: []string{"s"},
+				Usage:   "Limit sql files for migration",
+			},
+			{
+				Name:    "dryrun",
+				Value:   "false",
+				Aliases: []string{"d"},
+				Usage:   "Do not actually execute the query and just print the query",
+			},
+		},
 	}
 }
 
 // Handle Execute the console command.
 func (receiver *MigrateCommand) Handle(ctx console.Context) error {
+	l := ctx.Option("steps")
+	d := ctx.Option("dryrun")
+	limit, err := strconv.Atoi(l)
+	if err != nil {
+		limit = 0
+	}
+	dryrun, err := strconv.ParseBool(d)
+	if err != nil {
+		dryrun = false
+	}
 	m, err := getMigrate()
 	if err != nil {
 		return err
@@ -41,7 +63,7 @@ func (receiver *MigrateCommand) Handle(ctx console.Context) error {
 		return nil
 	}
 
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Up(limit, dryrun); err != nil {
 		color.Redln("Migration failed:", err.Error())
 
 		return nil
