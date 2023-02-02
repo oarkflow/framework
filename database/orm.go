@@ -87,13 +87,13 @@ func (r *Orm) Transaction(txFunc func(tx contractsorm.Transaction) error) error 
 	}
 
 	if err := txFunc(tx); err != nil {
-		if err := tx.Rollback(); err != nil {
+		if err := tx.Rollback().Error; err != nil {
 			return errors.Wrapf(err, "rollback error: %v", err)
 		}
 
 		return err
 	} else {
-		return tx.Commit()
+		return tx.Commit().Error
 	}
 }
 
