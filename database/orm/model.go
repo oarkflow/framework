@@ -14,12 +14,12 @@ type Model struct {
 }
 
 type SoftDeletes struct {
-	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 type Timestamps struct {
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type Relationship struct {
