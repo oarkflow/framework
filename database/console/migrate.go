@@ -6,6 +6,7 @@ import (
 	"github.com/sujit-baniya/framework/database/support"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/migration"
+	"os"
 )
 
 func getMigrate(con ...string) (*migration.Migrate, error) {
@@ -15,6 +16,11 @@ func getMigrate(con ...string) (*migration.Migrate, error) {
 	}
 	driver := facades.Config.GetString("database.connections." + connection + ".driver")
 	dir := "./database/migrations"
+	os.MkdirAll(dir, os.ModePerm)
+	files, _ := os.ReadDir(dir)
+	if len(files) == 0 {
+		os.Create(dir + "/.gitkeep")
+	}
 	switch driver {
 	case support.Mysql:
 		dsn := support.GetMysqlDsn(connection)
