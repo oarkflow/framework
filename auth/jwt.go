@@ -71,7 +71,7 @@ func (app *Jwt) User(ctx *frame.Context, user auth.User) error {
 	if err := facades.Orm.Query().Find(user, a[app.guard].Claims.Key).Error; err != nil {
 		return err
 	}
-
+	ctx.Set(ctx.AuthUserKey, user)
 	return nil
 }
 
