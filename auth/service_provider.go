@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"github.com/sujit-baniya/frame"
+	"github.com/sujit-baniya/frame/middlewares/server/session"
 	"github.com/sujit-baniya/framework/contracts/auth"
 	"sync"
 
@@ -13,11 +14,13 @@ import (
 )
 
 type ServiceProvider struct {
-	Auth auth.Auth
+	Auth              auth.Auth
+	RegisteredObjects []any
 }
 
 func (database *ServiceProvider) Register() {
-	facades.Auth = NewAuth(facades.Config.GetString("auth.defaults.guard"))
+	facades.Auth = NewJwt(facades.Config.GetString("auth.defaults.guard"))
+	session.Default(session.Config{RegisteredObjects: database.RegisteredObjects})
 	facades.Gate = access.NewGate(context.Background())
 }
 
@@ -67,7 +70,7 @@ func init() {
 	Drivers = &drivers{
 		driver: map[string]auth.Auth{
 			"session": NewSession("session"),
-			// "jwt":     NewAuth("web"),
+			"jwt":     NewJwt("jwt"),
 		},
 		mu: &sync.RWMutex{},
 	}

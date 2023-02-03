@@ -3,9 +3,8 @@ package auth
 import (
 	"errors"
 	"github.com/sujit-baniya/frame"
-	"github.com/sujit-baniya/frame/middlewares/server/sessions"
-	contractauth "github.com/sujit-baniya/framework/contracts/auth"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/frame/middlewares/server/session"
+	"github.com/sujit-baniya/framework/contracts/auth"
 	"github.com/sujit-baniya/pkg/dto"
 )
 
@@ -13,29 +12,28 @@ type Session struct {
 	guard string
 }
 
-func NewSession(guard string) contractauth.Auth {
-	if facades.SessionAuth == nil {
-		facades.SessionAuth = &Session{
-			guard: guard,
-		}
+func NewSession(guard string) auth.Auth {
+	return &Session{
+		guard: guard,
 	}
-	return facades.SessionAuth
 }
 
-func (app *Session) Guard(name string) contractauth.Auth {
+func (app *Session) Guard(name string) auth.Auth {
 	return GetAuth(name)
 }
 
 // User need parse token first.
-func (app *Session) User(ctx *frame.Context, user contractauth.User) error {
-	session := sessions.Default(ctx)
-	u := session.Get(ctx.AuthUserKey)
+func (app *Session) User(ctx *frame.Context, user auth.User) error {
+	u, err := session.Get(ctx, ctx.AuthUserKey)
+	if err != nil {
+		return err
+	}
 	if u == nil {
 		user = nil
-		return errors.New("Not logged in")
+		return errors.New("not logged in")
 	}
 	switch v := u.(type) {
-	case contractauth.User:
+	case auth.User:
 		user = v
 	default:
 		err := dto.Map(user, v)
@@ -53,10 +51,11 @@ func (app *Session) Parse(ctx *frame.Context, token string) error {
 	return nil
 }
 
-func (app *Session) Login(ctx *frame.Context, user contractauth.User) (token string, err error) {
-	session := sessions.Default(ctx)
-	session.Set(ctx.AuthUserKey, user)
-	err = session.Save()
+func (app *Session) Login(ctx *frame.Context, user auth.User) (token string, err error) {
+	err = session.Set(ctx, ctx.AuthUserKey, user)
+	if err != nil {
+		return
+	}
 	ctx.Set(ctx.AuthUserKey, user)
 	return
 }
@@ -71,7 +70,5 @@ func (app *Session) Refresh(ctx *frame.Context) (token string, err error) {
 }
 
 func (app *Session) Logout(ctx *frame.Context) error {
-	session := sessions.Default(ctx)
-	session.Clear()
-	return session.Save()
+	return session.Destroy(ctx)
 }

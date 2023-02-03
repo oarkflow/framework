@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	contractauth "github.com/sujit-baniya/framework/contracts/auth"
+	"github.com/sujit-baniya/framework/contracts/auth"
 	"github.com/sujit-baniya/framework/facades"
 	supporttime "github.com/sujit-baniya/framework/support/time"
 
@@ -42,40 +42,40 @@ type Guard struct {
 
 type Guards map[string]*Guard
 
-type Auth struct {
+type Jwt struct {
 	guard string
 }
 
-func NewAuth(guard string) contractauth.Auth {
-	return &Auth{
+func NewJwt(guard string) auth.Auth {
+	return &Jwt{
 		guard: guard,
 	}
 }
 
-func (app *Auth) Guard(name string) contractauth.Auth {
-	return NewAuth(name)
+func (app *Jwt) Guard(name string) auth.Auth {
+	return NewJwt(name)
 }
 
 // User need parse token first.
-func (app *Auth) User(ctx *frame.Context, user contractauth.User) error {
-	auth, ok := ctx.Value(ctxKey).(Guards)
-	if !ok || auth[app.guard] == nil {
+func (app *Jwt) User(ctx *frame.Context, user auth.User) error {
+	a, ok := ctx.Value(ctxKey).(Guards)
+	if !ok || a[app.guard] == nil {
 		return ErrorParseTokenFirst
 	}
-	if auth[app.guard].Claims == nil {
+	if a[app.guard].Claims == nil {
 		return ErrorParseTokenFirst
 	}
-	if auth[app.guard].Token == "" {
+	if a[app.guard].Token == "" {
 		return ErrorTokenExpired
 	}
-	if err := facades.Orm.Query().Find(user, auth[app.guard].Claims.Key).Error; err != nil {
+	if err := facades.Orm.Query().Find(user, a[app.guard].Claims.Key).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (app *Auth) Parse(ctx *frame.Context, token string) error {
+func (app *Jwt) Parse(ctx *frame.Context, token string) error {
 	token = strings.ReplaceAll(token, "Bearer ", "")
 	if tokenIsDisabled(token) {
 		return ErrorTokenDisabled
@@ -113,7 +113,7 @@ func (app *Auth) Parse(ctx *frame.Context, token string) error {
 	return nil
 }
 
-func (app *Auth) Login(ctx *frame.Context, user contractauth.User) (token string, err error) {
+func (app *Jwt) Login(ctx *frame.Context, user auth.User) (token string, err error) {
 	t := reflect.TypeOf(user).Elem()
 	v := reflect.ValueOf(user).Elem()
 	for i := 0; i < t.NumField(); i++ {
@@ -137,7 +137,7 @@ func (app *Auth) Login(ctx *frame.Context, user contractauth.User) (token string
 	return "", ErrorNoPrimaryKeyField
 }
 
-func (app *Auth) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
+func (app *Jwt) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
 	jwtSecret := facades.Config.GetString("jwt.secret")
 	if jwtSecret == "" {
 		return "", ErrorEmptySecret
@@ -167,28 +167,28 @@ func (app *Auth) LoginUsingID(ctx *frame.Context, id any) (token string, err err
 }
 
 // Refresh need parse token first.
-func (app *Auth) Refresh(ctx *frame.Context) (token string, err error) {
-	auth, ok := ctx.Value(ctxKey).(Guards)
-	if !ok || auth[app.guard] == nil {
+func (app *Jwt) Refresh(ctx *frame.Context) (token string, err error) {
+	a, ok := ctx.Value(ctxKey).(Guards)
+	if !ok || a[app.guard] == nil {
 		return "", ErrorParseTokenFirst
 	}
-	if auth[app.guard].Claims == nil {
+	if a[app.guard].Claims == nil {
 		return "", ErrorParseTokenFirst
 	}
 
 	nowTime := supporttime.Now()
 	refreshTtl := facades.Config.GetInt("jwt.refresh_ttl")
-	expireTime := auth[app.guard].Claims.ExpiresAt.Add(time.Duration(refreshTtl) * unit)
+	expireTime := a[app.guard].Claims.ExpiresAt.Add(time.Duration(refreshTtl) * unit)
 	if nowTime.Unix() > expireTime.Unix() {
 		return "", ErrorRefreshTimeExceeded
 	}
 
-	return app.LoginUsingID(ctx, auth[app.guard].Claims.Key)
+	return app.LoginUsingID(ctx, a[app.guard].Claims.Key)
 }
 
-func (app *Auth) Logout(ctx *frame.Context) error {
-	auth, ok := ctx.Value(ctxKey).(Guards)
-	if !ok || auth[app.guard] == nil || auth[app.guard].Token == "" {
+func (app *Jwt) Logout(ctx *frame.Context) error {
+	a, ok := ctx.Value(ctxKey).(Guards)
+	if !ok || a[app.guard] == nil || a[app.guard].Token == "" {
 		return nil
 	}
 
@@ -196,20 +196,20 @@ func (app *Auth) Logout(ctx *frame.Context) error {
 		return errors.New("cache support is required")
 	}
 
-	if err := facades.Cache.Put(getDisabledCacheKey(auth[app.guard].Token),
+	if err := facades.Cache.Put(getDisabledCacheKey(a[app.guard].Token),
 		true,
 		time.Duration(facades.Config.GetInt("jwt.ttl"))*unit,
 	); err != nil {
 		return err
 	}
 
-	delete(auth, app.guard)
-	ctx.Set(ctxKey, auth)
+	delete(a, app.guard)
+	ctx.Set(ctxKey, a)
 
 	return nil
 }
 
-func (app *Auth) makeAuthContext(ctx *frame.Context, claims *Claims, token string) {
+func (app *Jwt) makeAuthContext(ctx *frame.Context, claims *Claims, token string) {
 	ctx.Set(ctxKey, Guards{
 		app.guard: {claims, token},
 	})

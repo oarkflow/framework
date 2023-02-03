@@ -22,18 +22,18 @@ require (
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/viper v1.9.0
 	github.com/sujit-baniya/cron v0.0.2
-	github.com/sujit-baniya/frame v0.0.24
+	github.com/sujit-baniya/frame v0.0.25
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migration v0.0.4
-	github.com/sujit-baniya/pkg v0.0.12
+	github.com/sujit-baniya/pkg v0.0.13
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
 	github.com/urfave/cli/v2 v2.3.0
 	google.golang.org/grpc v1.50.1
-	gorm.io/driver/mysql v1.4.3
-	gorm.io/driver/postgres v1.4.5
+	gorm.io/driver/mysql v1.4.5
+	gorm.io/driver/postgres v1.4.6
 	gorm.io/driver/sqlite v1.4.3
-	gorm.io/driver/sqlserver v1.4.1
-	gorm.io/gorm v1.24.2
+	gorm.io/driver/sqlserver v1.4.2
+	gorm.io/gorm v1.24.4
 )
 
 require (
@@ -82,28 +82,20 @@ require (
 	github.com/gookit/filter v1.1.4 // indirect
 	github.com/gookit/goutil v0.5.15 // indirect
 	github.com/goravel/file-rotatelogs v0.0.0-20211215053220-2ab31dd9575c // indirect
-	github.com/gorilla/context v1.1.1 // indirect
-	github.com/gorilla/securecookie v1.1.1 // indirect
-	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/henrylee2cn/ameda v1.5.1 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
-	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.13.0 // indirect
-	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
-	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
-	github.com/jackc/pgtype v1.12.0 // indirect
-	github.com/jackc/pgx/v4 v4.17.2 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgx/v5 v5.2.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
-	github.com/klauspost/compress v1.15.14 // indirect
+	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.3 // indirect
 	github.com/lestrrat-go/strftime v1.0.5 // indirect
 	github.com/lib/pq v1.10.7 // indirect
@@ -112,7 +104,7 @@ require (
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/mattn/go-sqlite3 v1.14.16 // indirect
-	github.com/microsoft/go-mssqldb v0.17.0 // indirect
+	github.com/microsoft/go-mssqldb v0.20.0 // indirect
 	github.com/mitchellh/cli v1.1.5 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
@@ -133,7 +125,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
-	github.com/sujit-baniya/sessions v0.0.3 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
@@ -157,7 +148,6 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221107162902-2d387536bcdd // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
-	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/gorp.v1 v1.7.2 // indirect
 	gopkg.in/ini.v1 v1.64.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
