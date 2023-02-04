@@ -22,7 +22,7 @@ require (
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/viper v1.9.0
 	github.com/sujit-baniya/cron v0.0.2
-	github.com/sujit-baniya/frame v0.0.25
+	github.com/sujit-baniya/frame v0.0.26
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migration v0.0.4
 	github.com/sujit-baniya/pkg v0.0.13

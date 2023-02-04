@@ -16,11 +16,12 @@ import (
 type ServiceProvider struct {
 	Auth              auth.Auth
 	RegisteredObjects []any
+	Config            session.Config
 }
 
 func (database *ServiceProvider) Register() {
 	facades.Auth = NewJwt(facades.Config.GetString("auth.defaults.guard"))
-	session.Default(session.Config{RegisteredObjects: database.RegisteredObjects})
+	session.Default(database.Config)
 	facades.Gate = access.NewGate(context.Background())
 }
 
