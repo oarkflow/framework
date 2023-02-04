@@ -14,9 +14,8 @@ import (
 )
 
 type ServiceProvider struct {
-	Auth              auth.Auth
-	RegisteredObjects []any
-	Config            session.Config
+	Auth   auth.Auth
+	Config session.Config
 }
 
 func (database *ServiceProvider) Register() {
