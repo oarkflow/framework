@@ -54,5 +54,6 @@ type Query interface {
 	Update(column string, value any) *gorm.DB
 	Updates(values any) *gorm.DB
 	Where(query any, args ...any) Query
+	With(query string, args ...any) Query
 	WithTrashed() Query
 }

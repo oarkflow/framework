@@ -121,7 +121,7 @@ type GormQuery struct {
 }
 
 func NewGormQuery(instance *gorm.DB) orm.Query {
-	return &GormQuery{instance}
+	return &GormQuery{instance: instance}
 }
 
 func (r *GormQuery) Driver() orm.Driver {
@@ -265,9 +265,13 @@ func (r *GormQuery) Where(query interface{}, args ...interface{}) orm.Query {
 	return NewGormQuery(tx)
 }
 
+func (r *GormQuery) With(query string, args ...interface{}) orm.Query {
+	tx := r.instance.Preload(query, args...)
+	return NewGormQuery(tx)
+}
+
 func (r *GormQuery) WithTrashed() orm.Query {
 	tx := r.instance.Unscoped()
-
 	return NewGormQuery(tx)
 }
 
@@ -275,7 +279,7 @@ func (r *GormQuery) Scopes(funcs ...func(orm.Query) orm.Query) orm.Query {
 	var gormFuncs []func(*gorm.DB) *gorm.DB
 	for _, item := range funcs {
 		gormFuncs = append(gormFuncs, func(db *gorm.DB) *gorm.DB {
-			item(&GormQuery{db})
+			item(&GormQuery{instance: db})
 
 			return db
 		})
