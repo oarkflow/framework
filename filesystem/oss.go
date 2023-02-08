@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/sujit-baniya/log"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -66,7 +67,7 @@ func NewOss(ctx context.Context, disk string) (*Oss, error) {
 func (r *Oss) WithContext(ctx context.Context) filesystem.Driver {
 	driver, err := NewOss(ctx, r.disk)
 	if err != nil {
-		facades.Log.Errorf("init %s disk fail: %+v", r.disk, err)
+		log.Error().Err(err).Str("disk", r.disk).Msg("disk init error")
 	}
 
 	return driver

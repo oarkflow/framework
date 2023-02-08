@@ -3,6 +3,7 @@ package filesystem
 import (
 	"context"
 	"fmt"
+	"github.com/sujit-baniya/log"
 
 	"github.com/sujit-baniya/framework/contracts/filesystem"
 	"github.com/sujit-baniya/framework/facades"
@@ -26,13 +27,13 @@ type Storage struct {
 func NewStorage() *Storage {
 	defaultDisk := facades.Config.GetString("filesystems.default")
 	if defaultDisk == "" {
-		facades.Log.Errorf("[filesystem] please set default disk")
+		log.Error().Msg("set default disk")
 		return nil
 	}
 
 	driver, err := NewDriver(defaultDisk)
 	if err != nil {
-		facades.Log.Errorf("[filesystem] init %s disk error: %+v", defaultDisk, err)
+		log.Error().Err(err).Str("disk", defaultDisk).Msg("init disk error")
 		return nil
 	}
 
@@ -75,7 +76,7 @@ func (r *Storage) Disk(disk string) filesystem.Driver {
 
 	driver, err := NewDriver(disk)
 	if err != nil {
-		facades.Log.Error(err.Error())
+		log.Error().Err(err).Msg("disk error: %v")
 	}
 
 	return driver

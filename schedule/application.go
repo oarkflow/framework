@@ -7,6 +7,7 @@ import (
 	"github.com/sujit-baniya/framework/contracts/schedule"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/schedule/support"
+	logg "github.com/sujit-baniya/log"
 )
 
 type Application struct {
@@ -82,7 +83,7 @@ func (app *Application) addEvents(events []schedule.Event) {
 	for _, event := range events {
 		_, err := app.addEvent(event)
 		if err != nil {
-			facades.Log.Errorf("add schedule error: %v", err)
+			logg.Error().Err(err).Msg("add schedule error")
 		}
 	}
 }
@@ -105,5 +106,6 @@ func (log *Logger) Info(msg string, keysAndValues ...any) {
 }
 
 func (log *Logger) Error(err error, msg string, keysAndValues ...any) {
-	facades.Log.Error(msg, keysAndValues)
+
+	logg.Error().Err(err).KeysAndValues(keysAndValues).Msg(msg)
 }

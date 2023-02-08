@@ -3,6 +3,7 @@ package filesystem
 import (
 	"context"
 	"fmt"
+	"github.com/sujit-baniya/log"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -58,7 +59,7 @@ func NewS3(ctx context.Context, disk string) (*S3, error) {
 func (r *S3) WithContext(ctx context.Context) filesystem.Driver {
 	driver, err := NewS3(ctx, r.disk)
 	if err != nil {
-		facades.Log.Errorf("init %s disk fail: %+v", r.disk, err)
+		log.Error().Err(err).Str("disk", r.disk).Msg("disk init error")
 	}
 
 	return driver

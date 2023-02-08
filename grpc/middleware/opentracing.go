@@ -2,17 +2,15 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	"github.com/opentracing/opentracing-go/log"
 	"github.com/pkg/errors"
+	logg "github.com/sujit-baniya/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-
-	"github.com/sujit-baniya/framework/facades"
 )
 
 type MDReaderWriter struct {
@@ -77,7 +75,8 @@ func OpentracingServer(tracer opentracing.Tracer) grpc.UnaryServerInterceptor {
 		}
 		spanContext, err := tracer.Extract(opentracing.TextMap, MDReaderWriter{md})
 		if err != nil && err != opentracing.ErrSpanContextNotFound {
-			facades.Log.Error(fmt.Sprintf("extract from metadata error: %v", err))
+
+			logg.Error().Err(err).Msg("extract from metadata error")
 		} else {
 			span := tracer.StartSpan(
 				info.FullMethod,

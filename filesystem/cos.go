@@ -3,6 +3,7 @@ package filesystem
 import (
 	"context"
 	"fmt"
+	"github.com/sujit-baniya/log"
 	"github.com/tencentyun/cos-go-sdk-v5"
 	"io/ioutil"
 	"net/http"
@@ -66,7 +67,7 @@ func NewCos(ctx context.Context, disk string) (*Cos, error) {
 func (r *Cos) WithContext(ctx context.Context) filesystem.Driver {
 	driver, err := NewCos(ctx, r.disk)
 	if err != nil {
-		facades.Log.Errorf("init %s disk fail: %+v", r.disk, err)
+		log.Error().Err(err).Str("disk", r.disk).Msg("disk init error")
 	}
 
 	return driver

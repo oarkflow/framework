@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"github.com/sujit-baniya/log"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
@@ -34,15 +35,13 @@ func (r *DB) Connection(name string) database.DB {
 
 	dsn, err := GetDsn(name)
 	if err != nil {
-		facades.Log.Errorf("get database dsn error: %v", err)
-
+		log.Error().Err(err).Msg("database dsn error: %v")
 		return r
 	}
 
 	db, err := sqlx.Open("mysql", dsn)
 	if err != nil {
-		facades.Log.Errorf("orm open database error: %v", err)
-
+		log.Error().Err(err).Msg("database open error: %v")
 		return r
 	}
 
