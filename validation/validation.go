@@ -2,29 +2,28 @@ package validation
 
 import (
 	"errors"
-	"github.com/sujit-baniya/frame"
-	"github.com/sujit-baniya/frame/pkg/common/adaptor"
-	"github.com/sujit-baniya/framework/contracts/http"
-	"github.com/sujit-baniya/framework/facades"
 	"reflect"
 	"time"
 
-	validatecontract "github.com/sujit-baniya/framework/contracts/validation"
-
 	"github.com/gookit/validate"
+	"github.com/sujit-baniya/frame"
+	"github.com/sujit-baniya/frame/pkg/common/adaptor"
+	"github.com/sujit-baniya/framework/contracts/http"
+	"github.com/sujit-baniya/framework/contracts/validation"
+	"github.com/sujit-baniya/framework/facades"
 )
 
 type Validation struct {
-	rules []validatecontract.Rule
+	rules []validation.Rule
 }
 
 func NewValidation() *Validation {
 	return &Validation{
-		rules: make([]validatecontract.Rule, 0),
+		rules: make([]validation.Rule, 0),
 	}
 }
 
-func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string, options ...validatecontract.Option) (validatecontract.Validator, error) {
+func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string, options ...validation.Option) (validation.Validator, error) {
 	if data == nil {
 		return nil, errors.New("data can't be empty")
 	}
@@ -65,7 +64,7 @@ func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string,
 	options = append(options, Rules(rules), CustomRules(r.rules))
 	generateOptions := GenerateOptions(options)
 	if generateOptions["prepareForValidation"] != nil {
-		generateOptions["prepareForValidation"].(func(data validatecontract.Data))(NewData(dataFace))
+		generateOptions["prepareForValidation"].(func(data validation.Data))(NewData(dataFace))
 	}
 
 	v := dataFace.Create()
@@ -74,7 +73,7 @@ func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string,
 	return NewValidator(v, dataFace), nil
 }
 
-func (r *Validation) AddRules(rules []validatecontract.Rule) error {
+func (r *Validation) AddRules(rules []validation.Rule) error {
 	existRuleNames := r.existRuleNames()
 	for _, rule := range rules {
 		for _, existRuleName := range existRuleNames {
@@ -89,7 +88,7 @@ func (r *Validation) AddRules(rules []validatecontract.Rule) error {
 	return nil
 }
 
-func (r *Validation) Rules() []validatecontract.Rule {
+func (r *Validation) Rules() []validation.Rule {
 	return r.rules
 }
 
@@ -310,7 +309,7 @@ func (r *Validation) existRuleNames() []string {
 	return rules
 }
 
-func Validate(ctx *frame.Context, rules map[string]string, options ...validatecontract.Option) (validatecontract.Validator, error) {
+func Validate(ctx *frame.Context, rules map[string]string, options ...validation.Option) (validation.Validator, error) {
 	if rules == nil || len(rules) == 0 {
 		return nil, errors.New("rules can't be empty")
 	}
@@ -331,7 +330,7 @@ func Validate(ctx *frame.Context, rules map[string]string, options ...validateco
 		v = validate.NewValidation(dataFace)
 	} else {
 		if generateOptions["prepareForValidation"] != nil {
-			generateOptions["prepareForValidation"].(func(data validatecontract.Data))(NewData(dataFace))
+			generateOptions["prepareForValidation"].(func(data validation.Data))(NewData(dataFace))
 		}
 
 		v = dataFace.Create()
@@ -342,7 +341,7 @@ func Validate(ctx *frame.Context, rules map[string]string, options ...validateco
 	return NewValidator(v, dataFace), nil
 }
 
-func ValidateRequest(ctx *frame.Context, request http.FormRequest) (validatecontract.Errors, error) {
+func ValidateRequest(ctx *frame.Context, request http.FormRequest) (validation.Errors, error) {
 	if err := request.Authorize(ctx); err != nil {
 		return nil, err
 	}

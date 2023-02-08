@@ -152,5 +152,3 @@ require (
 	gopkg.in/ini.v1 v1.64.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
-
-replace gorm.io/gorm => github.com/sujit-baniya/gorm v0.0.2
