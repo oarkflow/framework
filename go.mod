@@ -22,7 +22,7 @@ require (
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/viper v1.9.0
 	github.com/sujit-baniya/cron v0.0.2
-	github.com/sujit-baniya/frame v0.0.29
+	github.com/sujit-baniya/frame v0.0.30
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migration v0.0.4
 	github.com/sujit-baniya/pkg v0.0.13
@@ -143,7 +143,7 @@ require (
 	golang.org/x/oauth2 v0.1.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/time v0.0.0-20220922220347-f3bd1da661af // indirect
 	google.golang.org/api v0.102.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
