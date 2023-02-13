@@ -13,6 +13,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	glog "gorm.io/gorm/logger"
+	"gorm.io/plugin/dbresolver"
 	"log"
 	"os"
 	"time"
@@ -36,6 +37,29 @@ func NewGormDB(ctx context.Context, connection string, config *gorm.Config, disa
 		db = db.WithContext(ctx)
 	}
 
+	if facades.Config.GetBool("database.enable_connection_pool") {
+		maxIdleTime := facades.Config.GetInt("database.max_idle_time")
+		maxLifeTime := facades.Config.GetInt("database.max_life_time")
+		maxIdleConnections := facades.Config.GetInt("database.max_idle_connections")
+		maxOpenConnections := facades.Config.GetInt("database.max_open_connections")
+		if maxOpenConnections == 0 || maxOpenConnections > 100 {
+			maxOpenConnections = 100
+		}
+		if maxIdleConnections == 0 {
+			maxIdleConnections = int(float64(maxOpenConnections) - (20 / float64(maxOpenConnections) * 100))
+		}
+		resolver := dbresolver.Register(dbresolver.Config{})
+		if maxIdleTime > 0 {
+			resolver = resolver.SetConnMaxIdleTime(time.Duration(maxIdleTime) * time.Minute)
+		}
+		if maxLifeTime > 0 {
+			resolver = resolver.SetConnMaxLifetime(time.Duration(maxLifeTime) * time.Hour)
+		}
+		err = db.Use(resolver.SetMaxIdleConns(maxIdleConnections).SetMaxOpenConns(maxOpenConnections))
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &GormDB{
 		Query:    NewGormQuery(db),
 		instance: db,
