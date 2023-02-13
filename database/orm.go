@@ -42,20 +42,20 @@ func (r *Orm) Connection(name string, config *gorm.Config, disableLog bool) cont
 		return r
 	}
 
-	gorm, err := NewGormDB(r.ctx, name, config, disableLog)
+	g, err := NewGormDB(r.ctx, name, config, disableLog)
 	if err != nil {
 		color.Redln(fmt.Sprintf("[Orm] Init connection error, %v", err))
 
 		return nil
 	}
-	if gorm == nil {
+	if g == nil {
 		return nil
 	}
 
-	r.instances[name] = gorm
+	r.instances[name] = g
 
 	if name == defaultConnection {
-		r.defaultInstance = gorm
+		r.defaultInstance = g
 	}
 
 	return r

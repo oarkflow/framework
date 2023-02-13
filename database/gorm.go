@@ -12,7 +12,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
-	gormLogger "gorm.io/gorm/logger"
+	glog "gorm.io/gorm/logger"
 	"log"
 	"os"
 	"time"
@@ -57,36 +57,36 @@ func NewGormInstance(connection string, config *gorm.Config, disableLog bool) (*
 			DisableForeignKeyConstraintWhenMigrating: true,
 			SkipDefaultTransaction:                   true,
 		}
-		if !disableLog {
-			logger, logLevel := getLogger()
-			cfg.Logger = logger.LogMode(logLevel)
-		}
 	} else {
 		cfg = config
-		if cfg.Logger == nil && !disableLog {
-			logger, logLevel := getLogger()
-			cfg.Logger = logger.LogMode(logLevel)
+	}
+	if disableLog {
+		cfg.Logger = nil
+	} else {
+		if cfg.Logger == nil {
+			logger := getLogger()
+			cfg.Logger = logger
 		}
 	}
-
 	return gorm.Open(gormConfig, cfg)
 }
 
-func getLogger() (gormLogger.Interface, gormLogger.LogLevel) {
-	var logLevel gormLogger.LogLevel
+func getLogger() glog.Interface {
+	var logLevel glog.LogLevel
 	if facades.Config.GetBool("app.debug") {
-		logLevel = gormLogger.Info
+		logLevel = glog.Info
 	} else {
-		logLevel = gormLogger.Error
+		logLevel = glog.Error
 	}
 
-	logger := New(log.New(os.Stdout, "\r\n", log.LstdFlags), gormLogger.Config{
+	logger := New(log.New(os.Stdout, "\r\n", log.LstdFlags), glog.Config{
 		SlowThreshold:             200 * time.Millisecond,
-		LogLevel:                  gormLogger.Info,
+		LogLevel:                  glog.Info,
 		IgnoreRecordNotFoundError: true,
 		Colorful:                  true,
 	})
-	return logger, logLevel
+	logger.LogMode(logLevel)
+	return logger
 }
 
 func (r *GormDB) Begin() (orm.Transaction, error) {
