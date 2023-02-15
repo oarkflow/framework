@@ -234,6 +234,17 @@ func (t *Body) Send(msg Mail) error {
 	return DefaultMailer.Send(msg)
 }
 
+func (t *Body) Queue(msg Mail, queue *mail.Queue) error {
+	msg.Body = t.Content
+	if t.mailer != nil {
+		return t.mailer.Queue(msg, queue)
+	}
+	if DefaultMailer == nil {
+		return errors.New("No mailer configured")
+	}
+	return DefaultMailer.Queue(msg, queue)
+}
+
 func generateMessageID() (string, error) {
 	t := time.Now().UnixNano()
 	pid := os.Getpid()
