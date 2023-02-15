@@ -1,5 +1,7 @@
 package mail
 
+import "fmt"
+
 type SendMailJob struct {
 }
 
@@ -10,5 +12,14 @@ func (r *SendMailJob) Signature() string {
 
 // Handle Execute the job.
 func (r *SendMailJob) Handle(args ...any) error {
-	return SendMail(args[0].(string), args[1].(string), args[2].(string), args[3].(string), args[4].([]string), args[5].([]string), args[6].([]string), args[7].([]string))
+	msg := Mail{
+		To:          args[4].([]string),
+		From:        fmt.Sprintf("%s<%s>", args[3].(string), args[2].(string)),
+		Subject:     args[0].(string),
+		Body:        args[1].(string),
+		Bcc:         args[6].([]string),
+		Cc:          args[5].([]string),
+		AttachFiles: args[7].([]Attachment),
+	}
+	return SendMail(msg)
 }

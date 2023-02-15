@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/mail"
+	"github.com/sujit-baniya/framework/mail"
 )
 
-var Mail mail.Mail
+var Mailer *mail.Mailer

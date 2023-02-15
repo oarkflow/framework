@@ -1,87 +1,164 @@
 package mail
 
 import (
-	"crypto/tls"
+	"crypto/rand"
+	"errors"
 	"fmt"
+	"github.com/sujit-baniya/frame/pkg/common/bytebufferpool"
+	"github.com/sujit-baniya/frame/pkg/common/utils"
+	"github.com/sujit-baniya/frame/server/render"
 	"github.com/sujit-baniya/framework/contracts/mail"
-	contractqueue "github.com/sujit-baniya/framework/contracts/queue"
-	"net/smtp"
-
-	"github.com/jordan-wright/email"
-
+	queue2 "github.com/sujit-baniya/framework/contracts/queue"
 	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/log/fqdn"
+	"math"
+	"math/big"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/sujit-baniya/log"
+	sMail "github.com/xhit/go-simple-mail/v2"
 )
 
-type Email struct {
-	clone    int
-	content  mail.Content
-	from     mail.From
-	to       []string
-	cc       []string
-	bcc      []string
-	attaches []string
+var maxBigInt = big.NewInt(math.MaxInt64)
+
+type Config struct {
+	Host        string `json:"host" yaml:"host" env:"MAIL_HOST"`
+	Username    string `json:"username" yaml:"username" env:"MAIL_USERNAME"`
+	Password    string `json:"password" yaml:"password" env:"MAIL_PASSWORD"`
+	Encryption  string `json:"encryption" yaml:"encryption" env:"MAIL_ENCRYPTION"`
+	FromAddress string `json:"from_address" yaml:"from_address" env:"MAIL_FROM_ADDRESS"`
+	FromName    string `json:"from_name" yaml:"from_name" env:"MAIL_FROM_NAME"`
+	EmailLayout string `json:"layout" yaml:"layout" env:"MAIL_LAYOUT"`
+	Port        int    `json:"port" yaml:"port" env:"MAIL_PORT"`
 }
 
-func NewEmail() mail.Mail {
-	return &Email{}
+func GetMailConfig() Config {
+	host := facades.Config.GetString("mail.host")
+	port := facades.Config.GetInt("mail.port")
+	username := facades.Config.GetString("mail.username")
+	password := facades.Config.GetString("mail.password")
+	encryption := facades.Config.GetString("mail.encryption")
+	fromName := facades.Config.GetString("mail.from.name")
+	fromAddress := facades.Config.GetString("mail.from.address")
+	emailLayout := facades.Config.GetString("mail.layout")
+	return Config{
+		Host:        host,
+		Port:        port,
+		Username:    username,
+		Password:    password,
+		Encryption:  encryption,
+		FromName:    fromName,
+		FromAddress: fromAddress,
+		EmailLayout: emailLayout,
+	}
 }
 
-func (r *Email) Content(content mail.Content) mail.Mail {
-	instance := r.instance()
-	instance.content = content
-
-	return instance
+type Mailer struct {
+	*sMail.SMTPServer
+	*sMail.SMTPClient
+	*render.HtmlEngine
+	Config Config
 }
 
-func (r *Email) From(from mail.From) mail.Mail {
-	instance := r.instance()
-	instance.from = from
-
-	return instance
+type Attachment struct {
+	Data     []byte
+	File     string
+	FileName string
+	MimeType string
 }
 
-func (r *Email) To(to []string) mail.Mail {
-	instance := r.instance()
-	instance.to = to
-
-	return instance
+type Mail struct {
+	To          []string     `json:"to,omitempty"`
+	From        string       `json:"from,omitempty"`
+	Subject     string       `json:"subject,omitempty"`
+	Body        string       `json:"body,omitempty"`
+	Bcc         []string     `json:"bcc,omitempty"`
+	Cc          []string     `json:"cc,omitempty"`
+	Attachments []Attachment `json:"attachments,omitempty"`
+	AttachFiles []Attachment `json:"attach_files"`
+	engine      *render.HtmlEngine
 }
 
-func (r *Email) Cc(cc []string) mail.Mail {
-	instance := r.instance()
-	instance.cc = cc
+var DefaultMailer *Mailer
 
-	return instance
+func Default(cfg Config, templateEngine *render.HtmlEngine) {
+	DefaultMailer = New(cfg, templateEngine)
 }
 
-func (r *Email) Bcc(bcc []string) mail.Mail {
-	instance := r.instance()
-	instance.bcc = bcc
-
-	return instance
+func New(cfg Config, templateEngine *render.HtmlEngine) *Mailer {
+	m := &Mailer{Config: cfg}
+	m.HtmlEngine = templateEngine
+	m.SMTPServer = sMail.NewSMTPClient()
+	m.SMTPServer.Host = cfg.Host
+	m.SMTPServer.Port = cfg.Port
+	m.SMTPServer.Username = cfg.Username
+	m.SMTPServer.Password = cfg.Password
+	if cfg.Encryption == "tls" {
+		m.SMTPServer.Encryption = sMail.EncryptionSTARTTLS
+	} else {
+		m.SMTPServer.Encryption = sMail.EncryptionSSL
+	}
+	//Variable to keep alive connection
+	m.SMTPServer.KeepAlive = false
+	//Timeout for connect to SMTP Server
+	m.SMTPServer.ConnectTimeout = 10 * time.Second
+	//Timeout for send the data and wait respond
+	m.SMTPServer.SendTimeout = 10 * time.Second
+	return m
 }
 
-func (r *Email) Attach(files []string) mail.Mail {
-	instance := r.instance()
-	instance.attaches = files
+func (m *Mailer) Send(msg Mail) error {
+	var err error
+	m.SMTPClient, err = m.SMTPServer.Connect()
+	if err != nil {
+		fmt.Println("Error on connection: " + err.Error())
+		return err
+	}
+	defer m.SMTPClient.Close()
+	//New email simple html with inline and CC
+	email := sMail.NewMSG()
+	if msg.From == "" {
+		msg.From = fmt.Sprintf("%s<%s>", m.Config.FromName, m.Config.FromAddress)
+	}
+	email.SetFrom(msg.From).AddTo(msg.To...).SetSubject(msg.Subject)
+	if len(msg.Cc) > 0 { //nolint:wsl
+		email.AddCc(msg.Cc...)
+	}
+	if len(msg.Bcc) > 0 { //nolint:wsl
+		email.AddBcc(msg.Bcc...)
+	}
+	// txt, _ := html2text.FromString(body, html2text.Options{PrettyTables: false})
+	// email.AddAlternative(sMail.TextPlain, txt)
+	email.SetBody(sMail.TextHTML, msg.Body) //nolint:wsl
+	for _, attachment := range msg.Attachments {
+		email.AddAttachmentData(attachment.Data, attachment.File, attachment.MimeType)
+	}
+	for _, attachment := range msg.AttachFiles {
+		email.AddAttachment(attachment.File, attachment.FileName)
+	}
 
-	return instance
+	//Call Send and pass the client
+	err = email.Send(m.SMTPClient)
+	if err != nil {
+		return err
+	} else {
+		log.Info().Msg("Email Sent to " + strings.Join(msg.To, ", "))
+	}
+	return nil
 }
 
-func (r *Email) Send() error {
-	return SendMail(r.content.Subject, r.content.Html, r.from.Address, r.from.Name, r.to, r.cc, r.bcc, r.attaches)
-}
-
-func (r *Email) Queue(queue *mail.Queue) error {
-	job := facades.Queue.Job(&SendMailJob{}, []contractqueue.Arg{
-		{Value: r.content.Subject, Type: "string"},
-		{Value: r.content.Html, Type: "string"},
-		{Value: r.from.Address, Type: "string"},
-		{Value: r.from.Name, Type: "string"},
-		{Value: r.to, Type: "[]string"},
-		{Value: r.cc, Type: "[]string"},
-		{Value: r.bcc, Type: "[]string"},
-		{Value: r.attaches, Type: "[]string"},
+func (m *Mailer) Queue(msg Mail, queue *mail.Queue) error {
+	job := facades.Queue.Job(&SendMailJob{}, []queue2.Arg{
+		{Value: msg.Subject, Type: "string"},
+		{Value: msg.Body, Type: "string"},
+		{Value: msg.From, Type: "string"},
+		{Value: msg.To, Type: "[]string"},
+		{Value: msg.Cc, Type: "[]string"},
+		{Value: msg.Bcc, Type: "[]string"},
+		{Value: msg.Attachments, Type: "[]Attachment"},
+		{Value: msg.AttachFiles, Type: "[]Attachment"},
 	})
 	if queue != nil {
 		if queue.Connection != "" {
@@ -95,60 +172,76 @@ func (r *Email) Queue(queue *mail.Queue) error {
 	return job.Dispatch()
 }
 
-func (r *Email) instance() *Email {
-	if r.clone == 0 {
-		return &Email{clone: 1}
+func (m *Mailer) View(view string, body utils.H) *Body {
+	buf := bytebufferpool.Get()
+	defer bytebufferpool.Put(buf)
+	if err := m.Render(buf, view, body, m.Config.EmailLayout); err != nil {
+		panic(err)
 	}
-
-	return r
+	bodyContent := &Body{Content: buf.String(), mailer: m}
+	return bodyContent
 }
 
-func SendMail(subject, html string, fromAddress, fromName string, to, cc, bcc, attaches []string) error {
-	e := email.NewEmail()
-	if fromAddress == "" {
-		e.From = fmt.Sprintf("%s <%s>", facades.Config.GetString("mail.from.name"), facades.Config.GetString("mail.from.address"))
-	} else {
-		e.From = fmt.Sprintf("%s <%s>", fromName, fromAddress)
+func (m *Mailer) Html(view string, body utils.H) string {
+	buf := bytebufferpool.Get()
+	defer bytebufferpool.Put(buf)
+	if err := m.Render(buf, view, body, DefaultMailer.Config.EmailLayout); err != nil {
+		panic(err)
 	}
+	return buf.String()
+}
 
-	e.To = to
-	e.Bcc = bcc
-	e.Cc = cc
-	e.Subject = subject
-	e.HTML = []byte(html)
+func View(view string, body utils.H) *Body {
+	bodyContent := &Body{Content: Html(view, body)}
+	return bodyContent
+}
 
-	for _, attach := range attaches {
-		if _, err := e.AttachFile(attach); err != nil {
-			return err
-		}
+func Html(view string, body utils.H) string {
+	buf := bytebufferpool.Get()
+	defer bytebufferpool.Put(buf)
+	if err := DefaultMailer.Render(buf, view, body, DefaultMailer.Config.EmailLayout); err != nil {
+		panic(err)
 	}
-
-	return e.SendWithStartTLS(fmt.Sprintf("%s:%s", facades.Config.GetString("mail.host"),
-		facades.Config.GetString("mail.port")),
-		LoginAuth(facades.Config.GetString("mail.username"),
-			facades.Config.GetString("mail.password")), &tls.Config{ServerName: facades.Config.GetString("mail.host")})
+	return buf.String()
 }
 
-type loginAuth struct {
-	username, password string
+func Send(msg Mail) error {
+	return DefaultMailer.Send(msg)
 }
 
-func LoginAuth(username, password string) smtp.Auth {
-	return &loginAuth{username, password}
+type Body struct {
+	Content string
+	mailer  *Mailer
 }
 
-func (a *loginAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
-	return "LOGIN", []byte(a.username), nil
+func SendMail(msg Mail) error {
+	mailer := New(GetMailConfig(), nil)
+	return mailer.Send(msg)
 }
 
-func (a *loginAuth) Next(fromServer []byte, more bool) ([]byte, error) {
-	if more {
-		switch string(fromServer) {
-		case "Username:":
-			return []byte(a.username), nil
-		case "Password:":
-			return []byte(a.password), nil
-		}
+func (t *Body) Send(msg Mail) error {
+	msg.Body = t.Content
+	if t.mailer != nil {
+		return t.mailer.Send(msg)
 	}
-	return nil, nil
+	if DefaultMailer == nil {
+		return errors.New("No mailer configured")
+	}
+	return DefaultMailer.Send(msg)
+}
+
+func generateMessageID() (string, error) {
+	t := time.Now().UnixNano()
+	pid := os.Getpid()
+	rint, err := rand.Int(rand.Reader, maxBigInt)
+	if err != nil {
+		return "", err
+	}
+	h, err := fqdn.Hostname()
+	// If we can't get the hostname, we'll use localhost
+	if err != nil {
+		h = "localhost.localdomain"
+	}
+	msgid := fmt.Sprintf("<%d.%d.%d@%s>", t, pid, rint, h)
+	return msgid, nil
 }

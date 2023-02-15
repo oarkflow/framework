@@ -1,16 +1,15 @@
 package mail
 
-import (
-	"github.com/sujit-baniya/framework/contracts/mail"
-)
+import "github.com/sujit-baniya/framework/facades"
 
 type Application struct {
-	Mailer mail.Mail
+	Mailer *Mailer
 }
 
-func (app *Application) Init() mail.Mail {
+func (app *Application) Init() *Mailer {
 	if app.Mailer != nil {
 		return app.Mailer
 	}
-	return NewEmail()
+	config := GetMailConfig()
+	return New(config, facades.Route.HtmlEngine)
 }

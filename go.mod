@@ -13,25 +13,26 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/h2non/filetype v1.1.3
 	github.com/jmoiron/sqlx v1.3.5
-	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/viper v1.9.0
 	github.com/sujit-baniya/cron v0.0.2
-	github.com/sujit-baniya/frame v0.0.31
+	github.com/sujit-baniya/frame v0.0.32
 	github.com/sujit-baniya/log v1.0.71
 	github.com/sujit-baniya/machinery v0.0.1
 	github.com/sujit-baniya/migration v0.0.4
 	github.com/sujit-baniya/pkg v0.0.13
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.40
 	github.com/urfave/cli/v2 v2.3.0
+	github.com/xhit/go-simple-mail/v2 v2.13.0
 	google.golang.org/grpc v1.50.1
 	gorm.io/driver/mysql v1.4.5
 	gorm.io/driver/postgres v1.4.6
 	gorm.io/driver/sqlite v1.4.3
 	gorm.io/driver/sqlserver v1.4.2
 	gorm.io/gorm v1.24.4
+	gorm.io/plugin/dbresolver v1.4.1
 )
 
 require (
@@ -54,7 +55,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.6 // indirect
 	github.com/bytedance/gopkg v0.0.0-20221122125632-68358b8ecec6 // indirect
-	github.com/bytedance/sonic v1.7.1 // indirect
+	github.com/bytedance/sonic v1.8.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
@@ -66,6 +67,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
 	github.com/go-redsync/redsync/v4 v4.0.4 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/go-test/deep v1.1.0 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -107,7 +109,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.6.6 // indirect
 	github.com/mozillazg/go-httpheader v0.2.1 // indirect
-	github.com/nyaruka/phonenumbers v1.1.5 // indirect
+	github.com/nyaruka/phonenumbers v1.1.6 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/posener/complete v1.2.3 // indirect
@@ -124,6 +126,7 @@ require (
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
+	github.com/toorop/go-dkim v0.0.0-20201103131630-e1cd1a0a5208 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.1 // indirect
