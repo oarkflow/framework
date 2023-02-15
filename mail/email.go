@@ -209,6 +209,10 @@ func Send(msg Mail) error {
 	return DefaultMailer.Send(msg)
 }
 
+func Queue(msg Mail, queue *mail.Queue) error {
+	return DefaultMailer.Queue(msg, queue)
+}
+
 type Body struct {
 	Content string
 	mailer  *Mailer

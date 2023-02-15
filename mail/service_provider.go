@@ -11,7 +11,7 @@ type ServiceProvider struct {
 
 func (route *ServiceProvider) Register() {
 	app := Application{Mailer: route.Mailer}
-	facades.Mailer = app.Init()
+	DefaultMailer = app.Init()
 }
 
 func (route *ServiceProvider) Boot() {
