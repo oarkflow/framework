@@ -4,30 +4,23 @@ import (
 	"github.com/gookit/color"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
-	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/support/file"
 	"os"
-
-	"github.com/sujit-baniya/framework/contracts/config"
 )
 
 type Application struct {
 	vip *viper.Viper
 }
 
-func Init() {
-	app := Application{}
-	facades.Config = app.Init()
-}
-
-func (app *Application) Init() config.Config {
-	if !file.Exists(".env") {
+func NewApplication(envPath string) *Application {
+	if !file.Exists(envPath) {
 		color.Redln("Please create .env and initialize it first\nRun command: \ncp .env.example .env && go run . artisan key:generate")
 		os.Exit(0)
 	}
 
+	app := &Application{}
 	app.vip = viper.New()
-	app.vip.SetConfigName(".env")
+	app.vip.SetConfigName(envPath)
 	app.vip.SetConfigType("env")
 	app.vip.AddConfigPath(".")
 	err := app.vip.ReadInConfig()

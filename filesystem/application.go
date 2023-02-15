@@ -70,14 +70,17 @@ func NewDriver(disk string) (filesystem.Driver, error) {
 }
 
 func (r *Storage) Disk(disk string) filesystem.Driver {
-	if r.drivers[disk] != nil {
-		return r.drivers[disk]
+	if driver, exist := r.drivers[disk]; exist {
+		return driver
 	}
 
 	driver, err := NewDriver(disk)
 	if err != nil {
 		log.Error().Err(err).Msg("disk error: %v")
+		return nil
 	}
+
+	r.drivers[disk] = driver
 
 	return driver
 }

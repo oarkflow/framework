@@ -2,7 +2,6 @@ package file
 
 import (
 	"errors"
-	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -46,7 +45,7 @@ func Remove(file string) bool {
 	}
 
 	if fi.IsDir() {
-		dir, err := ioutil.ReadDir(file)
+		dir, err := os.ReadDir(file)
 
 		if err != nil {
 			return false
@@ -70,7 +69,7 @@ func Remove(file string) bool {
 
 func Contain(file string, search string) bool {
 	if Exists(file) {
-		data, err := ioutil.ReadFile(file)
+		data, err := os.ReadFile(file)
 		if err != nil {
 			return false
 		}
@@ -82,18 +81,8 @@ func Contain(file string, search string) bool {
 
 // Extension Supported types: https://github.com/h2non/filetype#supported-types
 func Extension(file string, originalWhenUnknown ...bool) (string, error) {
-	f, err := os.Open(file)
-	if err != nil {
-		return "", err
-	}
-
-	head := make([]byte, 261)
-	_, err = f.Read(head)
-	if err != nil {
-		return "", err
-	}
-
-	kind, err := filetype.Match(head)
+	buf, _ := os.ReadFile(file)
+	kind, err := filetype.Match(buf)
 	if err != nil {
 		return "", err
 	}

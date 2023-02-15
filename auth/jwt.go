@@ -28,6 +28,7 @@ var (
 	ErrorParseTokenFirst     = errors.New("parse token first")
 	ErrorInvalidClaims       = errors.New("invalid claims")
 	ErrorInvalidToken        = errors.New("invalid token")
+	ErrorInvalidKey          = errors.New("invalid key")
 )
 
 type Claims struct {

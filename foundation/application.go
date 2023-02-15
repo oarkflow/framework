@@ -1,12 +1,14 @@
 package foundation
 
 import (
-	"github.com/sujit-baniya/framework/config"
 	"github.com/sujit-baniya/framework/console"
+	"os"
+	"strings"
+
+	"github.com/sujit-baniya/framework/config"
 	"github.com/sujit-baniya/framework/contracts"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/support"
-	"os"
 )
 
 func Init(providers ...contracts.ServiceProvider) *Application {
@@ -31,7 +33,15 @@ func (app *Application) Boot() {
 }
 
 func (app *Application) setRootPath() {
-	support.RootPath = getCurrentAbPath()
+	rootPath := getCurrentAbPath()
+
+	// Hack air path
+	airPath := "/storage/temp"
+	if strings.HasSuffix(rootPath, airPath) {
+		rootPath = strings.ReplaceAll(rootPath, airPath, "")
+	}
+
+	support.RootPath = rootPath
 }
 
 // bootArtisan Boot artisan command.

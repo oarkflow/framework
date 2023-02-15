@@ -64,7 +64,9 @@ func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string,
 	options = append(options, Rules(rules), CustomRules(r.rules))
 	generateOptions := GenerateOptions(options)
 	if generateOptions["prepareForValidation"] != nil {
-		generateOptions["prepareForValidation"].(func(data validation.Data))(NewData(dataFace))
+		if err := generateOptions["prepareForValidation"].(func(data validation.Data) error)(NewData(dataFace)); err != nil {
+			return nil, err
+		}
 	}
 
 	v := dataFace.Create()
