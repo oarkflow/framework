@@ -17,12 +17,15 @@ type Application struct {
 	EnvPath string
 }
 
-func Init() {
-	app := Application{}
+func Init(envPath string) {
+	app := Application{EnvPath: envPath}
 	facades.Config = app.Init()
 }
 
 func (app *Application) Init() config.Config {
+	if app.EnvPath == "" {
+		app.EnvPath = ".env"
+	}
 	if !file.Exists(app.EnvPath) {
 		color.Redln("Please create .env and initialize it first.")
 		color.Warnln("Run command: \ncp .env.example .env && go run . artisan key:generate")
