@@ -7,7 +7,12 @@ import (
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/support"
 	"os"
+	"strings"
 )
+
+func init() {
+	setEnv()
+}
 
 func Init(providers ...contracts.ServiceProvider) *Application {
 	//Create a new application instance.
@@ -27,11 +32,25 @@ func (app *Application) Boot() {
 	app.bootConfiguredServiceProviders()
 
 	app.bootArtisan()
-	app.setRootPath()
+	setRootPath()
 }
 
-func (app *Application) setRootPath() {
-	support.RootPath = getCurrentAbPath()
+func setEnv() {
+	args := os.Args
+	if len(args) >= 2 {
+		if args[1] == "artisan" {
+			support.Env = support.EnvArtisan
+		}
+	}
+}
+
+func setRootPath() {
+	rootPath := getCurrentAbPath()
+	airPath := "/storage/bin"
+	if strings.HasSuffix(rootPath, airPath) {
+		rootPath = strings.ReplaceAll(rootPath, airPath, "")
+	}
+	support.RootPath = rootPath
 }
 
 // bootArtisan Boot artisan command.
