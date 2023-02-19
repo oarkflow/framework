@@ -14,15 +14,16 @@ func init() {
 	setEnv()
 }
 
-func Init(providers ...contracts.ServiceProvider) *Application {
+func Init(envPath string, providers ...contracts.ServiceProvider) *Application {
 	//Create a new application instance.
-	app := &Application{Providers: providers}
+	app := &Application{Providers: providers, EnvPath: envPath}
 	app.registerBaseServiceProviders()
 	app.bootBaseServiceProviders()
 	return app
 }
 
 type Application struct {
+	EnvPath   string
 	Providers []contracts.ServiceProvider
 }
 
@@ -61,7 +62,7 @@ func (app *Application) bootArtisan() {
 // getBaseServiceProviders Get base service providers.
 func (app *Application) getBaseServiceProviders() []contracts.ServiceProvider {
 	return []contracts.ServiceProvider{
-		&config.ServiceProvider{},
+		&config.ServiceProvider{EnvPath: app.EnvPath},
 		&console.ServiceProvider{},
 	}
 }
