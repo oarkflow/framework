@@ -13,27 +13,24 @@ import (
 )
 
 type Application struct {
-	vip     *viper.Viper
-	EnvPath string
+	vip *viper.Viper
 }
 
-func Init(envPath string) {
-	app := Application{EnvPath: envPath}
+func Init() {
+	app := Application{}
 	facades.Config = app.Init()
 }
 
 func (app *Application) Init() config.Config {
-	if app.EnvPath == "" {
-		app.EnvPath = ".env"
-	}
-	if !file.Exists(app.EnvPath) {
+	envFile := ".env"
+	if !file.Exists(envFile) {
 		color.Redln("Please create .env and initialize it first.")
 		color.Warnln("Run command: \ncp .env.example .env && go run . artisan key:generate")
 		os.Exit(0)
 	}
 
 	app.vip = viper.New()
-	app.vip.SetConfigName(app.EnvPath)
+	app.vip.SetConfigName(envFile)
 	app.vip.SetConfigType("env")
 	app.vip.AddConfigPath(".")
 	err := app.vip.ReadInConfig()

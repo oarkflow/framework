@@ -5,14 +5,10 @@ import (
 )
 
 type ServiceProvider struct {
-	EnvPath string
 }
 
 func (config *ServiceProvider) Register() {
-	if config.EnvPath == "" {
-		config.EnvPath = ".env"
-	}
-	app := Application{EnvPath: config.EnvPath}
+	app := Application{}
 	if facades.Config == nil {
 		facades.Config = app.Init()
 	}
