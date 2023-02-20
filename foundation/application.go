@@ -10,10 +10,6 @@ import (
 	"strings"
 )
 
-func init() {
-	setEnv()
-}
-
 func Init(providers ...contracts.ServiceProvider) *Application {
 	//Create a new application instance.
 	app := &Application{Providers: providers}
@@ -33,15 +29,6 @@ func (app *Application) Boot() {
 
 	app.bootArtisan()
 	setRootPath()
-}
-
-func setEnv() {
-	args := os.Args
-	if len(args) >= 2 {
-		if args[1] == "artisan" {
-			support.Env = support.EnvArtisan
-		}
-	}
 }
 
 func setRootPath() {

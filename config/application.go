@@ -4,13 +4,21 @@ import (
 	"github.com/gookit/color"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"github.com/sujit-baniya/framework/contracts/config"
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/support"
 	"github.com/sujit-baniya/framework/support/file"
 	"os"
-
-	"github.com/sujit-baniya/framework/contracts/config"
 )
+
+func init() {
+	args := os.Args
+	if len(args) > 2 {
+		if args[1] == "artisan" {
+			support.Env = support.EnvArtisan
+		}
+	}
+}
 
 type Application struct {
 	vip *viper.Viper
@@ -44,9 +52,11 @@ func (app *Application) Init() config.Config {
 		color.Redln("Please initialize APP_KEY first.")
 		color.Warnln("Run command: \ngo run . artisan key:generate")
 		os.Exit(0)
+	} else if appKey == nil {
+		return app
 	}
 
-	if len(appKey.(string)) != 32 {
+	if len(appKey.(string)) > 0 && len(appKey.(string)) != 32 {
 		color.Redln("Invalid APP_KEY, please reset it.")
 		color.Warnln("Run command: \ngo run . artisan key:generate")
 		os.Exit(0)
