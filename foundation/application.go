@@ -7,6 +7,7 @@ import (
 	"github.com/sujit-baniya/framework/facades"
 	"github.com/sujit-baniya/framework/support"
 	"os"
+	"strings"
 )
 
 func Init(providers ...contracts.ServiceProvider) *Application {
@@ -27,11 +28,16 @@ func (app *Application) Boot() {
 	app.bootConfiguredServiceProviders()
 
 	app.bootArtisan()
-	app.setRootPath()
+	setRootPath()
 }
 
-func (app *Application) setRootPath() {
-	support.RootPath = getCurrentAbPath()
+func setRootPath() {
+	rootPath := getCurrentAbPath()
+	airPath := "/storage/bin"
+	if strings.HasSuffix(rootPath, airPath) {
+		rootPath = strings.ReplaceAll(rootPath, airPath, "")
+	}
+	support.RootPath = rootPath
 }
 
 // bootArtisan Boot artisan command.

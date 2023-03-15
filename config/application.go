@@ -4,12 +4,21 @@ import (
 	"github.com/gookit/color"
 	"github.com/spf13/cast"
 	"github.com/spf13/viper"
+	"github.com/sujit-baniya/framework/contracts/config"
 	"github.com/sujit-baniya/framework/facades"
+	"github.com/sujit-baniya/framework/support"
 	"github.com/sujit-baniya/framework/support/file"
 	"os"
-
-	"github.com/sujit-baniya/framework/contracts/config"
 )
+
+func init() {
+	args := os.Args
+	if len(args) > 2 {
+		if args[1] == "artisan" {
+			support.Env = support.EnvArtisan
+		}
+	}
+}
 
 type Application struct {
 	vip *viper.Viper
@@ -21,13 +30,15 @@ func Init() {
 }
 
 func (app *Application) Init() config.Config {
-	if !file.Exists(".env") {
-		color.Redln("Please create .env and initialize it first\nRun command: \ncp .env.example .env && go run . artisan key:generate")
+	envFile := ".env"
+	if !file.Exists(envFile) {
+		color.Redln("Please create .env and initialize it first.")
+		color.Warnln("Run command: \ncp .env.example .env && go run . artisan key:generate")
 		os.Exit(0)
 	}
 
 	app.vip = viper.New()
-	app.vip.SetConfigName(".env")
+	app.vip.SetConfigName(envFile)
 	app.vip.SetConfigType("env")
 	app.vip.AddConfigPath(".")
 	err := app.vip.ReadInConfig()
@@ -36,7 +47,20 @@ func (app *Application) Init() config.Config {
 	}
 	app.vip.SetEnvPrefix("goravel")
 	app.vip.AutomaticEnv()
+	appKey := app.Env("APP_KEY")
+	if appKey == nil && support.Env != support.EnvArtisan {
+		color.Redln("Please initialize APP_KEY first.")
+		color.Warnln("Run command: \ngo run . artisan key:generate")
+		os.Exit(0)
+	} else if appKey == nil {
+		return app
+	}
 
+	if len(appKey.(string)) > 0 && len(appKey.(string)) != 32 {
+		color.Redln("Invalid APP_KEY, please reset it.")
+		color.Warnln("Run command: \ngo run . artisan key:generate")
+		os.Exit(0)
+	}
 	return app
 }
 
