@@ -1,8 +1,8 @@
 package http
 
 import (
-	"github.com/sujit-baniya/frame"
-	"github.com/sujit-baniya/framework/contracts/validation"
+	"github.com/oarkflow/frame"
+	"github.com/oarkflow/framework/contracts/validation"
 )
 
 type FormRequest interface {

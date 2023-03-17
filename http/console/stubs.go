@@ -7,8 +7,8 @@ func (r Stubs) Request() string {
 	return `package requests
 
 import (
-	"github.com/sujit-baniya/frame"
-	"github.com/sujit-baniya/framework/contracts/validation"
+	"github.com/oarkflow/frame"
+	"github.com/oarkflow/framework/contracts/validation"
 )
 
 type DummyRequest struct {

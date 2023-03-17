@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/grpc"
+	"github.com/oarkflow/framework/contracts/grpc"
 )
 
 var Grpc grpc.Grpc

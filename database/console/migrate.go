@@ -3,9 +3,9 @@ package console
 import (
 	"database/sql"
 	"errors"
-	"github.com/sujit-baniya/framework/database/support"
-	"github.com/sujit-baniya/framework/facades"
-	"github.com/sujit-baniya/migration"
+	"github.com/oarkflow/framework/database/support"
+	"github.com/oarkflow/framework/facades"
+	"github.com/oarkflow/migration"
 	"os"
 )
 

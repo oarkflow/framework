@@ -1,8 +1,8 @@
 package event
 
 import (
-	"github.com/sujit-baniya/framework/contracts/event"
-	"github.com/sujit-baniya/framework/event/support"
+	"github.com/oarkflow/framework/contracts/event"
+	"github.com/oarkflow/framework/event/support"
 )
 
 type Application struct {

@@ -1,9 +1,9 @@
 package console
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/contracts/console/command"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/contracts/console/command"
+	"github.com/oarkflow/framework/facades"
 )
 
 type ListCommand struct {

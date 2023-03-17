@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/validation"
+	"github.com/oarkflow/framework/contracts/validation"
 )
 
 var Validation validation.Validation

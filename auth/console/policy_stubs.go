@@ -9,7 +9,7 @@ func (receiver PolicyStubs) Policy() string {
 import (
 	"context"
 	
-	"github.com/sujit-baniya/framework/contracts/auth/access"
+	"github.com/oarkflow/framework/contracts/auth/access"
 )
 
 type DummyPolicy struct {

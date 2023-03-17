@@ -1,7 +1,7 @@
 package console
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console/command"
+	"github.com/oarkflow/framework/contracts/console/command"
 )
 
 type Command interface {

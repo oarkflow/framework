@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/sujit-baniya/frame"
+	"github.com/oarkflow/frame"
 )
 
 type Auth interface {

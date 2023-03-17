@@ -2,14 +2,14 @@ package auth
 
 import (
 	"errors"
-	"github.com/sujit-baniya/frame"
+	"github.com/oarkflow/frame"
 	"reflect"
 	"strings"
 	"time"
 
-	"github.com/sujit-baniya/framework/contracts/auth"
-	"github.com/sujit-baniya/framework/facades"
-	supporttime "github.com/sujit-baniya/framework/support/time"
+	"github.com/oarkflow/framework/contracts/auth"
+	"github.com/oarkflow/framework/facades"
+	supporttime "github.com/oarkflow/framework/support/time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/cast"

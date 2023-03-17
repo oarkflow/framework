@@ -7,9 +7,9 @@ import (
 	"github.com/gookit/color"
 	"github.com/urfave/cli/v2"
 
-	"github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/contracts/console/command"
-	"github.com/sujit-baniya/framework/support"
+	"github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/contracts/console/command"
+	"github.com/oarkflow/framework/support"
 )
 
 type Cli struct {

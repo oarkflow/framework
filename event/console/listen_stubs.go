@@ -7,7 +7,7 @@ func (receiver ListenerStubs) Listener() string {
 	return `package listeners
 
 import (
-	"github.com/sujit-baniya/framework/contracts/events"
+	"github.com/oarkflow/framework/contracts/events"
 )
 
 type DummyListener struct {

@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"github.com/sujit-baniya/framework/contracts/database/orm"
+	"github.com/oarkflow/framework/contracts/database/orm"
 	"gorm.io/gorm"
 )
 

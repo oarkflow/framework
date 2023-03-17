@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/cache"
+	"github.com/oarkflow/framework/contracts/cache"
 )
 
 var Cache cache.Store

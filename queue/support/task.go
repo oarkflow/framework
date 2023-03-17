@@ -2,10 +2,10 @@ package support
 
 import (
 	"errors"
-	"github.com/sujit-baniya/framework/contracts/queue"
+	"github.com/oarkflow/framework/contracts/queue"
 
-	"github.com/sujit-baniya/machinery"
-	"github.com/sujit-baniya/machinery/tasks"
+	"github.com/oarkflow/machinery"
+	"github.com/oarkflow/machinery/tasks"
 )
 
 type Task struct {

@@ -1,7 +1,7 @@
 package console
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/oarkflow/framework/contracts/console"
 )
 
 type Application struct {

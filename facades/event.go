@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/event"
+	"github.com/oarkflow/framework/contracts/event"
 )
 
 var Event event.Instance

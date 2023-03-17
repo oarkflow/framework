@@ -1,7 +1,7 @@
 package schedule
 
 import (
-	"github.com/sujit-baniya/cron"
+	"github.com/oarkflow/cron"
 )
 
 type Schedule interface {

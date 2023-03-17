@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/sujit-baniya/framework/contracts/auth/access"
+	"github.com/oarkflow/framework/contracts/auth/access"
 )
 
 type Gate struct {

@@ -1,8 +1,8 @@
 package mail
 
 import (
-	"github.com/sujit-baniya/framework/contracts/queue"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/contracts/queue"
+	"github.com/oarkflow/framework/facades"
 )
 
 type ServiceProvider struct {

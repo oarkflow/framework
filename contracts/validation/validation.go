@@ -1,6 +1,6 @@
 package validation
 
-import "github.com/sujit-baniya/frame"
+import "github.com/oarkflow/frame"
 
 type Option func(map[string]any)
 type Validation interface {

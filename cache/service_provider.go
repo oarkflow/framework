@@ -1,10 +1,10 @@
 package cache
 
 import (
-	"github.com/sujit-baniya/framework/cache/console"
-	"github.com/sujit-baniya/framework/contracts/cache"
-	console2 "github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/cache/console"
+	"github.com/oarkflow/framework/contracts/cache"
+	console2 "github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/facades"
 )
 
 type ServiceProvider struct {

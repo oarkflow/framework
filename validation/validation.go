@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/gookit/validate"
-	"github.com/sujit-baniya/frame"
-	"github.com/sujit-baniya/frame/pkg/common/adaptor"
-	"github.com/sujit-baniya/framework/contracts/http"
-	"github.com/sujit-baniya/framework/contracts/validation"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/frame"
+	"github.com/oarkflow/frame/pkg/common/adaptor"
+	"github.com/oarkflow/framework/contracts/http"
+	"github.com/oarkflow/framework/contracts/validation"
+	"github.com/oarkflow/framework/facades"
 )
 
 type Validation struct {

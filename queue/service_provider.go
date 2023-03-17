@@ -1,9 +1,9 @@
 package queue
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/facades"
-	queueConsole "github.com/sujit-baniya/framework/queue/console"
+	"github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/facades"
+	queueConsole "github.com/oarkflow/framework/queue/console"
 )
 
 type ServiceProvider struct {

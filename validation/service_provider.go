@@ -1,9 +1,9 @@
 package validation
 
 import (
-	consolecontract "github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/facades"
-	"github.com/sujit-baniya/framework/validation/console"
+	consolecontract "github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/facades"
+	"github.com/oarkflow/framework/validation/console"
 )
 
 type ServiceProvider struct {

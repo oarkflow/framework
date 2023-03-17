@@ -1,9 +1,9 @@
 package database
 
 import (
-	consolecontract "github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/database/console"
-	"github.com/sujit-baniya/framework/facades"
+	consolecontract "github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/database/console"
+	"github.com/oarkflow/framework/facades"
 	"gorm.io/gorm"
 )
 

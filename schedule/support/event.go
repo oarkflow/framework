@@ -1,7 +1,7 @@
 package support
 
 import (
-	"github.com/sujit-baniya/framework/contracts/schedule"
+	"github.com/oarkflow/framework/contracts/schedule"
 	"strings"
 )
 

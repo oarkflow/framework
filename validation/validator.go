@@ -1,7 +1,7 @@
 package validation
 
 import (
-	httpvalidate "github.com/sujit-baniya/framework/contracts/validation"
+	httpvalidate "github.com/oarkflow/framework/contracts/validation"
 	"net/url"
 
 	"github.com/gookit/validate"

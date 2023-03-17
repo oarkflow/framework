@@ -1,10 +1,10 @@
 package console
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/contracts/console/command"
-	queue2 "github.com/sujit-baniya/framework/contracts/queue"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/contracts/console/command"
+	queue2 "github.com/oarkflow/framework/contracts/queue"
+	"github.com/oarkflow/framework/facades"
 	"strconv"
 )
 

@@ -1,6 +1,6 @@
 package mail
 
-import "github.com/sujit-baniya/framework/facades"
+import "github.com/oarkflow/framework/facades"
 
 type Application struct {
 	Mailer *Mailer

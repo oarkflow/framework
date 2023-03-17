@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console"
+	"github.com/oarkflow/framework/contracts/console"
 )
 
 var Artisan console.Artisan

@@ -3,17 +3,17 @@ package support
 import (
 	"errors"
 	"fmt"
-	"github.com/sujit-baniya/framework/contracts/event"
-	"github.com/sujit-baniya/framework/contracts/queue"
+	"github.com/oarkflow/framework/contracts/event"
+	"github.com/oarkflow/framework/contracts/queue"
 
 	"github.com/gookit/color"
-	"github.com/sujit-baniya/machinery"
-	redisBackend "github.com/sujit-baniya/machinery/backends/redis"
-	redisBroker "github.com/sujit-baniya/machinery/brokers/redis"
-	"github.com/sujit-baniya/machinery/config"
-	"github.com/sujit-baniya/machinery/locks/eager"
+	"github.com/oarkflow/machinery"
+	redisBackend "github.com/oarkflow/machinery/backends/redis"
+	redisBroker "github.com/oarkflow/machinery/brokers/redis"
+	"github.com/oarkflow/machinery/config"
+	"github.com/oarkflow/machinery/locks/eager"
 
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/facades"
 )
 
 func GetServer(connection string, queue string) (*machinery.Server, error) {

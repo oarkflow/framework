@@ -1,7 +1,7 @@
 package support
 
 import (
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/facades"
 )
 
 const DriverSync string = "sync"

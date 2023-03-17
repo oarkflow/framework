@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/queue"
+	"github.com/oarkflow/framework/contracts/queue"
 )
 
 var Queue queue.Queue

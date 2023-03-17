@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/contracts/schedule"
+	"github.com/oarkflow/framework/contracts/schedule"
 )
 
 var Schedule schedule.Schedule

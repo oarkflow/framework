@@ -2,7 +2,7 @@
 
 English
 
-Forked https://github.com/sujit-baniya/framework
+Forked https://github.com/oarkflow/framework
 With support to switch between [Gin](https://gin-gonic.com/) and [GoFiber](https://gofiber.io/)
 
 ## About Goravel
@@ -35,7 +35,7 @@ Golang developers quickly build their own applications.
 
 ## Documentation
 
-Online documentation [https://www.github.com/sujit-baniya](https://www.github.com/sujit-baniya)
+Online documentation [https://www.github.com/oarkflow](https://www.github.com/oarkflow)
 
 > To optimize the documentation, please submit a PR to the documentation
 > repository [https://github.com/framework/docs](https://github.com/framework/docs)

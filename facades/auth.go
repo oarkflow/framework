@@ -1,8 +1,8 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/framework/auth/access"
-	"github.com/sujit-baniya/framework/contracts/auth"
+	"github.com/oarkflow/framework/auth/access"
+	"github.com/oarkflow/framework/contracts/auth"
 )
 
 var (

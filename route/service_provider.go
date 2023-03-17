@@ -1,8 +1,8 @@
 package route
 
 import (
-	"github.com/sujit-baniya/frame/server"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/frame/server"
+	"github.com/oarkflow/framework/facades"
 )
 
 type ServiceProvider struct {

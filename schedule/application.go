@@ -3,11 +3,11 @@ package schedule
 import (
 	"context"
 	"github.com/gookit/color"
-	"github.com/sujit-baniya/cron"
-	"github.com/sujit-baniya/framework/contracts/schedule"
-	"github.com/sujit-baniya/framework/facades"
-	"github.com/sujit-baniya/framework/schedule/support"
-	logg "github.com/sujit-baniya/log"
+	"github.com/oarkflow/cron"
+	"github.com/oarkflow/framework/contracts/schedule"
+	"github.com/oarkflow/framework/facades"
+	"github.com/oarkflow/framework/schedule/support"
+	logg "github.com/oarkflow/log"
 )
 
 type Application struct {

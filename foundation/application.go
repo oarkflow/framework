@@ -1,11 +1,11 @@
 package foundation
 
 import (
-	"github.com/sujit-baniya/framework/config"
-	"github.com/sujit-baniya/framework/console"
-	"github.com/sujit-baniya/framework/contracts"
-	"github.com/sujit-baniya/framework/facades"
-	"github.com/sujit-baniya/framework/support"
+	"github.com/oarkflow/framework/config"
+	"github.com/oarkflow/framework/console"
+	"github.com/oarkflow/framework/contracts"
+	"github.com/oarkflow/framework/facades"
+	"github.com/oarkflow/framework/support"
 	"os"
 	"strings"
 )

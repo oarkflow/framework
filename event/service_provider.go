@@ -1,9 +1,9 @@
 package event
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console"
-	eventConsole "github.com/sujit-baniya/framework/event/console"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/contracts/console"
+	eventConsole "github.com/oarkflow/framework/event/console"
+	"github.com/oarkflow/framework/facades"
 )
 
 type ServiceProvider struct {

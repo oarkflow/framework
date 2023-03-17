@@ -2,14 +2,14 @@ package database
 
 import (
 	"context"
-	"github.com/sujit-baniya/log"
+	"github.com/oarkflow/log"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
-	"github.com/sujit-baniya/framework/contracts/database"
-	"github.com/sujit-baniya/framework/database/support"
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/contracts/database"
+	"github.com/oarkflow/framework/database/support"
+	"github.com/oarkflow/framework/facades"
 )
 
 type DB struct {

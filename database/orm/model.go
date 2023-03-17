@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/sujit-baniya/framework/facades"
+	"github.com/oarkflow/framework/facades"
 )
 
 type Model struct {

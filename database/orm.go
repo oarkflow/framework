@@ -8,8 +8,8 @@ import (
 	"github.com/gookit/color"
 	"github.com/pkg/errors"
 
-	contractsorm "github.com/sujit-baniya/framework/contracts/database/orm"
-	"github.com/sujit-baniya/framework/facades"
+	contractsorm "github.com/oarkflow/framework/contracts/database/orm"
+	"github.com/oarkflow/framework/facades"
 )
 
 type Orm struct {

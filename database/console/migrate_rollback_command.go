@@ -1,8 +1,8 @@
 package console
 
 import (
-	"github.com/sujit-baniya/framework/contracts/console"
-	"github.com/sujit-baniya/framework/contracts/console/command"
+	"github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/contracts/console/command"
 	"strconv"
 
 	"github.com/gookit/color"

@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"github.com/sujit-baniya/framework/contracts/cache"
+	"github.com/oarkflow/framework/contracts/cache"
 )
 
 type Application struct {

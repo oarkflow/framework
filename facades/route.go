@@ -1,7 +1,7 @@
 package facades
 
 import (
-	"github.com/sujit-baniya/frame/server"
+	"github.com/oarkflow/frame/server"
 )
 
 var Route *server.Frame
