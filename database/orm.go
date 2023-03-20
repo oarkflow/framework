@@ -13,6 +13,7 @@ import (
 )
 
 type Orm struct {
+	Name            string
 	ctx             context.Context
 	connection      string
 	defaultInstance contractsorm.DB
@@ -21,10 +22,10 @@ type Orm struct {
 	disableLog      bool
 }
 
-func NewOrm(ctx context.Context, config *gorm.Config, disableLog bool) contractsorm.Orm {
-	orm := &Orm{ctx: ctx, config: config, disableLog: disableLog}
+func NewOrm(ctx context.Context, name string, config *gorm.Config, disableLog bool) contractsorm.Orm {
+	orm := &Orm{ctx: ctx, Name: name, config: config, disableLog: disableLog}
 
-	return orm.Connection("", config, disableLog)
+	return orm.Connection(name, config, disableLog)
 }
 
 func (r *Orm) Connection(name string, config *gorm.Config, disableLog bool) contractsorm.Orm {
@@ -98,5 +99,5 @@ func (r *Orm) Transaction(txFunc func(tx contractsorm.Transaction) error) error 
 }
 
 func (r *Orm) WithContext(ctx context.Context) contractsorm.Orm {
-	return NewOrm(ctx, r.config, r.disableLog)
+	return NewOrm(ctx, r.Name, r.config, r.disableLog)
 }

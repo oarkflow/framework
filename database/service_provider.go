@@ -10,10 +10,11 @@ import (
 type ServiceProvider struct {
 	Config     *gorm.Config
 	DisableLog bool
+	Name       string
 }
 
 func (database *ServiceProvider) Register() {
-	app := Application{Config: database.Config, DisableLog: database.DisableLog}
+	app := Application{Config: database.Config, DisableLog: database.DisableLog, Name: database.Name}
 	facades.Orm = app.Init()
 }
 
