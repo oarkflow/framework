@@ -8,9 +8,10 @@ import (
 
 type Application struct {
 	Config     *gorm.Config
+	Name       string
 	DisableLog bool
 }
 
 func (app *Application) Init() orm.Orm {
-	return NewOrm(context.Background(), app.Config, app.DisableLog)
+	return NewOrm(context.Background(), app.Name, app.Config, app.DisableLog)
 }
