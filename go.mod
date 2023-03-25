@@ -14,7 +14,7 @@ require (
 	github.com/h2non/filetype v1.1.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/oarkflow/cron v0.0.3
-	github.com/oarkflow/frame v0.0.36
+	github.com/oarkflow/frame v0.0.37
 	github.com/oarkflow/log v1.0.73
 	github.com/oarkflow/machinery v0.0.2
 	github.com/oarkflow/migration v0.0.5
@@ -55,8 +55,8 @@ require (
 	github.com/aws/smithy-go v1.8.0 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.7 // indirect
-	github.com/bytedance/gopkg v0.0.0-20230224073017-0b6876860a2f // indirect
-	github.com/bytedance/sonic v1.8.5 // indirect
+	github.com/bytedance/gopkg v0.0.0-20230324090325-a00d8057bef9 // indirect
+	github.com/bytedance/sonic v1.8.6 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
