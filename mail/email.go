@@ -10,6 +10,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ses"
 	"github.com/oarkflow/frame/pkg/common/bytebufferpool"
 	"github.com/oarkflow/frame/pkg/common/utils"
 	"github.com/oarkflow/frame/server/render"
@@ -26,14 +30,18 @@ import (
 var maxBigInt = big.NewInt(math.MaxInt64)
 
 type Config struct {
-	Host        string `json:"host" yaml:"host" env:"MAIL_HOST"`
-	Username    string `json:"username" yaml:"username" env:"MAIL_USERNAME"`
-	Password    string `json:"password" yaml:"password" env:"MAIL_PASSWORD"`
-	Encryption  string `json:"encryption" yaml:"encryption" env:"MAIL_ENCRYPTION"`
-	FromAddress string `json:"from_address" yaml:"from_address" env:"MAIL_FROM_ADDRESS"`
-	FromName    string `json:"from_name" yaml:"from_name" env:"MAIL_FROM_NAME"`
-	EmailLayout string `json:"layout" yaml:"layout" env:"MAIL_LAYOUT"`
-	Port        int    `json:"port" yaml:"port" env:"MAIL_PORT"`
+	Host         string `json:"host" yaml:"host" env:"MAIL_HOST"`
+	Username     string `json:"username" yaml:"username" env:"MAIL_USERNAME"`
+	Password     string `json:"password" yaml:"password" env:"MAIL_PASSWORD"`
+	Encryption   string `json:"encryption" yaml:"encryption" env:"MAIL_ENCRYPTION"`
+	FromAddress  string `json:"from_address" yaml:"from_address" env:"MAIL_FROM_ADDRESS"`
+	AwsAccessKey string `json:"aws_access_key"`
+	AwsSecretKey string `json:"aws_secret_key"`
+	FromName     string `json:"from_name" yaml:"from_name" env:"MAIL_FROM_NAME"`
+	EmailLayout  string `json:"layout" yaml:"layout" env:"MAIL_LAYOUT"`
+	Port         int    `json:"port" yaml:"port" env:"MAIL_PORT"`
+	Charset      string `json:"charset"`
+	Region       string `json:"region"`
 }
 
 func GetMailConfig() Config {
@@ -45,15 +53,23 @@ func GetMailConfig() Config {
 	fromName := facades.Config.GetString("mail.from.name")
 	fromAddress := facades.Config.GetString("mail.from.address")
 	emailLayout := facades.Config.GetString("mail.layout")
+	charset := facades.Config.GetString("mail.charset")
+	region := facades.Config.GetString("mail.aws_region")
+	awsAccessKey := facades.Config.GetString("mail.aws_access_key")
+	awsSecretKey := facades.Config.GetString("mail.aws_secret_key")
 	return Config{
-		Host:        host,
-		Port:        port,
-		Username:    username,
-		Password:    password,
-		Encryption:  encryption,
-		FromName:    fromName,
-		FromAddress: fromAddress,
-		EmailLayout: emailLayout,
+		Host:         host,
+		Port:         port,
+		Username:     username,
+		Password:     password,
+		Encryption:   encryption,
+		FromName:     fromName,
+		FromAddress:  fromAddress,
+		EmailLayout:  emailLayout,
+		Charset:      charset,
+		Region:       region,
+		AwsAccessKey: awsAccessKey,
+		AwsSecretKey: awsSecretKey,
 	}
 }
 
@@ -92,6 +108,15 @@ func Default(cfg Config, templateEngine *render.HtmlEngine) {
 func New(cfg Config, templateEngine *render.HtmlEngine) *Mailer {
 	m := &Mailer{Config: cfg}
 	m.HtmlEngine = templateEngine
+	if cfg.AwsAccessKey != "" && cfg.AwsSecretKey != "" {
+		if cfg.Region == "" {
+			cfg.Region = "us-east-1"
+		}
+		if cfg.Charset == "" {
+			cfg.Charset = "UTF-8"
+		}
+		return m
+	}
 	m.SMTPServer = sMail.NewSMTPClient()
 	m.SMTPServer.Host = cfg.Host
 	m.SMTPServer.Port = cfg.Port
@@ -111,7 +136,65 @@ func New(cfg Config, templateEngine *render.HtmlEngine) *Mailer {
 	return m
 }
 
+func (m *Mailer) sendSes(msg Mail) error {
+	// Create a new session in the us-west-2 region.
+	// Replace us-west-2 with the AWS Region you're using for Amazon SES.
+	sess, err := session.NewSession(&aws.Config{
+		Region:      aws.String(m.Config.Region),
+		Credentials: credentials.NewStaticCredentials(m.Config.AwsAccessKey, m.Config.AwsSecretKey, ""),
+	})
+	if err != nil {
+		return err
+	}
+	// Create an SES session.
+	svc := ses.New(sess)
+	var recipient, ccRecipient, bccRecipient []*string
+	for _, to := range msg.To {
+		recipient = append(recipient, aws.String(to))
+	}
+	for _, bcc := range msg.Bcc {
+		bccRecipient = append(bccRecipient, aws.String(bcc))
+	}
+	for _, cc := range msg.Cc {
+		ccRecipient = append(ccRecipient, aws.String(cc))
+	}
+	// Assemble the email.
+	input := &ses.SendEmailInput{
+		Destination: &ses.Destination{
+			CcAddresses:  ccRecipient,
+			BccAddresses: bccRecipient,
+			ToAddresses:  recipient,
+		},
+		Message: &ses.Message{
+			Body: &ses.Body{
+				Html: &ses.Content{
+					Charset: aws.String(m.Config.Charset),
+					Data:    aws.String(msg.Body),
+				},
+				Text: &ses.Content{
+					Charset: aws.String(m.Config.Charset),
+					Data:    aws.String(""),
+				},
+			},
+			Subject: &ses.Content{
+				Charset: aws.String(m.Config.Charset),
+				Data:    aws.String(msg.Subject),
+			},
+		},
+		Source: aws.String(msg.From),
+		// Uncomment to use a configuration set
+		// ConfigurationSetName: aws.String(ConfigurationSet),
+	}
+
+	// Attempt to send the email.
+	_, err = svc.SendEmail(input)
+	return err
+}
+
 func (m *Mailer) Send(msg Mail) error {
+	if m.SMTPServer == nil && m.Config.AwsAccessKey != "" && m.Config.AwsSecretKey != "" {
+		return m.sendSes(msg)
+	}
 	var err error
 	m.SMTPClient, err = m.SMTPServer.Connect()
 	if err != nil {
