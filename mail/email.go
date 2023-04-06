@@ -4,18 +4,20 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"github.com/oarkflow/frame/pkg/common/bytebufferpool"
-	"github.com/oarkflow/frame/pkg/common/utils"
-	"github.com/oarkflow/frame/server/render"
-	"github.com/oarkflow/framework/contracts/mail"
-	queue2 "github.com/oarkflow/framework/contracts/queue"
-	"github.com/oarkflow/framework/facades"
-	"github.com/oarkflow/log/fqdn"
 	"math"
 	"math/big"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/oarkflow/frame/pkg/common/bytebufferpool"
+	"github.com/oarkflow/frame/pkg/common/utils"
+	"github.com/oarkflow/frame/server/render"
+	"github.com/oarkflow/log/fqdn"
+
+	"github.com/oarkflow/framework/contracts/mail"
+	queue2 "github.com/oarkflow/framework/contracts/queue"
+	"github.com/oarkflow/framework/facades"
 
 	"github.com/oarkflow/log"
 	sMail "github.com/xhit/go-simple-mail/v2"
@@ -100,11 +102,11 @@ func New(cfg Config, templateEngine *render.HtmlEngine) *Mailer {
 	} else {
 		m.SMTPServer.Encryption = sMail.EncryptionSSL
 	}
-	//Variable to keep alive connection
+	// Variable to keep alive connection
 	m.SMTPServer.KeepAlive = false
-	//Timeout for connect to SMTP Server
+	// Timeout for connect to SMTP Server
 	m.SMTPServer.ConnectTimeout = 10 * time.Second
-	//Timeout for send the data and wait respond
+	// Timeout for send the data and wait respond
 	m.SMTPServer.SendTimeout = 10 * time.Second
 	return m
 }
@@ -117,7 +119,7 @@ func (m *Mailer) Send(msg Mail) error {
 		return err
 	}
 	defer m.SMTPClient.Close()
-	//New email simple html with inline and CC
+	// New email simple html with inline and CC
 	email := sMail.NewMSG()
 	if msg.From == "" {
 		msg.From = fmt.Sprintf("%s<%s>", m.Config.FromName, m.Config.FromAddress)
@@ -139,7 +141,7 @@ func (m *Mailer) Send(msg Mail) error {
 		email.AddAttachment(attachment.File, attachment.FileName)
 	}
 
-	//Call Send and pass the client
+	// Call Send and pass the client
 	err = email.Send(m.SMTPClient)
 	if err != nil {
 		return err

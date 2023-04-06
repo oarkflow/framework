@@ -1,17 +1,18 @@
 package foundation
 
 import (
+	"os"
+	"strings"
+
 	"github.com/oarkflow/framework/config"
 	"github.com/oarkflow/framework/console"
 	"github.com/oarkflow/framework/contracts"
 	"github.com/oarkflow/framework/facades"
 	"github.com/oarkflow/framework/support"
-	"os"
-	"strings"
 )
 
 func Init(providers ...contracts.ServiceProvider) *Application {
-	//Create a new application instance.
+	// Create a new application instance.
 	app := &Application{Providers: providers}
 	app.registerBaseServiceProviders()
 	app.bootBaseServiceProviders()

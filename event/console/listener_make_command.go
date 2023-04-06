@@ -2,10 +2,11 @@ package console
 
 import (
 	"errors"
-	"github.com/oarkflow/framework/contracts/console"
-	"github.com/oarkflow/framework/contracts/console/command"
 	"os"
 	"strings"
+
+	"github.com/oarkflow/framework/contracts/console"
+	"github.com/oarkflow/framework/contracts/console/command"
 
 	"github.com/gookit/color"
 

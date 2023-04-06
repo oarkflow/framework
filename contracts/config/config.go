@@ -1,16 +1,16 @@
 package config
 
 type Config interface {
-	//Env Get config from env.
+	// Env Get config from env.
 	Env(envName string, defaultValue ...any) any
-	//Add config to application.
+	// Add config to application.
 	Add(name string, configuration map[string]any)
-	//Get config from application.
+	// Get config from application.
 	Get(path string, defaultValue ...any) any
-	//GetString Get string type config from application.
+	// GetString Get string type config from application.
 	GetString(path string, defaultValue ...any) string
-	//GetInt Get int type config from application.
+	// GetInt Get int type config from application.
 	GetInt(path string, defaultValue ...any) int
-	//GetBool Get bool type config from application.
+	// GetBool Get bool type config from application.
 	GetBool(path string, defaultValue ...any) bool
 }

@@ -1,9 +1,10 @@
 package console
 
 import (
+	"strconv"
+
 	"github.com/oarkflow/framework/contracts/console"
 	"github.com/oarkflow/framework/contracts/console/command"
-	"strconv"
 
 	"github.com/gookit/color"
 )

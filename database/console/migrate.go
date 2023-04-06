@@ -3,10 +3,12 @@ package console
 import (
 	"database/sql"
 	"errors"
+	"os"
+
+	"github.com/oarkflow/migration"
+
 	"github.com/oarkflow/framework/database/support"
 	"github.com/oarkflow/framework/facades"
-	"github.com/oarkflow/migration"
-	"os"
 )
 
 func getMigrate(con ...string) (*migration.Migrate, error) {

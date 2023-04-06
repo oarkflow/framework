@@ -1,11 +1,12 @@
 package console
 
 import (
+	"strconv"
+
 	"github.com/oarkflow/framework/contracts/console"
 	"github.com/oarkflow/framework/contracts/console/command"
 	queue2 "github.com/oarkflow/framework/contracts/queue"
 	"github.com/oarkflow/framework/facades"
-	"strconv"
 )
 
 type QueueWorkCommand struct {

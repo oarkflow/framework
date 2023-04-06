@@ -1,9 +1,11 @@
 package validation
 
 import (
-	"github.com/oarkflow/frame"
-	httpvalidate "github.com/oarkflow/framework/contracts/validation"
 	"strings"
+
+	"github.com/oarkflow/frame"
+
+	httpvalidate "github.com/oarkflow/framework/contracts/validation"
 
 	"github.com/gookit/validate"
 )

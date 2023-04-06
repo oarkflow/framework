@@ -2,10 +2,12 @@ package auth
 
 import (
 	"context"
+	"sync"
+
 	"github.com/oarkflow/frame"
 	"github.com/oarkflow/frame/middlewares/server/session"
+
 	"github.com/oarkflow/framework/contracts/auth"
-	"sync"
 
 	"github.com/oarkflow/framework/auth/access"
 	"github.com/oarkflow/framework/auth/console"

@@ -3,8 +3,6 @@ package filesystem
 import (
 	"context"
 	"fmt"
-	"github.com/oarkflow/log"
-	"github.com/tencentyun/cos-go-sdk-v5"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -13,6 +11,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/oarkflow/log"
+	"github.com/tencentyun/cos-go-sdk-v5"
 
 	"github.com/oarkflow/framework/contracts/filesystem"
 	"github.com/oarkflow/framework/facades"

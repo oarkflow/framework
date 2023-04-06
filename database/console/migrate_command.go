@@ -1,10 +1,12 @@
 package console
 
 import (
+	"strconv"
+
 	"github.com/gookit/color"
+
 	"github.com/oarkflow/framework/contracts/console"
 	"github.com/oarkflow/framework/contracts/console/command"
-	"strconv"
 )
 
 type MigrateCommand struct {

@@ -5,29 +5,29 @@ import (
 )
 
 type Schedule interface {
-	//Call Add a new callback event to the schedule.
+	// Call Add a new callback event to the schedule.
 	Call(callback func()) Event
 
-	//Command Add a new Artisan command event to the schedule.
+	// Command Add a new Artisan command event to the schedule.
 	Command(command string) Event
 
-	//Register schedules.
+	// Register schedules.
 	Register(events []Event)
 
-	//RegisterOne schedules.
+	// RegisterOne schedules.
 	RegisterOne(event Event) (cron.EntryID, error)
 
-	//Unregister schedules.
+	// Unregister schedules.
 	Unregister(id int)
 
-	//PauseEntry schedules.
+	// PauseEntry schedules.
 	PauseEntry(id int)
 
-	//StartEntry schedules.
+	// StartEntry schedules.
 	StartEntry(id int)
 
 	Logs(id int) []string
 
-	//Run schedules.
+	// Run schedules.
 	Run()
 }

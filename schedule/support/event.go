@@ -1,8 +1,9 @@
 package support
 
 import (
-	"github.com/oarkflow/framework/contracts/schedule"
 	"strings"
+
+	"github.com/oarkflow/framework/contracts/schedule"
 )
 
 type Event struct {

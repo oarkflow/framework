@@ -2,8 +2,10 @@ package database
 
 import (
 	"context"
-	"github.com/oarkflow/framework/contracts/database/orm"
+
 	"gorm.io/gorm"
+
+	"github.com/oarkflow/framework/contracts/database/orm"
 )
 
 type Application struct {

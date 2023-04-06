@@ -2,10 +2,12 @@ package auth
 
 import (
 	"errors"
+
 	"github.com/oarkflow/frame"
 	"github.com/oarkflow/frame/middlewares/server/session"
-	"github.com/oarkflow/framework/contracts/auth"
 	"github.com/oarkflow/pkg/dto"
+
+	"github.com/oarkflow/framework/contracts/auth"
 )
 
 type Session struct {
