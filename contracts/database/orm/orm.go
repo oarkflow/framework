@@ -57,4 +57,5 @@ type Query interface {
 	Where(query any, args ...any) Query
 	With(query string, args ...any) Query
 	WithTrashed() Query
+	Fields(schema, name string) (fields []string, err error)
 }
