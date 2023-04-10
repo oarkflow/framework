@@ -301,8 +301,12 @@ func (r *GormQuery) WithTrashed() orm.Query {
 	return NewGormQuery(tx)
 }
 
+type Field struct {
+	Name string `gorm:"column:name"`
+}
+
 func (r *GormQuery) Fields(schema, name string) (fields []string, err error) {
-	var f []map[string]string
+	var f []Field
 	switch r.Driver().String() {
 	case "mysql", "mariadb":
 		err = r.instance.Raw("SELECT column_name as name FROm information_schema.columns WHERE table_schema = ? AND table_name = ?", schema, name).Scan(&f).Error
@@ -310,7 +314,7 @@ func (r *GormQuery) Fields(schema, name string) (fields []string, err error) {
 			return
 		}
 		for _, field := range f {
-			fields = append(fields, field["name"])
+			fields = append(fields, field.Name)
 		}
 		return
 	case "psql", "postgres", "postgresql":
@@ -319,7 +323,7 @@ func (r *GormQuery) Fields(schema, name string) (fields []string, err error) {
 			return
 		}
 		for _, field := range f {
-			fields = append(fields, field["name"])
+			fields = append(fields, field.Name)
 		}
 		return
 	}
