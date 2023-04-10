@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"gorm.io/gorm"
-
 	"github.com/gookit/color"
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 
 	contractsorm "github.com/oarkflow/framework/contracts/database/orm"
 	"github.com/oarkflow/framework/facades"
@@ -63,7 +62,22 @@ func (r *Orm) Connection(name string, config *gorm.Config, disableLog bool) cont
 	return r
 }
 
-func (r *Orm) Query() contractsorm.DB {
+func (r *Orm) Query(database ...string) contractsorm.DB {
+	// the rationale behind this is that if the user passes in a database name, we will use that
+	// to get the instance, otherwise we will use the default database
+	if len(database) > 0 {
+		// if the user passes in a database name, we will use that to get the instance
+		// no matter how many database names are passed in, we will only use the first one
+		instance, exist := r.instances[database[0]]
+		if !exist {
+			return nil
+		}
+		return instance
+	}
+
+	// if the user does not pass in a database name, we will use check if the connection is set
+	// if it is set, we will use that to get the instance
+	// if it is not set, we will use the default database
 	if r.connection == "" {
 		if r.defaultInstance == nil {
 			r.Connection("", r.config, r.disableLog)
@@ -72,6 +86,7 @@ func (r *Orm) Query() contractsorm.DB {
 		return r.defaultInstance
 	}
 
+	// get the instance from the connection if it is set
 	instance, exist := r.instances[r.connection]
 	if !exist {
 		return nil

@@ -8,7 +8,7 @@ import (
 
 type Orm interface {
 	Connection(name string, config *gorm.Config, disableLog bool) Orm
-	Query() DB
+	Query(database ...string) DB
 	Transaction(txFunc func(tx Transaction) error) error
 	WithContext(ctx context.Context) Orm
 }
