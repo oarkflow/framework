@@ -10,7 +10,6 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	glog "gorm.io/gorm/logger"
@@ -389,8 +388,8 @@ func getSqliteGormConfig(connection string) gorm.Dialector {
 	if dsn == "" {
 		return nil
 	}
-
-	return sqlite.Open(dsn)
+	return nil
+	// return sqlite.Open(dsn)
 }
 
 func getSqlserverGormConfig(connection string) gorm.Dialector {
