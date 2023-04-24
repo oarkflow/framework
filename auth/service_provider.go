@@ -22,7 +22,7 @@ type ServiceProvider struct {
 
 func (database *ServiceProvider) Register() {
 	facades.Auth = NewJwt(facades.Config.GetString("auth.defaults.guard"))
-	session.Default(database.Config)
+	facades.Session = session.Default(database.Config)
 	facades.Gate = access.NewGate(context.Background())
 }
 
