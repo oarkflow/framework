@@ -56,12 +56,30 @@ func (app *Session) Parse(ctx *frame.Context, token string) error {
 	return nil
 }
 
-func (app *Session) Login(ctx *frame.Context, user auth.User) (token string, err error) {
+func (app *Session) Data(ctx *frame.Context) (map[string]any, error) {
+	s, err := session.Pick(ctx, app.store)
+	if err != nil {
+		return nil, err
+	}
+	data := make(map[string]any, len(s.Keys()))
+	for _, key := range s.Keys() {
+		data[key] = s.Get(key)
+	}
+	return data, nil
+}
+
+func (app *Session) Login(ctx *frame.Context, user auth.User, data ...map[string]any) (token string, err error) {
 	s, err := session.Pick(ctx, app.store)
 	if err != nil {
 		return "", err
 	}
 	s.Set(ctx.AuthUserKey, user)
+	if len(data) > 0 {
+		for k, v := range data[0] {
+			s.Set(k, v)
+		}
+	}
+	s.Save()
 	ctx.Set(ctx.AuthUserKey, user)
 	return
 }
