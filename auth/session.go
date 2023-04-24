@@ -12,11 +12,13 @@ import (
 
 type Session struct {
 	guard string
+	store *session.Store
 }
 
-func NewSession(guard string) auth.Auth {
+func NewSession(guard string, store *session.Store) auth.Auth {
 	return &Session{
 		guard: guard,
+		store: store,
 	}
 }
 
@@ -26,10 +28,11 @@ func (app *Session) Guard(name string) auth.Auth {
 
 // User need parse token first.
 func (app *Session) User(ctx *frame.Context, user auth.User) error {
-	u, err := session.Get(ctx, ctx.AuthUserKey)
+	s, err := session.Pick(ctx, app.store)
 	if err != nil {
 		return err
 	}
+	u := s.Get(ctx.AuthUserKey)
 	if u == nil {
 		user = nil
 		return errors.New("not logged in")
@@ -54,10 +57,11 @@ func (app *Session) Parse(ctx *frame.Context, token string) error {
 }
 
 func (app *Session) Login(ctx *frame.Context, user auth.User) (token string, err error) {
-	err = session.Set(ctx, ctx.AuthUserKey, user)
+	s, err := session.Pick(ctx, app.store)
 	if err != nil {
-		return
+		return "", err
 	}
+	s.Set(ctx.AuthUserKey, user)
 	ctx.Set(ctx.AuthUserKey, user)
 	return
 }
@@ -72,5 +76,9 @@ func (app *Session) Refresh(ctx *frame.Context) (token string, err error) {
 }
 
 func (app *Session) Logout(ctx *frame.Context) error {
-	return session.Destroy(ctx)
+	s, err := session.Pick(ctx, app.store)
+	if err != nil {
+		return err
+	}
+	return s.Destroy()
 }
