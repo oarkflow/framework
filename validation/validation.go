@@ -3,6 +3,7 @@ package validation
 import (
 	"errors"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/gookit/validate"
@@ -33,10 +34,34 @@ func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string,
 	}
 
 	var dataType reflect.Kind
-	switch data.(type) {
+	switch data := data.(type) {
 	case map[string]any:
-		if len(data.(map[string]any)) == 0 {
-			return nil, errors.New("data can't be empty")
+		if len(data) == 0 {
+			for _, v := range rules {
+				if strings.Contains(v, "@param") || strings.Contains(v, "@query") {
+					fieldPlacement := "body"
+					fieldPlacements := strings.Split(v, "@")
+					fieldName := fieldPlacements[0]
+					fieldToQuery := fieldName
+					if len(fieldPlacements) > 1 {
+						fieldPlacement = fieldPlacements[1]
+						parts := strings.Split(fieldPlacement, "$")
+						if len(parts) > 1 {
+							fieldPlacement = parts[0]
+							fieldToQuery = parts[1]
+						}
+					}
+					switch fieldPlacement {
+					case "param":
+						data[fieldName] = ctx.Param(fieldToQuery)
+					case "query":
+						data[fieldName] = ctx.Query(fieldToQuery)
+					}
+				}
+			}
+			if len(data) == 0 {
+				return nil, errors.New("data can't be empty")
+			}
 		}
 		dataType = reflect.Map
 	}

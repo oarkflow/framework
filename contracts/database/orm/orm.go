@@ -8,7 +8,7 @@ import (
 
 type Orm interface {
 	Connection(name string, config *gorm.Config, disableLog bool) Orm
-	Query() DB
+	Query(database ...string) DB
 	Transaction(txFunc func(tx Transaction) error) error
 	WithContext(ctx context.Context) Orm
 }
@@ -57,4 +57,5 @@ type Query interface {
 	Where(query any, args ...any) Query
 	With(query string, args ...any) Query
 	WithTrashed() Query
+	Fields(schema, name string) (fields []string, err error)
 }

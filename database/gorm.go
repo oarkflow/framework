@@ -10,7 +10,6 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	glog "gorm.io/gorm/logger"
@@ -301,6 +300,35 @@ func (r *GormQuery) WithTrashed() orm.Query {
 	return NewGormQuery(tx)
 }
 
+type Field struct {
+	Name string `gorm:"column:name"`
+}
+
+func (r *GormQuery) Fields(schema, name string) (fields []string, err error) {
+	var f []Field
+	switch r.Driver().String() {
+	case "mysql", "mariadb":
+		err = r.instance.Raw("SELECT column_name as name FROm information_schema.columns WHERE table_schema = ? AND table_name = ?", schema, name).Scan(&f).Error
+		if err != nil {
+			return
+		}
+		for _, field := range f {
+			fields = append(fields, field.Name)
+		}
+		return
+	case "psql", "postgres", "postgresql":
+		err = r.instance.Raw("SELECT column_name as name FROm information_schema.columns WHERE table_catalog = ? AND table_name = ?", schema, name).Scan(&f).Error
+		if err != nil {
+			return
+		}
+		for _, field := range f {
+			fields = append(fields, field.Name)
+		}
+		return
+	}
+	return nil, nil
+}
+
 func (r *GormQuery) Scopes(funcs ...func(orm.Query) orm.Query) orm.Query {
 	var gormFuncs []func(*gorm.DB) *gorm.DB
 	for _, item := range funcs {
@@ -360,8 +388,8 @@ func getSqliteGormConfig(connection string) gorm.Dialector {
 	if dsn == "" {
 		return nil
 	}
-
-	return sqlite.Open(dsn)
+	return nil
+	// return sqlite.Open(dsn)
 }
 
 func getSqlserverGormConfig(connection string) gorm.Dialector {
