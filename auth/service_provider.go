@@ -22,7 +22,7 @@ type ServiceProvider struct {
 
 func (database *ServiceProvider) Register() {
 	facades.Auth = NewJwt(facades.Config.GetString("auth.defaults.guard"))
-	session.Default(database.Config)
+	facades.Session = session.Default(database.Config)
 	facades.Gate = access.NewGate(context.Background())
 }
 
@@ -69,9 +69,15 @@ func (d *drivers) Remove(guard string) {
 var Drivers *drivers
 
 func init() {
+	var store *session.Store
+	if facades.Session != nil {
+		store = facades.Session
+	} else {
+		store = session.DefaultStore
+	}
 	Drivers = &drivers{
 		driver: map[string]auth.Auth{
-			"session": NewSession("session"),
+			"session": NewSession("session", store),
 			"jwt":     NewJwt("jwt"),
 		},
 		mu: &sync.RWMutex{},

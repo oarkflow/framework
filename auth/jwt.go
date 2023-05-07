@@ -114,7 +114,11 @@ func (app *Jwt) Parse(ctx *frame.Context, token string) error {
 	return nil
 }
 
-func (app *Jwt) Login(ctx *frame.Context, user auth.User) (token string, err error) {
+func (app *Jwt) Data(ctx *frame.Context) (map[string]any, error) {
+	return nil, nil
+}
+
+func (app *Jwt) Login(ctx *frame.Context, user auth.User, data ...map[string]any) (token string, err error) {
 	t := reflect.TypeOf(user).Elem()
 	v := reflect.ValueOf(user).Elem()
 	for i := 0; i < t.NumField(); i++ {
