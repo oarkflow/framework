@@ -28,6 +28,7 @@ type Transaction interface {
 type Query interface {
 	WithContext(ctx context.Context) Query
 	Driver() Driver
+	Instance() *gorm.DB
 	Count(count *int64) *gorm.DB
 	Create(value any) *gorm.DB
 	Delete(value any, conds ...any) *gorm.DB

@@ -153,6 +153,10 @@ func (r *GormQuery) WithContext(ctx context.Context) orm.Query {
 	return &GormQuery{instance: r.instance.WithContext(ctx)}
 }
 
+func (r *GormQuery) Instance() *gorm.DB {
+	return r.instance
+}
+
 func (r *GormQuery) Driver() orm.Driver {
 	return orm.Driver(r.instance.Dialector.Name())
 }
