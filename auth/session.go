@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"github.com/oarkflow/framework/facades"
 
 	"github.com/oarkflow/frame"
 	"github.com/oarkflow/frame/middlewares/server/session"
@@ -28,7 +29,13 @@ func (app *Session) Guard(name string) auth.Auth {
 
 // User need parse token first.
 func (app *Session) User(ctx *frame.Context, user auth.User) error {
-	s, err := session.Pick(ctx, app.store)
+	var store *session.Store
+	if app.store == nil {
+		store = facades.Session
+	} else {
+		store = app.store
+	}
+	s, err := session.Pick(ctx, store)
 	if err != nil {
 		return err
 	}
@@ -57,7 +64,13 @@ func (app *Session) Parse(ctx *frame.Context, token string) error {
 }
 
 func (app *Session) Data(ctx *frame.Context) (map[string]any, error) {
-	s, err := session.Pick(ctx, app.store)
+	var store *session.Store
+	if app.store == nil {
+		store = facades.Session
+	} else {
+		store = app.store
+	}
+	s, err := session.Pick(ctx, store)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +82,13 @@ func (app *Session) Data(ctx *frame.Context) (map[string]any, error) {
 }
 
 func (app *Session) Login(ctx *frame.Context, user auth.User, data ...map[string]any) (token string, err error) {
-	s, err := session.Pick(ctx, app.store)
+	var store *session.Store
+	if app.store == nil {
+		store = facades.Session
+	} else {
+		store = app.store
+	}
+	s, err := session.Pick(ctx, store)
 	if err != nil {
 		return "", err
 	}
@@ -94,7 +113,13 @@ func (app *Session) Refresh(ctx *frame.Context) (token string, err error) {
 }
 
 func (app *Session) Logout(ctx *frame.Context) error {
-	s, err := session.Pick(ctx, app.store)
+	var store *session.Store
+	if app.store == nil {
+		store = facades.Session
+	} else {
+		store = app.store
+	}
+	s, err := session.Pick(ctx, store)
 	if err != nil {
 		return err
 	}
