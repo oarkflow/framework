@@ -37,6 +37,7 @@ func (r *Validation) Make(ctx *frame.Context, data any, rules map[string]string,
 	switch data := data.(type) {
 	case map[string]any:
 		if len(data) == 0 {
+			data = make(map[string]any)
 			for _, v := range rules {
 				if strings.Contains(v, "@param") || strings.Contains(v, "@query") {
 					fieldPlacement := "body"
