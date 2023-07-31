@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/gookit/color"
 	"github.com/pkg/errors"
@@ -20,15 +21,18 @@ type Orm struct {
 	instances       map[string]contractsorm.DB
 	config          *gorm.Config
 	disableLog      bool
+	mu              *sync.RWMutex
 }
 
 func NewOrm(ctx context.Context, name string, config *gorm.Config, disableLog bool) contractsorm.Orm {
-	orm := &Orm{ctx: ctx, Name: name, config: config, disableLog: disableLog}
+	orm := &Orm{ctx: ctx, Name: name, config: config, disableLog: disableLog, mu: &sync.RWMutex{}}
 
 	return orm.Connection(name, config, disableLog)
 }
 
 func (r *Orm) Connection(name string, config *gorm.Config, disableLog bool) contractsorm.Orm {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	defaultConnection := facades.Config.GetString("database.default")
 	if name == "" {
 		name = defaultConnection
@@ -63,6 +67,8 @@ func (r *Orm) Connection(name string, config *gorm.Config, disableLog bool) cont
 }
 
 func (r *Orm) Query(database ...string) contractsorm.DB {
+	r.mu.Lock()
+	defer r.mu.Unlock()
 	// the rationale behind this is that if the user passes in a database name, we will use that
 	// to get the instance, otherwise we will use the default database
 	if len(database) > 0 {
