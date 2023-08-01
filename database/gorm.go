@@ -13,7 +13,6 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	glog "gorm.io/gorm/logger"
-	"gorm.io/plugin/dbresolver"
 
 	"github.com/oarkflow/framework/contracts/database/orm"
 	"github.com/oarkflow/framework/database/support"
@@ -49,16 +48,17 @@ func NewGormDB(ctx context.Context, connection string, config *gorm.Config, disa
 		if maxIdleConnections == 0 {
 			maxIdleConnections = int(float64(maxOpenConnections) - (20 / float64(maxOpenConnections) * 100))
 		}
-		resolver := dbresolver.Register(dbresolver.Config{})
-		if maxIdleTime > 0 {
-			resolver = resolver.SetConnMaxIdleTime(time.Duration(maxIdleTime) * time.Minute)
-		}
-		if maxLifeTime > 0 {
-			resolver = resolver.SetConnMaxLifetime(time.Duration(maxLifeTime) * time.Hour)
-		}
-		err = db.Use(resolver.SetMaxIdleConns(maxIdleConnections).SetMaxOpenConns(maxOpenConnections))
+		sqlDB, err := db.DB()
 		if err != nil {
 			return nil, err
+		}
+		sqlDB.SetMaxIdleConns(maxIdleConnections)
+		sqlDB.SetMaxOpenConns(maxOpenConnections)
+		if maxIdleTime > 0 {
+			sqlDB.SetConnMaxIdleTime(time.Duration(maxIdleTime) * time.Minute)
+		}
+		if maxLifeTime > 0 {
+			sqlDB.SetConnMaxLifetime(time.Duration(maxLifeTime) * time.Hour)
 		}
 	}
 	return &GormDB{
