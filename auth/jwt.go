@@ -6,13 +6,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/oarkflow/frame"
 
 	"github.com/oarkflow/framework/contracts/auth"
 	"github.com/oarkflow/framework/facades"
 	supporttime "github.com/oarkflow/framework/support/time"
 
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/cast"
 )
 
