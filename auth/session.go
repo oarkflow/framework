@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+
 	"github.com/oarkflow/framework/facades"
 
 	"github.com/oarkflow/frame"
@@ -59,7 +60,7 @@ func (app *Session) User(ctx *frame.Context, user auth.User) error {
 	return nil
 }
 
-func (app *Session) Parse(ctx *frame.Context, token string) error {
+func (app *Session) Parse(ctx *frame.Context, token string, user auth.User) error {
 	return nil
 }
 

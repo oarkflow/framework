@@ -76,7 +76,7 @@ func (app *Jwt) User(ctx *frame.Context, user auth.User) error {
 	return nil
 }
 
-func (app *Jwt) Parse(ctx *frame.Context, token string) error {
+func (app *Jwt) Parse(ctx *frame.Context, token string, user auth.User) error {
 	token = strings.ReplaceAll(token, "Bearer ", "")
 	if tokenIsDisabled(token) {
 		return ErrorTokenDisabled

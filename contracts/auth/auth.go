@@ -6,7 +6,7 @@ import (
 
 type Auth interface {
 	Guard(name string) Auth
-	Parse(ctx *frame.Context, token string) error
+	Parse(ctx *frame.Context, token string, user User) error
 	User(ctx *frame.Context, user User) error
 	Login(ctx *frame.Context, user User, data ...map[string]any) (token string, err error)
 	LoginUsingID(ctx *frame.Context, id interface{}) (token string, err error)
