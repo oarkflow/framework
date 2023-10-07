@@ -82,7 +82,7 @@ func (app *Session) Data(ctx *frame.Context) (map[string]any, error) {
 	return data, nil
 }
 
-func (app *Session) Login(ctx *frame.Context, user auth.User, data ...map[string]any) (token string, err error) {
+func (app *Session) Login(ctx *frame.Context, user auth.User, data ...map[string]any) (token *auth.AccessToken, err error) {
 	var store *session.Store
 	if app.store == nil {
 		store = facades.Session
@@ -91,7 +91,7 @@ func (app *Session) Login(ctx *frame.Context, user auth.User, data ...map[string
 	}
 	s, err := session.Pick(ctx, store)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	s.Set(ctx.AuthUserKey, user)
 	if len(data) > 0 {
@@ -104,13 +104,13 @@ func (app *Session) Login(ctx *frame.Context, user auth.User, data ...map[string
 	return
 }
 
-func (app *Session) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
+func (app *Session) LoginUsingID(ctx *frame.Context, id any) (token *auth.AccessToken, err error) {
 	return
 }
 
 // Refresh need parse token first.
-func (app *Session) Refresh(ctx *frame.Context) (token string, err error) {
-	return "", nil
+func (app *Session) Refresh(ctx *frame.Context) (token *auth.AccessToken, err error) {
+	return nil, nil
 }
 
 func (app *Session) Logout(ctx *frame.Context) error {

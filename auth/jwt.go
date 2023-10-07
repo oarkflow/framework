@@ -80,7 +80,7 @@ func (app *Jwt) Data(ctx *frame.Context) (map[string]any, error) {
 	return nil, nil
 }
 
-func (app *Jwt) Login(ctx *frame.Context, user authContract.User, data ...map[string]any) (token string, err error) {
+func (app *Jwt) Login(ctx *frame.Context, user authContract.User, data ...map[string]any) (token *authContract.AccessToken, err error) {
 	t := reflect.TypeOf(user).Elem()
 	v := reflect.ValueOf(user).Elem()
 	fmt.Println(user)
@@ -101,13 +101,13 @@ func (app *Jwt) Login(ctx *frame.Context, user authContract.User, data ...map[st
 			return app.LoginUsingID(ctx, v.Field(i).Interface())
 		}
 	}
-	return "", ErrorNoPrimaryKeyField
+	return nil, ErrorNoPrimaryKeyField
 }
 
-func (app *Jwt) LoginUsingID(ctx *frame.Context, id any) (token string, err error) {
+func (app *Jwt) LoginUsingID(ctx *frame.Context, id any) (token *authContract.AccessToken, err error) {
 	secret := facades.Config.GetString("jwt.secret")
 	if secret == "" {
-		return "", ErrorEmptySecret
+		return nil, ErrorEmptySecret
 	}
 
 	nowTime := supporttime.Now()
@@ -119,14 +119,18 @@ func (app *Jwt) LoginUsingID(ctx *frame.Context, id any) (token string, err erro
 		Subject:   fmt.Sprintf("%v", id),
 	}
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return tokenClaims.SignedString([]byte(secret))
+	tok, err := tokenClaims.SignedString([]byte(secret))
+	if err != nil {
+		return nil, err
+	}
+	return &authContract.AccessToken{Token: tok, ExpiresAt: expireTime}, nil
 }
 
 // Refresh need parse token first.
-func (app *Jwt) Refresh(ctx *frame.Context) (token string, err error) {
+func (app *Jwt) Refresh(ctx *frame.Context) (token *authContract.AccessToken, err error) {
 	val := ctx.Value("token_claim")
 	if val == nil {
-		return "", ErrorParseTokenFirst
+		return nil, ErrorParseTokenFirst
 	}
 	claim := val.(jwt.RegisteredClaims)
 
@@ -134,7 +138,7 @@ func (app *Jwt) Refresh(ctx *frame.Context) (token string, err error) {
 	refreshTtl := facades.Config.GetInt("jwt.refresh_ttl")
 	expireTime := claim.ExpiresAt.Add(time.Duration(refreshTtl) * unit)
 	if nowTime.Unix() > expireTime.Unix() {
-		return "", ErrorRefreshTimeExceeded
+		return nil, ErrorRefreshTimeExceeded
 	}
 
 	return app.LoginUsingID(ctx, claim.Subject)
