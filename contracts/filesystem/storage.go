@@ -12,10 +12,10 @@ type Storage interface {
 
 type Driver interface {
 	WithContext(ctx context.Context) Driver
-	Put(file, content string) error
+	Put(file string, content []byte) error
 	PutFile(path string, source File) (string, error)
 	PutFileAs(path string, source File, name string) (string, error)
-	Get(file string) (string, error)
+	Get(file string) ([]byte, error)
 	Size(file string) (int64, error)
 	Path(file string) string
 	Exists(file string) bool

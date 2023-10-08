@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -34,7 +33,7 @@ func (r *Local) WithContext(ctx context.Context) filesystem.Driver {
 	return r
 }
 
-func (r *Local) Put(file, content string) error {
+func (r *Local) Put(file string, content []byte) error {
 	file = r.fullPath(file)
 	if err := os.MkdirAll(path.Dir(file), os.ModePerm); err != nil {
 		return err
@@ -46,7 +45,7 @@ func (r *Local) Put(file, content string) error {
 		return err
 	}
 
-	if _, err = f.WriteString(content); err != nil {
+	if _, err = f.Write(content); err != nil {
 		return err
 	}
 
@@ -58,7 +57,7 @@ func (r *Local) PutFile(filePath string, source filesystem.File) (string, error)
 }
 
 func (r *Local) PutFileAs(filePath string, source filesystem.File, name string) (string, error) {
-	data, err := ioutil.ReadFile(source.File())
+	data, err := os.ReadFile(source.File())
 	if err != nil {
 		return "", err
 	}
@@ -68,20 +67,15 @@ func (r *Local) PutFileAs(filePath string, source filesystem.File, name string) 
 		return "", err
 	}
 
-	if err := r.Put(fullPath, string(data)); err != nil {
+	if err := r.Put(fullPath, data); err != nil {
 		return "", err
 	}
 
 	return fullPath, nil
 }
 
-func (r *Local) Get(file string) (string, error) {
-	data, err := ioutil.ReadFile(r.fullPath(file))
-	if err != nil {
-		return "", err
-	}
-
-	return string(data), nil
+func (r *Local) Get(file string) ([]byte, error) {
+	return os.ReadFile(r.fullPath(file))
 }
 
 func (r *Local) Size(file string) (int64, error) {
@@ -175,7 +169,7 @@ func (r *Local) DeleteDirectory(directory string) error {
 
 func (r *Local) Files(path string) ([]string, error) {
 	var files []string
-	fileInfo, err := ioutil.ReadDir(r.fullPath(path))
+	fileInfo, err := os.ReadDir(r.fullPath(path))
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +200,7 @@ func (r *Local) AllFiles(path string) ([]string, error) {
 
 func (r *Local) Directories(path string) ([]string, error) {
 	var directories []string
-	fileInfo, _ := ioutil.ReadDir(r.fullPath(path))
+	fileInfo, _ := os.ReadDir(r.fullPath(path))
 	for _, f := range fileInfo {
 		if f.IsDir() {
 			directories = append(directories, f.Name()+"/")

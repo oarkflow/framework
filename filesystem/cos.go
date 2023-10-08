@@ -3,7 +3,7 @@ package filesystem
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -74,8 +74,8 @@ func (r *Cos) WithContext(ctx context.Context) filesystem.Driver {
 	return driver
 }
 
-func (r *Cos) Put(file string, content string) error {
-	tempFile, err := r.tempFile(content)
+func (r *Cos) Put(file string, content []byte) error {
+	tempFile, err := tempFile(content)
 	defer os.Remove(tempFile.Name())
 	if err != nil {
 		return err
@@ -107,19 +107,19 @@ func (r *Cos) PutFileAs(filePath string, source filesystem.File, name string) (s
 	return fullPath, nil
 }
 
-func (r *Cos) Get(file string) (string, error) {
+func (r *Cos) Get(file string) ([]byte, error) {
 	opt := &cos.ObjectGetOptions{
 		ResponseContentType: "text/html",
 	}
 	resp, err := r.instance.Object.Get(r.ctx, file, opt)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 
-	return string(data), nil
+	return data, nil
 }
 
 func (r *Cos) Size(file string) (int64, error) {
@@ -368,13 +368,13 @@ func (r *Cos) AllDirectories(path string) ([]string, error) {
 	return directories, nil
 }
 
-func (r *Cos) tempFile(content string) (*os.File, error) {
-	tempFile, err := ioutil.TempFile(os.TempDir(), "goravel-")
+func tempFile(content []byte) (*os.File, error) {
+	tempFile, err := os.CreateTemp(os.TempDir(), "goravel-")
 	if err != nil {
 		return nil, err
 	}
 
-	if _, err := tempFile.WriteString(content); err != nil {
+	if _, err := tempFile.Write(content); err != nil {
 		return nil, err
 	}
 

@@ -5,7 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -74,8 +74,8 @@ func (r *Oss) WithContext(ctx context.Context) filesystem.Driver {
 	return driver
 }
 
-func (r *Oss) Put(file string, content string) error {
-	tempFile, err := r.tempFile(content)
+func (r *Oss) Put(file string, content []byte) error {
+	tempFile, err := tempFile(content)
 	defer os.Remove(tempFile.Name())
 	if err != nil {
 		return err
@@ -101,16 +101,16 @@ func (r *Oss) PutFileAs(filePath string, source filesystem.File, name string) (s
 	return fullPath, nil
 }
 
-func (r *Oss) Get(file string) (string, error) {
+func (r *Oss) Get(file string) ([]byte, error) {
 	res, err := r.bucketInstance.GetObject(file)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer res.Close()
 
-	data, err := ioutil.ReadAll(res)
+	data, err := io.ReadAll(res)
 
-	return string(data), nil
+	return data, nil
 }
 
 func (r *Oss) Size(file string) (int64, error) {
@@ -302,17 +302,4 @@ func (r *Oss) AllDirectories(path string) ([]string, error) {
 	wg.Wait()
 
 	return directories, nil
-}
-
-func (r *Oss) tempFile(content string) (*os.File, error) {
-	tempFile, err := ioutil.TempFile(os.TempDir(), "goravel-")
-	if err != nil {
-		return nil, err
-	}
-
-	if _, err := tempFile.WriteString(content); err != nil {
-		return nil, err
-	}
-
-	return tempFile, nil
 }

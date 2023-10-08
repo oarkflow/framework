@@ -1,9 +1,10 @@
 package filesystem
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"strings"
 	"sync"
@@ -66,11 +67,11 @@ func (r *S3) WithContext(ctx context.Context) filesystem.Driver {
 	return driver
 }
 
-func (r *S3) Put(file string, content string) error {
+func (r *S3) Put(file string, content []byte) error {
 	_, err := r.instance.PutObject(r.ctx, &s3.PutObjectInput{
 		Bucket: aws.String(r.bucket),
 		Key:    aws.String(file),
-		Body:   strings.NewReader(content),
+		Body:   bytes.NewReader(content),
 	})
 
 	return err
@@ -86,31 +87,31 @@ func (r *S3) PutFileAs(filePath string, source filesystem.File, name string) (st
 		return "", err
 	}
 
-	data, err := ioutil.ReadFile(source.File())
+	data, err := os.ReadFile(source.File())
 	if err != nil {
 		return "", err
 	}
 
-	if err := r.Put(fullPath, string(data)); err != nil {
+	if err := r.Put(fullPath, data); err != nil {
 		return "", err
 	}
 
 	return fullPath, nil
 }
 
-func (r *S3) Get(file string) (string, error) {
+func (r *S3) Get(file string) ([]byte, error) {
 	resp, err := r.instance.GetObject(r.ctx, &s3.GetObjectInput{
 		Bucket: aws.String(r.bucket),
 		Key:    aws.String(file),
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 
-	return string(data), nil
+	return data, nil
 }
 
 func (r *S3) Size(file string) (int64, error) {
@@ -208,7 +209,7 @@ func (r *S3) MakeDirectory(directory string) error {
 		directory += "/"
 	}
 
-	return r.Put(directory, "")
+	return r.Put(directory, []byte(""))
 }
 
 func (r *S3) DeleteDirectory(directory string) error {
@@ -342,17 +343,4 @@ func (r *S3) AllDirectories(path string) ([]string, error) {
 	wg.Wait()
 
 	return directories, nil
-}
-
-func (r *S3) tempFile(content string) (*os.File, error) {
-	tempFile, err := ioutil.TempFile(os.TempDir(), "goravel-")
-	if err != nil {
-		return nil, err
-	}
-
-	if _, err := tempFile.WriteString(content); err != nil {
-		return nil, err
-	}
-
-	return tempFile, nil
 }
