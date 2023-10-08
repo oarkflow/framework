@@ -49,7 +49,7 @@ func (r *Local) Put(file string, content []byte) error {
 		return err
 	}
 
-	return nil
+	return f.Sync()
 }
 
 func (r *Local) PutFile(filePath string, source filesystem.File) (string, error) {

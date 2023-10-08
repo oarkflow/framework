@@ -75,7 +75,7 @@ func (r *Cos) WithContext(ctx context.Context) filesystem.Driver {
 }
 
 func (r *Cos) Put(file string, content []byte) error {
-	tempFile, err := tempFile(content)
+	tempFile, err := createTempFile(content)
 	defer os.Remove(tempFile.Name())
 	if err != nil {
 		return err
@@ -368,15 +368,17 @@ func (r *Cos) AllDirectories(path string) ([]string, error) {
 	return directories, nil
 }
 
-func tempFile(content []byte) (*os.File, error) {
+func createTempFile(content []byte) (*os.File, error) {
 	tempFile, err := os.CreateTemp(os.TempDir(), "goravel-")
 	if err != nil {
 		return nil, err
 	}
 
-	if _, err := tempFile.Write(content); err != nil {
+	if _, err = tempFile.Write(content); err != nil {
 		return nil, err
 	}
-
+	if err = tempFile.Sync(); err != nil {
+		return nil, err
+	}
 	return tempFile, nil
 }

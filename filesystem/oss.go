@@ -75,7 +75,7 @@ func (r *Oss) WithContext(ctx context.Context) filesystem.Driver {
 }
 
 func (r *Oss) Put(file string, content []byte) error {
-	tempFile, err := tempFile(content)
+	tempFile, err := createTempFile(content)
 	defer os.Remove(tempFile.Name())
 	if err != nil {
 		return err
