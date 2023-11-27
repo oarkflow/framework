@@ -123,7 +123,7 @@ func (r *S3) Size(file string) (int64, error) {
 		return 0, err
 	}
 
-	return resp.ContentLength, nil
+	return *resp.ContentLength, nil
 }
 
 func (r *S3) Path(file string) string {
@@ -192,12 +192,12 @@ func (r *S3) Delete(files ...string) error {
 			Key: aws.String(file),
 		})
 	}
-
+	quiet := true
 	_, err := r.instance.DeleteObjects(r.ctx, &s3.DeleteObjectsInput{
 		Bucket: aws.String(r.bucket),
 		Delete: &types.Delete{
 			Objects: objectIdentifiers,
-			Quiet:   true,
+			Quiet:   &quiet,
 		},
 	})
 
@@ -239,7 +239,7 @@ func (r *S3) DeleteDirectory(directory string) error {
 			}
 		}
 
-		if listObjectsV2Response.IsTruncated {
+		if *listObjectsV2Response.IsTruncated {
 			listObjectsV2Response, err = r.instance.ListObjectsV2(r.ctx, &s3.ListObjectsV2Input{
 				Bucket:            aws.String(r.bucket),
 				ContinuationToken: listObjectsV2Response.ContinuationToken,
