@@ -19,7 +19,7 @@ require (
 	github.com/oarkflow/log v1.0.74
 	github.com/oarkflow/machinery v0.0.2
 	github.com/oarkflow/migration v0.0.5
-	github.com/oarkflow/pkg v0.0.96
+	github.com/oarkflow/pkg v0.0.97
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cast v1.5.1
