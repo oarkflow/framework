@@ -1,10 +1,11 @@
-package storage
+package memory
 
 import (
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/oarkflow/framework/contracts/storage"
 	"github.com/oarkflow/framework/utils"
 )
 
@@ -38,8 +39,8 @@ func configDefault(config ...Config) Config {
 	return cfg
 }
 
-// Storage interface that is implemented by storage providers
-type Storage struct {
+// Memory interface that is implemented by storage providers
+type Memory struct {
 	mux        sync.RWMutex
 	db         map[string]entry
 	gcInterval time.Duration
@@ -53,12 +54,12 @@ type entry struct {
 }
 
 // New creates a new memory storage
-func New(config ...Config) *Storage {
+func New(config ...Config) *Memory {
 	// Set default config
 	cfg := configDefault(config...)
 
 	// Create storage
-	store := &Storage{
+	store := &Memory{
 		db:         make(map[string]entry),
 		gcInterval: cfg.GCInterval,
 		done:       make(chan struct{}),
@@ -72,7 +73,7 @@ func New(config ...Config) *Storage {
 }
 
 // Get value by key
-func (s *Storage) Get(key string) ([]byte, error) {
+func (s *Memory) Get(key string) ([]byte, error) {
 	if len(key) <= 0 {
 		return nil, nil
 	}
@@ -87,7 +88,7 @@ func (s *Storage) Get(key string) ([]byte, error) {
 }
 
 // Set key with value
-func (s *Storage) Set(key string, val []byte, exp time.Duration) error {
+func (s *Memory) Set(key string, val []byte, exp time.Duration) error {
 	// Ain't Nobody Got Time For That
 	if len(key) <= 0 || len(val) <= 0 {
 		return nil
@@ -105,7 +106,7 @@ func (s *Storage) Set(key string, val []byte, exp time.Duration) error {
 }
 
 // Delete key by key
-func (s *Storage) Delete(key string) error {
+func (s *Memory) Delete(key string) error {
 	// Ain't Nobody Got Time For That
 	if len(key) <= 0 {
 		return nil
@@ -117,7 +118,7 @@ func (s *Storage) Delete(key string) error {
 }
 
 // Reset all keys
-func (s *Storage) Reset() error {
+func (s *Memory) Reset() error {
 	s.mux.Lock()
 	s.db = make(map[string]entry)
 	s.mux.Unlock()
@@ -125,12 +126,12 @@ func (s *Storage) Reset() error {
 }
 
 // Close the memory storage
-func (s *Storage) Close() error {
+func (s *Memory) Close() error {
 	s.done <- struct{}{}
 	return nil
 }
 
-func (s *Storage) gc() {
+func (s *Memory) gc() {
 	ticker := time.NewTicker(s.gcInterval)
 	defer ticker.Stop()
 	var expired []string
@@ -157,7 +158,37 @@ func (s *Storage) gc() {
 	}
 }
 
-// Return database client
-func (s *Storage) Conn() map[string]entry {
+// Conn database client
+func (s *Memory) Conn() map[string]entry {
 	return s.db
+}
+
+func (s *Memory) Connection(name string) storage.Storage {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Memory) Iterate(fn func(key []byte, value []byte)) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Memory) IterateByPrefix(prefix []byte, limit uint64, fn func(key []byte, value []byte)) uint64 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Memory) IterateByPrefixFrom(prefix []byte, from []byte, limit uint64, fn func(key []byte, value []byte)) uint64 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Memory) DeleteByPrefix(prefix []byte) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s *Memory) KeysByPrefixCount(prefix []byte) uint64 {
+	//TODO implement me
+	panic("implement me")
 }

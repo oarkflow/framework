@@ -8,7 +8,7 @@ import (
 
 	"github.com/oarkflow/framework/contracts/cache"
 	contractStorage "github.com/oarkflow/framework/contracts/storage"
-	"github.com/oarkflow/framework/storage"
+	"github.com/oarkflow/framework/storage/drivers/memory"
 )
 
 type Memory struct {
@@ -19,7 +19,7 @@ type Memory struct {
 func NewMemoryCache(prefix string) cache.Store {
 	return &Memory{
 		Prefix: prefix,
-		Client: storage.New(),
+		Client: memory.New(),
 	}
 }
 

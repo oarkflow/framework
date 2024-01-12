@@ -3,6 +3,7 @@ package filesystem
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/oarkflow/log"
 
@@ -23,6 +24,7 @@ const (
 type Storage struct {
 	filesystem.Driver
 	drivers map[string]filesystem.Driver
+	mu      *sync.RWMutex
 }
 
 func NewStorage() *Storage {
@@ -43,6 +45,7 @@ func NewStorage() *Storage {
 	return &Storage{
 		Driver:  driver,
 		drivers: drivers,
+		mu:      &sync.RWMutex{},
 	}
 }
 

@@ -1,27 +1,21 @@
 package storage
 
-import "time"
+import (
+	"time"
+)
 
 // Storage interface for communicating with different database/key-value
 // providers
 type Storage interface {
-	// Get gets the value for the given key.
-	// `nil, nil` is returned when the key does not exist
-	Get(key string) ([]byte, error)
-
-	// Set stores the given value for the given key along
-	// with an expiration value, 0 means no expiration.
-	// Empty key or value will be ignored without an error.
-	Set(key string, val []byte, exp time.Duration) error
-
-	// Delete deletes the value for the given key.
-	// It returns no error if the storage does not contain the key,
-	Delete(key string) error
-
-	// Reset resets the storage and delete all keys.
 	Reset() error
-
-	// Close closes the storage and will stop any running garbage
-	// collectors and open connections.
+	Set(key string, value []byte, exp time.Duration) (err error)
+	Delete(key string) (err error)
+	Get(key string) (value []byte, err error)
+	Connection(name string) Storage
+	Iterate(fn func(key []byte, value []byte))
+	IterateByPrefix(prefix []byte, limit uint64, fn func(key []byte, value []byte)) uint64
+	IterateByPrefixFrom(prefix []byte, from []byte, limit uint64, fn func(key []byte, value []byte)) uint64
+	DeleteByPrefix(prefix []byte)
+	KeysByPrefixCount(prefix []byte) uint64
 	Close() error
 }

@@ -8,7 +8,7 @@ type ServiceProvider struct {
 }
 
 func (database *ServiceProvider) Register() {
-	facades.Storage = NewStorage()
+	facades.Filesystem = NewStorage()
 }
 
 func (database *ServiceProvider) Boot() {

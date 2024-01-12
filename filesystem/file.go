@@ -65,11 +65,11 @@ func (f *File) File() string {
 }
 
 func (f *File) Store(path string) (string, error) {
-	return facades.Storage.Disk(f.disk).PutFile(path, f)
+	return facades.Filesystem.Disk(f.disk).PutFile(path, f)
 }
 
 func (f *File) StoreAs(path string, name string) (string, error) {
-	return facades.Storage.Disk(f.disk).PutFileAs(path, f, name)
+	return facades.Filesystem.Disk(f.disk).PutFileAs(path, f, name)
 }
 
 func (f *File) GetClientOriginalName() string {
