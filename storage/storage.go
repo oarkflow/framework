@@ -34,15 +34,12 @@ func Connection(name string) storage.Storage {
 		name = defaultConnection
 	}
 
-	defaultStorage.connection = name
 	if defaultStorage.instances == nil {
 		defaultStorage.instances = make(map[string]storage.Storage)
 	}
-
 	if st, exist := defaultStorage.instances[name]; exist {
 		return st
 	}
-
 	g, err := NewDriver(defaultStorage.ctx, name)
 	if err != nil {
 		color.Redln(fmt.Sprintf("[Filesystem] Init connection error, %v", err))
@@ -59,11 +56,11 @@ func Connection(name string) storage.Storage {
 		defaultStorage.Storage = g
 	}
 
-	return defaultStorage
+	return g
 }
 
 func NewStorage(name string) *Storage {
-	str := &Storage{Name: name, mu: &sync.RWMutex{}}
+	str := &Storage{Name: name, mu: &sync.RWMutex{}, instances: make(map[string]storage.Storage)}
 	str.Connection(name)
 	return str
 }
@@ -101,7 +98,7 @@ func (s *Storage) Connection(name string) storage.Storage {
 		s.Storage = g
 	}
 
-	return s
+	return g
 }
 
 func NewDriver(ctx context.Context, name string) (storage.Storage, error) {
@@ -127,10 +124,20 @@ func NewBadgerDB(name string) (storage.Storage, error) {
 			opts.InMemory = mem.(bool)
 		}
 		if mem, e := config["index_cache"]; e {
-			opts.IndexCacheSize = mem.(int64)
+			switch mem := mem.(type) {
+			case int:
+				opts.IndexCacheSize = int64(mem)
+			case int64:
+				opts.IndexCacheSize = mem
+			}
 		}
 		if mem, e := config["block_cache"]; e {
-			opts.BlockCacheSize = mem.(int64)
+			switch mem := mem.(type) {
+			case int:
+				opts.BlockCacheSize = int64(mem)
+			case int64:
+				opts.BlockCacheSize = mem
+			}
 		}
 		return badger.New(dbPath, opts)
 	default:
