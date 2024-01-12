@@ -22,10 +22,50 @@ type Storage struct {
 	mu         *sync.RWMutex
 }
 
+var (
+	defaultStorage *Storage
+)
+
+func Connection(name string) storage.Storage {
+	defaultStorage.mu.Lock()
+	defer defaultStorage.mu.Unlock()
+	defaultConnection := facades.Config.GetString("storage.default")
+	if name == "" {
+		name = defaultConnection
+	}
+
+	defaultStorage.connection = name
+	if defaultStorage.instances == nil {
+		defaultStorage.instances = make(map[string]storage.Storage)
+	}
+
+	if st, exist := defaultStorage.instances[name]; exist {
+		return st
+	}
+
+	g, err := NewDriver(defaultStorage.ctx, name)
+	if err != nil {
+		color.Redln(fmt.Sprintf("[Filesystem] Init connection error, %v", err))
+
+		return nil
+	}
+	if g == nil {
+		return nil
+	}
+
+	defaultStorage.instances[name] = g
+
+	if name == defaultConnection {
+		defaultStorage.Storage = g
+	}
+
+	return defaultStorage
+}
+
 func NewStorage(name string) *Storage {
-	storage := &Storage{Name: name, mu: &sync.RWMutex{}}
-	storage.Connection(name)
-	return storage
+	str := &Storage{Name: name, mu: &sync.RWMutex{}}
+	str.Connection(name)
+	return str
 }
 
 func (s *Storage) Connection(name string) storage.Storage {
