@@ -1,11 +1,7 @@
 package facades
 
 import (
-	"github.com/oarkflow/framework/storage"
+	"github.com/oarkflow/framework/contracts/storage"
 )
 
-var Storage *storage.Storage
-
-func init() {
-	Storage = storage.NewStorage("")
-}
+var Storage storage.Storage

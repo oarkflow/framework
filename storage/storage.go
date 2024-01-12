@@ -23,7 +23,9 @@ type Storage struct {
 }
 
 func NewStorage(name string) *Storage {
-	return &Storage{Name: name, mu: &sync.RWMutex{}}
+	storage := &Storage{Name: name, mu: &sync.RWMutex{}}
+	storage.Connection(name)
+	return storage
 }
 
 func (s *Storage) Connection(name string) storage.Storage {
