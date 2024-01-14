@@ -16,7 +16,7 @@ require (
 	github.com/h2non/filetype v1.1.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/oarkflow/cron v0.0.3
-	github.com/oarkflow/frame v0.0.57
+	github.com/oarkflow/frame v0.0.58
 	github.com/oarkflow/log v1.0.74
 	github.com/oarkflow/machinery v0.0.2
 	github.com/oarkflow/migration v0.0.5
