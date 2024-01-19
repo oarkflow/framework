@@ -7,7 +7,7 @@ import (
 
 type Store interface {
 	WithContext(ctx context.Context) Store
-	Store(name string) Store
+	Connection(name string) Store
 	// Get Retrieve an item from the cache by key.
 	Get(key string, def any) any
 	GetBool(key string, def bool) bool

@@ -57,7 +57,7 @@ func New(config ...Config) (cache.Store, error) {
 	}, nil
 }
 
-func (r *Redis) Store(name string) cache.Store {
+func (r *Redis) Connection(name string) cache.Store {
 	// TODO implement me
 	panic("implement me")
 }

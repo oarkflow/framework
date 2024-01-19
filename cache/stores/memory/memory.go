@@ -28,7 +28,7 @@ func (r *Memory) WithContext(ctx context.Context) cache.Store {
 	return r
 }
 
-func (r *Memory) Store(name string) cache.Store {
+func (r *Memory) Connection(name string) cache.Store {
 	// TODO implement me
 	panic("implement me")
 }
