@@ -23,6 +23,7 @@ require (
 	github.com/oarkflow/pkg v0.0.100
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
+	github.com/redis/go-redis/v9 v9.4.0
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/viper v1.18.2
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.45

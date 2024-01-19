@@ -1,4 +1,4 @@
-package cache
+package memory
 
 import (
 	"context"
@@ -16,7 +16,7 @@ type Memory struct {
 	Client contractStorage.Storage
 }
 
-func NewMemoryCache(prefix string) cache.Store {
+func New(prefix string) cache.Store {
 	return &Memory{
 		Prefix: prefix,
 		Client: memory.New(),
@@ -26,6 +26,11 @@ func NewMemoryCache(prefix string) cache.Store {
 // WithContext Retrieve an item from the cache by key.
 func (r *Memory) WithContext(ctx context.Context) cache.Store {
 	return r
+}
+
+func (r *Memory) Store(name string) cache.Store {
+	// TODO implement me
+	panic("implement me")
 }
 
 // Get Retrieve an item from the cache by key.
