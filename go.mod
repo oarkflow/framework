@@ -20,7 +20,7 @@ require (
 	github.com/oarkflow/log v1.0.74
 	github.com/oarkflow/machinery v0.0.2
 	github.com/oarkflow/migration v0.0.5
-	github.com/oarkflow/pkg v0.1.24
+	github.com/oarkflow/pkg v0.1.25
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.5.1
@@ -116,7 +116,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.7.0 // indirect
 	github.com/mozillazg/go-httpheader v0.2.1 // indirect
-	github.com/nyaruka/phonenumbers v1.0.55 // indirect
+	github.com/nyaruka/phonenumbers v1.3.2 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/posener/complete v1.2.3 // indirect
