@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"slices"
 
 	"github.com/gookit/color"
 	"github.com/spf13/cast"
@@ -14,11 +15,8 @@ import (
 )
 
 func init() {
-	args := os.Args
-	if len(args) > 2 {
-		if args[1] == "artisan" {
-			support.Env = support.EnvArtisan
-		}
+	if slices.Contains(os.Args, "artisan") {
+		support.Env = support.EnvArtisan
 	}
 }
 

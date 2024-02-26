@@ -2,6 +2,7 @@ package console
 
 import (
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/gookit/color"
@@ -68,20 +69,18 @@ func (c *Cli) CallAndExit(command string) {
 // Run a command. Args come from os.Args.
 func (c *Cli) Run(args []string, exitIfArtisan bool) {
 	if len(args) >= 2 {
-		if args[1] == "artisan" {
-			if len(args) == 2 {
+		if index := slices.Index(args, "artisan"); index != -1 {
+			cmdIndex := index + 1
+			if len(args) == cmdIndex {
 				args = append(args, "--help")
 			}
-
-			if args[2] != "-V" && args[2] != "--version" {
-				cliArgs := append([]string{args[0]}, args[2:]...)
+			if args[cmdIndex] != "-V" && args[cmdIndex] != "--version" {
+				cliArgs := append([]string{args[0]}, args[cmdIndex:]...)
 				if err := c.instance.Run(cliArgs); err != nil {
 					panic(err.Error())
 				}
 			}
-
-			printResult(args[2])
-
+			printResult(args[cmdIndex])
 			if exitIfArtisan {
 				os.Exit(0)
 			}

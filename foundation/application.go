@@ -2,6 +2,7 @@ package foundation
 
 import (
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/oarkflow/framework/config"
@@ -95,7 +96,5 @@ func (app *Application) bootServiceProviders(serviceProviders []contracts.Servic
 
 // RunningInConsole Determine if the application is running in the console.
 func (app *Application) RunningInConsole() bool {
-	args := os.Args
-
-	return len(args) >= 2 && args[1] == "artisan"
+	return slices.Contains(os.Args, "artisan")
 }
