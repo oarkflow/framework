@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
-	github.com/aws/aws-sdk-go v1.50.25
+	github.com/aws/aws-sdk-go v1.50.30
 	github.com/aws/aws-sdk-go-v2 v1.25.2
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.4
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.51.1
@@ -16,7 +16,7 @@ require (
 	github.com/h2non/filetype v1.1.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/oarkflow/cron v0.0.3
-	github.com/oarkflow/frame v0.0.63
+	github.com/oarkflow/frame v0.0.64
 	github.com/oarkflow/log v1.0.74
 	github.com/oarkflow/machinery v0.0.3
 	github.com/oarkflow/migration v0.0.5
@@ -26,7 +26,7 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/viper v1.18.2
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.46
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.47
 	github.com/urfave/cli/v2 v2.27.1
 	github.com/xhit/go-simple-mail/v2 v2.16.0
 	google.golang.org/grpc v1.62.0
@@ -63,7 +63,7 @@ require (
 	github.com/bytedance/gopkg v0.0.0-20240202110943-5e26950c5e57 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
-	github.com/cloudwego/netpoll v0.5.2-0.20240206071512-faa52638971c // indirect
+	github.com/cloudwego/netpoll v0.5.2-0.20240220090456-7ba622bf763b // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -118,7 +118,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/mozillazg/go-httpheader v0.2.1 // indirect
-	github.com/nyaruka/phonenumbers v1.0.55 // indirect
+	github.com/nyaruka/phonenumbers v1.3.2 // indirect
 	github.com/oarkflow/amqp v0.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
