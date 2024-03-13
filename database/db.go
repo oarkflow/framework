@@ -5,7 +5,7 @@ import (
 
 	"github.com/oarkflow/log"
 
-	"github.com/jmoiron/sqlx"
+	sqlx "github.com/oarkflow/squealx"
 	"github.com/pkg/errors"
 
 	"github.com/oarkflow/framework/contracts/database"
