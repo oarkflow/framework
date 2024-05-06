@@ -40,7 +40,7 @@ func (r *DB) Connection(name string) database.DB {
 		return r
 	}
 
-	db, err := sqlx.Open("mysql", dsn)
+	db, err := sqlx.Open("mysql", dsn, name)
 	if err != nil {
 		log.Error().Err(err).Msg("database open error: %v")
 		return r
