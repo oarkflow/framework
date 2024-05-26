@@ -20,7 +20,7 @@ import (
 	"github.com/oarkflow/framework/support/str"
 	supporttime "github.com/oarkflow/framework/support/time"
 
-	"github.com/pkg/errors"
+	"github.com/oarkflow/errors"
 )
 
 /*

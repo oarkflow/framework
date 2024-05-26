@@ -4,11 +4,11 @@ import (
 	"context"
 	"strings"
 
+	"github.com/oarkflow/errors"
 	logg "github.com/oarkflow/log"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	"github.com/opentracing/opentracing-go/log"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -52,13 +52,13 @@ func OpentracingClient(tracer opentracing.Tracer, parentCtx context.Context) grp
 
 		err := tracer.Inject(span.Context(), opentracing.TextMap, MDReaderWriter{md})
 		if err != nil {
-			span.LogFields(log.Error(errors.WithMessage(err, "inject-error")))
+			span.LogFields(log.Error(errors.NewE(err, "inject-error", "")))
 		}
 
 		newCtx := metadata.NewOutgoingContext(ctx, md)
 		err = invoker(newCtx, method, req, reply, cc, opts...)
 		if err != nil {
-			span.LogFields(log.Error(errors.WithMessage(err, "call-error")))
+			span.LogFields(log.Error(errors.NewE(err, "call-error", "")))
 		}
 		return err
 	}

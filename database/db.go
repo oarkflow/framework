@@ -2,11 +2,12 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/oarkflow/log"
 
+	"github.com/oarkflow/errors"
 	sqlx "github.com/oarkflow/squealx"
-	"github.com/pkg/errors"
 
 	"github.com/oarkflow/framework/contracts/database"
 	"github.com/oarkflow/framework/database/support"
@@ -82,7 +83,7 @@ func (r *DB) Transaction(ctx context.Context, txFunc func(tx *sqlx.Tx) error) er
 
 	if err := txFunc(tx); err != nil {
 		if err := tx.Rollback(); err != nil {
-			return errors.Wrapf(err, "rollback error: %v", err)
+			return errors.NewE(err, fmt.Sprintf("rollback error: %v", err.Error()), "")
 		}
 
 		return err
