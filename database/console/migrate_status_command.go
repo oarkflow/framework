@@ -5,6 +5,7 @@ import (
 
 	"github.com/oarkflow/framework/contracts/console"
 	"github.com/oarkflow/framework/contracts/console/command"
+	"github.com/oarkflow/framework/facades"
 )
 
 type MigrateStatusCommand struct {
@@ -24,12 +25,30 @@ func (receiver *MigrateStatusCommand) Description() string {
 func (receiver *MigrateStatusCommand) Extend() command.Extend {
 	return command.Extend{
 		Category: "migrate",
+		Flags: []command.Flag{
+			{
+				Name:    "connection",
+				Value:   "",
+				Aliases: []string{"c"},
+				Usage:   "connection driver for the database",
+			},
+			{
+				Name:  "dir",
+				Value: "",
+				Usage: "directory for migration",
+			},
+		},
 	}
 }
 
 // Handle Execute the console command.
 func (receiver *MigrateStatusCommand) Handle(ctx console.Context) error {
-	m, err := getMigrate()
+	dir := ctx.Option("dir")
+	connection := ctx.Option("connection")
+	if connection == "" {
+		connection = facades.Config.GetString("database.default")
+	}
+	m, err := getMigrate(connection, dir)
 	if err != nil {
 		return err
 	}

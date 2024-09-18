@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"os"
+	"path/filepath"
 
 	"github.com/oarkflow/migration"
 
@@ -11,13 +12,12 @@ import (
 	"github.com/oarkflow/framework/facades"
 )
 
-func getMigrate(con ...string) (*migration.Migrate, error) {
-	connection := facades.Config.GetString("database.default")
-	if len(con) > 0 {
-		connection = con[0]
-	}
+func getMigrate(connection string, directory ...string) (*migration.Migrate, error) {
 	driver := facades.Config.GetString("database.connections." + connection + ".driver")
 	dir := "./database/migrations"
+	if len(directory) > 0 && directory[0] != "" {
+		dir = filepath.Join(dir, directory[0])
+	}
 	os.MkdirAll(dir, os.ModePerm)
 	files, _ := os.ReadDir(dir)
 	if len(files) == 0 {

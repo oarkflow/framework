@@ -7,6 +7,7 @@ import (
 
 	"github.com/oarkflow/framework/contracts/console"
 	"github.com/oarkflow/framework/contracts/console/command"
+	"github.com/oarkflow/framework/facades"
 )
 
 type MigrateCommand struct {
@@ -34,6 +35,17 @@ func (receiver *MigrateCommand) Extend() command.Extend {
 				Usage:   "Limit sql files for migration",
 			},
 			{
+				Name:    "connection",
+				Value:   "",
+				Aliases: []string{"c"},
+				Usage:   "connection driver for the database",
+			},
+			{
+				Name:  "dir",
+				Value: "",
+				Usage: "directory for migration",
+			},
+			{
 				Name:    "dryrun",
 				Value:   "false",
 				Aliases: []string{"d"},
@@ -47,6 +59,7 @@ func (receiver *MigrateCommand) Extend() command.Extend {
 func (receiver *MigrateCommand) Handle(ctx console.Context) error {
 	l := ctx.Option("steps")
 	d := ctx.Option("dryrun")
+	dir := ctx.Option("dir")
 	limit, err := strconv.Atoi(l)
 	if err != nil {
 		limit = 0
@@ -55,7 +68,11 @@ func (receiver *MigrateCommand) Handle(ctx console.Context) error {
 	if err != nil {
 		dryrun = false
 	}
-	m, err := getMigrate()
+	connection := ctx.Option("connection")
+	if connection == "" {
+		connection = facades.Config.GetString("database.default")
+	}
+	m, err := getMigrate(connection, dir)
 	if err != nil {
 		return err
 	}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/oarkflow/framework/contracts/console"
 	"github.com/oarkflow/framework/contracts/console/command"
+	"github.com/oarkflow/framework/facades"
 )
 
 type MigrateRedoCommand struct {
@@ -28,6 +29,17 @@ func (receiver *MigrateRedoCommand) Extend() command.Extend {
 		Category: "migrate",
 		Flags: []command.Flag{
 			{
+				Name:    "connection",
+				Value:   "",
+				Aliases: []string{"c"},
+				Usage:   "connection driver for the database",
+			},
+			{
+				Name:  "dir",
+				Value: "",
+				Usage: "directory for migration",
+			},
+			{
 				Name:    "dryrun",
 				Value:   "false",
 				Aliases: []string{"d"},
@@ -39,7 +51,12 @@ func (receiver *MigrateRedoCommand) Extend() command.Extend {
 
 // Handle Execute the console command.
 func (receiver *MigrateRedoCommand) Handle(ctx console.Context) error {
-	m, err := getMigrate()
+	dir := ctx.Option("dir")
+	connection := ctx.Option("connection")
+	if connection == "" {
+		connection = facades.Config.GetString("database.default")
+	}
+	m, err := getMigrate(connection, dir)
 	if err != nil {
 		return err
 	}

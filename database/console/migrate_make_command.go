@@ -32,6 +32,11 @@ func (receiver *MigrateMakeCommand) Extend() command.Extend {
 				Aliases: []string{"c"},
 				Usage:   "connection driver for the database",
 			},
+			{
+				Name:  "dir",
+				Value: "",
+				Usage: "directory for migration",
+			},
 		},
 	}
 }
@@ -44,11 +49,12 @@ func (receiver *MigrateMakeCommand) Handle(ctx console.Context) error {
 
 		return nil
 	}
+	dir := ctx.Option("dir")
 	connection := ctx.Option("connection")
 	if connection == "" {
 		connection = facades.Config.GetString("database.default")
 	}
-	m, err := getMigrate(connection)
+	m, err := getMigrate(connection, dir)
 	if err != nil {
 		return err
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/oarkflow/framework/contracts/console"
 	"github.com/oarkflow/framework/contracts/console/command"
+	"github.com/oarkflow/framework/facades"
 
 	"github.com/gookit/color"
 )
@@ -34,6 +35,17 @@ func (receiver *MigrateRollbackCommand) Extend() command.Extend {
 				Usage:   "rollback steps",
 			},
 			{
+				Name:  "dir",
+				Value: "",
+				Usage: "directory for migration",
+			},
+			{
+				Name:    "connection",
+				Value:   "",
+				Aliases: []string{"c"},
+				Usage:   "connection driver for the database",
+			},
+			{
 				Name:    "dryrun",
 				Value:   "false",
 				Aliases: []string{"d"},
@@ -45,7 +57,12 @@ func (receiver *MigrateRollbackCommand) Extend() command.Extend {
 
 // Handle Execute the console command.
 func (receiver *MigrateRollbackCommand) Handle(ctx console.Context) error {
-	m, err := getMigrate()
+	connection := ctx.Option("connection")
+	dir := ctx.Option("dir")
+	if connection == "" {
+		connection = facades.Config.GetString("database.default")
+	}
+	m, err := getMigrate(connection, dir)
 	if err != nil {
 		return err
 	}
