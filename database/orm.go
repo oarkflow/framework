@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/gookit/color"
-	"github.com/pkg/errors"
+	"github.com/oarkflow/errors"
 	"gorm.io/gorm"
 
 	contractsorm "github.com/oarkflow/framework/contracts/database/orm"
@@ -111,7 +111,7 @@ func (r *Orm) Transaction(txFunc func(tx contractsorm.Transaction) error) error 
 
 	if err := txFunc(tx); err != nil {
 		if err := tx.Rollback().Error; err != nil {
-			return errors.Wrapf(err, "rollback error: %v", err)
+			return errors.NewE(err, fmt.Sprintf("rollback error: %v", err.Error()), "")
 		}
 
 		return err
