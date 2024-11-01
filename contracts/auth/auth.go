@@ -25,3 +25,5 @@ type Auth interface {
 type User interface {
 	Authenticated() bool
 }
+
+type UserFn func() User
