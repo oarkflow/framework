@@ -5,9 +5,9 @@ go 1.23.0
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/aws/aws-sdk-go v1.55.5
-	github.com/aws/aws-sdk-go-v2 v1.32.2
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.41
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.66.1
+	github.com/aws/aws-sdk-go-v2 v1.32.3
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.42
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.66.2
 	github.com/dgraph-io/badger/v4 v4.3.1
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/gookit/color v1.5.4
@@ -16,7 +16,7 @@ require (
 	github.com/h2non/filetype v1.1.3
 	github.com/oarkflow/cron v0.0.3
 	github.com/oarkflow/errors v0.0.6
-	github.com/oarkflow/frame v0.0.68
+	github.com/oarkflow/frame v0.0.69
 	github.com/oarkflow/log v1.0.79
 	github.com/oarkflow/machinery v0.0.3
 	github.com/oarkflow/migration v0.0.5
@@ -26,7 +26,7 @@ require (
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/spf13/cast v1.7.0
 	github.com/spf13/viper v1.19.0
-	github.com/tencentyun/cos-go-sdk-v5 v0.7.55
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.56
 	github.com/urfave/cli/v2 v2.27.5
 	github.com/xhit/go-simple-mail/v2 v2.16.0
 	google.golang.org/grpc v1.67.1
@@ -50,13 +50,13 @@ require (
 	github.com/andeya/goutil v1.0.1 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.6 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.21 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.21 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.21 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.22 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.6.22 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.22 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.12.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.4.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.2 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.18.2 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.4.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.3 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.18.3 // indirect
 	github.com/aws/smithy-go v1.22.0 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.11 // indirect
